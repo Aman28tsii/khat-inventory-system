@@ -7,10 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// CORE TABLES
-// ============================================
-
 model Company {
   id                 String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name               String         @db.VarChar(255)
@@ -36,7 +32,7 @@ model Branch {
   companyId   String   @db.Uuid
   name        String   @db.VarChar(255)
   code        String   @unique @db.VarChar(50)
-  type        String   @db.VarChar(50) // HEADQUARTERS, WAREHOUSE, BRANCH
+  type        String   @db.VarChar(50)
   address     String   @db.Text
   phone       String?  @db.VarChar(50)
   email       String?  @db.VarChar(255)
@@ -171,10 +167,6 @@ model UserSession {
   @@index([sessionToken])
 }
 
-// ============================================
-// INVENTORY TABLES
-// ============================================
-
 model Product {
   id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name             String    @db.VarChar(255)
@@ -192,6 +184,7 @@ model Product {
 
   batches          Batch[]
   purchaseItems    PurchaseItem[]
+  stockMovements   StockMovement[]
 }
 
 model Supplier {
@@ -235,7 +228,7 @@ model Batch {
   inspectionDate     DateTime?
   inspectorId        String?  @db.Uuid
   qualityNotes       String?  @db.Text
-  status             String   @default("AVAILABLE") @db.VarChar(50) // AVAILABLE, PARTIAL, EXPIRED, QUARANTINED, DISPOSED
+  status             String   @default("AVAILABLE") @db.VarChar(50)
   isQualityChecked   Boolean  @default(false)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -274,7 +267,7 @@ model StockMovement {
   batchId            String   @db.Uuid
   branchId           String   @db.Uuid
   productId          String   @db.Uuid
-  movementType       String   @db.VarChar(50) // PURCHASE, TRANSFER_IN, TRANSFER_OUT, SALE, RETURN, WASTE, DAMAGE, ADJUSTMENT, LOSS, RECONCILIATION
+  movementType       String   @db.VarChar(50)
   quantity           Decimal  @db.Decimal(15,2)
   previousQuantity   Decimal  @db.Decimal(15,2)
   newQuantity        Decimal  @db.Decimal(15,2)
@@ -297,16 +290,12 @@ model StockMovement {
   @@index([createdAt])
 }
 
-// ============================================
-// TRANSACTION TABLES
-// ============================================
-
 model Transfer {
   id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   transferNumber   String   @unique @db.VarChar(50)
   fromBranchId     String   @db.Uuid
   toBranchId       String   @db.Uuid
-  status           String   @default("PENDING") @db.VarChar(50) // PENDING, APPROVED, IN_TRANSIT, RECEIVED, REJECTED, CANCELLED
+  status           String   @default("PENDING") @db.VarChar(50)
   transferDate     DateTime
   expectedArrival  DateTime?
   actualArrival    DateTime?
@@ -352,7 +341,7 @@ model Purchase {
   purchaseDate     DateTime
   expectedDelivery DateTime?
   actualDelivery   DateTime?
-  status           String   @default("DRAFT") @db.VarChar(50) // DRAFT, ORDERED, RECEIVED, PARTIAL, RETURNED, CANCELLED
+  status           String   @default("DRAFT") @db.VarChar(50)
   subtotal         Decimal  @db.Decimal(15,2)
   tax              Decimal  @default(0) @db.Decimal(15,2)
   discount         Decimal  @default(0) @db.Decimal(15,2)
@@ -389,7 +378,7 @@ model Customer {
   id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   code            String   @unique @db.VarChar(50)
   name            String   @db.VarChar(255)
-  type            String?  @db.VarChar(50) // INDIVIDUAL, BUSINESS, WHOLESALE, RETAIL
+  type            String?  @db.VarChar(50)
   phone           String?  @db.VarChar(50)
   email           String?  @db.VarChar(255)
   address         String?  @db.Text
@@ -410,8 +399,8 @@ model Sale {
   customerId      String?  @db.Uuid
   branchId        String   @db.Uuid
   saleDate        DateTime
-  status          String   @default("PENDING") @db.VarChar(50) // PENDING, COMPLETED, CANCELLED, RETURNED
-  paymentStatus   String   @default("PENDING") @db.VarChar(50) // PENDING, PARTIAL, PAID, OVERDUE
+  status          String   @default("PENDING") @db.VarChar(50)
+  paymentStatus   String   @default("PENDING") @db.VarChar(50)
   subtotal        Decimal  @db.Decimal(15,2)
   tax             Decimal  @default(0) @db.Decimal(15,2)
   discount        Decimal  @default(0) @db.Decimal(15,2)
@@ -448,12 +437,12 @@ model SaleItem {
 model Payment {
   id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   paymentNumber   String   @unique @db.VarChar(50)
-  referenceType   String   @db.VarChar(50) // SALE, PURCHASE, EXPENSE, OTHER
+  referenceType   String   @db.VarChar(50)
   referenceId     String   @db.Uuid
   branchId        String   @db.Uuid
   paymentDate     DateTime
   amount          Decimal  @db.Decimal(15,2)
-  paymentMethod   String?  @db.VarChar(50) // CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, ONLINE
+  paymentMethod   String?  @db.VarChar(50)
   referenceNumber String?  @db.VarChar(100)
   notes           String?  @db.Text
   receivedById    String?  @db.Uuid
@@ -462,6 +451,7 @@ model Payment {
 
   branch          Branch   @relation(fields: [branchId], references: [id])
   receivedBy      User?    @relation("receivedBy", fields: [receivedById], references: [id])
+  sale            Sale?    @relation(fields: [referenceId], references: [id])
 }
 
 model Expense {
@@ -483,10 +473,6 @@ model Expense {
   branch          Branch   @relation(fields: [branchId], references: [id])
   createdBy       User?    @relation("createdBy", fields: [createdById], references: [id])
 }
-
-// ============================================
-// SYSTEM TABLES
-// ============================================
 
 model AuditLog {
   id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
