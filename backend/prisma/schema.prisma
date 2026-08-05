@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// CORE TABLES
+// ============================================
+
+model Company {
+  id                 String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name               String         @db.VarChar(255)
+  code               String         @unique @db.VarChar(50)
+  logoUrl            String?        @db.Text
+  address            String?        @db.Text
+  phone              String?        @db.VarChar(50)
+  email              String?        @db.VarChar(255)
+  website            String?        @db.VarChar(255)
+  taxId              String?        @db.VarChar(100)
+  registrationNumber String?        @db.VarChar(100)
+  timezone           String?        @default("UTC") @db.VarChar(50)
+  currency           String?        @default("USD") @db.VarChar(10)
+  fiscalYearStart    DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  branches           Branch[]
+}
+
+model Branch {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  companyId   String   @db.Uuid
+  name        String   @db.VarChar(255)
+  code        String   @unique @db.VarChar(50)
+  type        String   @db.VarChar(50) // HEADQUARTERS, WAREHOUSE, BRANCH
+  address     String   @db.Text
+  phone       String?  @db.VarChar(50)
+  email       String?  @db.VarChar(255)
+  managerId   String?  @db.Uuid
+  isActive    Boolean  @default(true)
+  settings    Json?    @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company  @relation(fields: [companyId], references: [id])
+  users       User[]
+  inventory   Inventory[]
+  stockMovements StockMovement[]
+  transfersFrom Transfer[] @relation("fromBranch")
+  transfersTo   Transfer[] @relation("toBranch")
+  purchases   Purchase[]
+  sales       Sale[]
+  payments    Payment[]
+  expenses    Expense[]
+}
+
+model Role {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  level       Int      @default(0)
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  resource    String   @db.VarChar(100)
+  action      String   @db.VarChar(50)
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  roles       RolePermission[]
+
+  @@unique([resource, action])
+}
+
+model RolePermission {
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  createdAt    DateTime   @default(now())
+
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model User {
+  id                String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  branchId          String?        @db.Uuid
+  roleId            String         @db.Uuid
+  employeeId        String         @unique @db.VarChar(50)
+  firstName         String         @db.VarChar(100)
+  lastName          String         @db.VarChar(100)
+  email             String         @unique @db.VarChar(255)
+  passwordHash      String         @db.VarChar(255)
+  phone             String?        @db.VarChar(50)
+  avatarUrl         String?        @db.Text
+  isActive          Boolean        @default(true)
+  isVerified        Boolean        @default(false)
+  lastLogin         DateTime?
+  resetToken        String?        @db.VarChar(255)
+  resetTokenExpiry  DateTime?
+  preferences       Json?          @default("{}")
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  branch            Branch?        @relation(fields: [branchId], references: [id])
+  role              Role           @relation(fields: [roleId], references: [id])
+  refreshTokens     RefreshToken[]
+  sessions          UserSession[]
+  auditLogs         AuditLog[]
+  notifications     Notification[]
+  createdPurchases  Purchase[]     @relation("createdBy")
+  createdSales      Sale[]         @relation("createdBy")
+  createdTransfers  Transfer[]     @relation("createdBy")
+  approvedTransfers Transfer[]     @relation("approvedBy")
+  receivedTransfers Transfer[]     @relation("receivedBy")
+  payments          Payment[]      @relation("receivedBy")
+  expenses          Expense[]      @relation("createdBy")
+  stockMovements    StockMovement[] @relation("createdBy")
+  batchesInspected  Batch[]        @relation("inspector")
+
+  @@index([email])
+  @@index([employeeId])
+  @@index([branchId])
+  @@index([roleId])
+}
+
+model RefreshToken {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId      String   @db.Uuid
+  token       String   @unique @db.VarChar(500)
+  expiresAt   DateTime
+  revoked     Boolean  @default(false)
+  deviceInfo  Json?
+  ipAddress   String?  @db.VarChar(45)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([token])
+}
+
+model UserSession {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId        String   @db.Uuid
+  sessionToken  String   @unique @db.VarChar(500)
+  deviceInfo    Json?
+  ipAddress     String?  @db.VarChar(45)
+  userAgent     String?  @db.Text
+  lastActivity  DateTime @default(now())
+  expiresAt     DateTime
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([sessionToken])
+}
+
+// ============================================
+// INVENTORY TABLES
+// ============================================
+
+model Product {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String    @db.VarChar(255)
+  sku              String    @unique @db.VarChar(100)
+  category         String?   @db.VarChar(100)
+  subCategory      String?   @db.VarChar(100)
+  description      String?   @db.Text
+  unit             String?   @default("KG") @db.VarChar(50)
+  minStockQuantity Decimal?  @default(0) @db.Decimal(15,2)
+  maxStockQuantity Decimal?  @db.Decimal(15,2)
+  reorderLevel     Decimal?  @db.Decimal(15,2)
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  batches          Batch[]
+  purchaseItems    PurchaseItem[]
+}
+
+model Supplier {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code          String   @unique @db.VarChar(50)
+  name          String   @db.VarChar(255)
+  contactPerson String?  @db.VarChar(255)
+  email         String?  @db.VarChar(255)
+  phone         String?  @db.VarChar(50)
+  address       String?  @db.Text
+  taxId         String?  @db.VarChar(100)
+  paymentTerms  String?  @db.VarChar(100)
+  creditLimit   Decimal? @db.Decimal(15,2)
+  rating        Int?     @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  batches       Batch[]
+  purchases     Purchase[]
+}
+
+model Batch {
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  batchNumber        String   @unique @db.VarChar(100)
+  productId          String   @db.Uuid
+  supplierId         String?  @db.Uuid
+  purchaseOrderId    String?  @db.Uuid
+  purchasePrice      Decimal  @db.Decimal(15,2)
+  sellingPrice       Decimal? @db.Decimal(15,2)
+  quantity           Decimal  @db.Decimal(15,2)
+  remainingQuantity  Decimal  @db.Decimal(15,2)
+  arrivalDate        DateTime
+  harvestDate        DateTime?
+  expiryDate         DateTime?
+  grade              String?  @db.VarChar(50)
+  moisturePercentage Decimal? @db.Decimal(5,2)
+  freshnessScore     Int?     @default(0)
+  leafDensity        String?  @db.VarChar(50)
+  stemRatio          Decimal? @db.Decimal(5,2)
+  inspectionDate     DateTime?
+  inspectorId        String?  @db.Uuid
+  qualityNotes       String?  @db.Text
+  status             String   @default("AVAILABLE") @db.VarChar(50) // AVAILABLE, PARTIAL, EXPIRED, QUARANTINED, DISPOSED
+  isQualityChecked   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  product            Product  @relation(fields: [productId], references: [id])
+  supplier           Supplier? @relation(fields: [supplierId], references: [id])
+  inspector          User?    @relation("inspector", fields: [inspectorId], references: [id])
+  inventory          Inventory[]
+  stockMovements     StockMovement[]
+  transferItems      TransferItem[]
+  saleItems          SaleItem[]
+  purchaseItems      PurchaseItem[]
+}
+
+model Inventory {
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  batchId            String   @db.Uuid
+  branchId           String   @db.Uuid
+  currentQuantity    Decimal  @default(0) @db.Decimal(15,2)
+  reservedQuantity   Decimal  @default(0) @db.Decimal(15,2)
+  availableQuantity  Decimal  @default(0) @db.Decimal(15,2)
+  location           String?  @db.VarChar(255)
+  shelf              String?  @db.VarChar(100)
+  lastUpdated        DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  batch              Batch    @relation(fields: [batchId], references: [id])
+  branch             Branch   @relation(fields: [branchId], references: [id])
+
+  @@unique([batchId, branchId])
+}
+
+model StockMovement {
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  batchId            String   @db.Uuid
+  branchId           String   @db.Uuid
+  productId          String   @db.Uuid
+  movementType       String   @db.VarChar(50) // PURCHASE, TRANSFER_IN, TRANSFER_OUT, SALE, RETURN, WASTE, DAMAGE, ADJUSTMENT, LOSS, RECONCILIATION
+  quantity           Decimal  @db.Decimal(15,2)
+  previousQuantity   Decimal  @db.Decimal(15,2)
+  newQuantity        Decimal  @db.Decimal(15,2)
+  referenceId        String?  @db.Uuid
+  referenceType      String?  @db.VarChar(50)
+  unitPrice          Decimal? @db.Decimal(15,2)
+  totalAmount        Decimal? @db.Decimal(15,2)
+  notes              String?  @db.Text
+  createdBy          String?  @db.Uuid
+  createdAt          DateTime @default(now())
+
+  batch              Batch    @relation(fields: [batchId], references: [id])
+  branch             Branch   @relation(fields: [branchId], references: [id])
+  product            Product  @relation(fields: [productId], references: [id])
+  creator            User?    @relation("createdBy", fields: [createdBy], references: [id])
+
+  @@index([batchId])
+  @@index([branchId])
+  @@index([movementType])
+  @@index([createdAt])
+}
+
+// ============================================
+// TRANSACTION TABLES
+// ============================================
+
+model Transfer {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  transferNumber   String   @unique @db.VarChar(50)
+  fromBranchId     String   @db.Uuid
+  toBranchId       String   @db.Uuid
+  status           String   @default("PENDING") @db.VarChar(50) // PENDING, APPROVED, IN_TRANSIT, RECEIVED, REJECTED, CANCELLED
+  transferDate     DateTime
+  expectedArrival  DateTime?
+  actualArrival    DateTime?
+  notes            String?  @db.Text
+  approvedById     String?  @db.Uuid
+  approvedAt       DateTime?
+  receivedById     String?  @db.Uuid
+  receivedAt       DateTime?
+  createdById      String?  @db.Uuid
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  fromBranch       Branch   @relation("fromBranch", fields: [fromBranchId], references: [id])
+  toBranch         Branch   @relation("toBranch", fields: [toBranchId], references: [id])
+  approvedBy       User?    @relation("approvedBy", fields: [approvedById], references: [id])
+  receivedBy       User?    @relation("receivedBy", fields: [receivedById], references: [id])
+  createdBy        User?    @relation("createdBy", fields: [createdById], references: [id])
+  items            TransferItem[]
+
+  @@index([fromBranchId])
+  @@index([toBranchId])
+  @@index([status])
+}
+
+model TransferItem {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  transferId      String   @db.Uuid
+  batchId         String   @db.Uuid
+  quantity        Decimal  @db.Decimal(15,2)
+  receivedQuantity Decimal? @db.Decimal(15,2)
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  transfer        Transfer @relation(fields: [transferId], references: [id])
+  batch           Batch    @relation(fields: [batchId], references: [id])
+}
+
+model Purchase {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  purchaseNumber   String   @unique @db.VarChar(50)
+  supplierId       String   @db.Uuid
+  branchId         String   @db.Uuid
+  purchaseDate     DateTime
+  expectedDelivery DateTime?
+  actualDelivery   DateTime?
+  status           String   @default("DRAFT") @db.VarChar(50) // DRAFT, ORDERED, RECEIVED, PARTIAL, RETURNED, CANCELLED
+  subtotal         Decimal  @db.Decimal(15,2)
+  tax              Decimal  @default(0) @db.Decimal(15,2)
+  discount         Decimal  @default(0) @db.Decimal(15,2)
+  totalAmount      Decimal  @db.Decimal(15,2)
+  notes            String?  @db.Text
+  createdById      String?  @db.Uuid
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  supplier         Supplier @relation(fields: [supplierId], references: [id])
+  branch           Branch   @relation(fields: [branchId], references: [id])
+  createdBy        User?    @relation("createdBy", fields: [createdById], references: [id])
+  items            PurchaseItem[]
+}
+
+model PurchaseItem {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  purchaseId      String   @db.Uuid
+  productId       String   @db.Uuid
+  batchId         String?  @db.Uuid
+  quantity        Decimal  @db.Decimal(15,2)
+  receivedQuantity Decimal  @default(0) @db.Decimal(15,2)
+  unitPrice       Decimal  @db.Decimal(15,2)
+  totalPrice      Decimal  @db.Decimal(15,2)
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  purchase        Purchase @relation(fields: [purchaseId], references: [id])
+  product         Product  @relation(fields: [productId], references: [id])
+  batch           Batch?   @relation(fields: [batchId], references: [id])
+}
+
+model Customer {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  code            String   @unique @db.VarChar(50)
+  name            String   @db.VarChar(255)
+  type            String?  @db.VarChar(50) // INDIVIDUAL, BUSINESS, WHOLESALE, RETAIL
+  phone           String?  @db.VarChar(50)
+  email           String?  @db.VarChar(255)
+  address         String?  @db.Text
+  taxId           String?  @db.VarChar(100)
+  creditLimit     Decimal? @db.Decimal(15,2)
+  currentCredit   Decimal? @default(0) @db.Decimal(15,2)
+  paymentTerms    String?  @db.VarChar(100)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  sales           Sale[]
+}
+
+model Sale {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  saleNumber      String   @unique @db.VarChar(50)
+  customerId      String?  @db.Uuid
+  branchId        String   @db.Uuid
+  saleDate        DateTime
+  status          String   @default("PENDING") @db.VarChar(50) // PENDING, COMPLETED, CANCELLED, RETURNED
+  paymentStatus   String   @default("PENDING") @db.VarChar(50) // PENDING, PARTIAL, PAID, OVERDUE
+  subtotal        Decimal  @db.Decimal(15,2)
+  tax             Decimal  @default(0) @db.Decimal(15,2)
+  discount        Decimal  @default(0) @db.Decimal(15,2)
+  totalAmount     Decimal  @db.Decimal(15,2)
+  paidAmount      Decimal  @default(0) @db.Decimal(15,2)
+  dueAmount       Decimal  @default(0) @db.Decimal(15,2)
+  notes           String?  @db.Text
+  createdById     String?  @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  branch          Branch   @relation(fields: [branchId], references: [id])
+  createdBy       User?    @relation("createdBy", fields: [createdById], references: [id])
+  items           SaleItem[]
+  payments        Payment[]
+}
+
+model SaleItem {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  saleId          String   @db.Uuid
+  batchId         String   @db.Uuid
+  quantity        Decimal  @db.Decimal(15,2)
+  unitPrice       Decimal  @db.Decimal(15,2)
+  totalPrice      Decimal  @db.Decimal(15,2)
+  discount        Decimal  @default(0) @db.Decimal(15,2)
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  sale            Sale     @relation(fields: [saleId], references: [id])
+  batch           Batch    @relation(fields: [batchId], references: [id])
+}
+
+model Payment {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  paymentNumber   String   @unique @db.VarChar(50)
+  referenceType   String   @db.VarChar(50) // SALE, PURCHASE, EXPENSE, OTHER
+  referenceId     String   @db.Uuid
+  branchId        String   @db.Uuid
+  paymentDate     DateTime
+  amount          Decimal  @db.Decimal(15,2)
+  paymentMethod   String?  @db.VarChar(50) // CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, ONLINE
+  referenceNumber String?  @db.VarChar(100)
+  notes           String?  @db.Text
+  receivedById    String?  @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  branch          Branch   @relation(fields: [branchId], references: [id])
+  receivedBy      User?    @relation("receivedBy", fields: [receivedById], references: [id])
+}
+
+model Expense {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  expenseNumber   String   @unique @db.VarChar(50)
+  branchId        String   @db.Uuid
+  category        String   @db.VarChar(100)
+  description     String?  @db.Text
+  amount          Decimal  @db.Decimal(15,2)
+  expenseDate     DateTime
+  paymentMethod   String?  @db.VarChar(50)
+  vendor          String?  @db.VarChar(255)
+  receiptUrl      String?  @db.Text
+  notes           String?  @db.Text
+  createdById     String?  @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  branch          Branch   @relation(fields: [branchId], references: [id])
+  createdBy       User?    @relation("createdBy", fields: [createdById], references: [id])
+}
+
+// ============================================
+// SYSTEM TABLES
+// ============================================
+
+model AuditLog {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String?  @db.Uuid
+  action          String   @db.VarChar(100)
+  resourceType    String   @db.VarChar(100)
+  resourceId      String?  @db.Uuid
+  changes         Json?
+  ipAddress       String?  @db.VarChar(45)
+  userAgent       String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  user            User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resourceType])
+  @@index([createdAt])
+}
+
+model Notification {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String   @db.Uuid
+  title           String   @db.VarChar(255)
+  message         String   @db.Text
+  type            String   @db.VarChar(50)
+  priority        String   @default("NORMAL") @db.VarChar(20)
+  isRead          Boolean  @default(false)
+  isArchived      Boolean  @default(false)
+  actionUrl       String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model Setting {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  key             String   @unique @db.VarChar(255)
+  value           Json
+  category        String?  @db.VarChar(100)
+  isEncrypted     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
