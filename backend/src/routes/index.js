@@ -15,7 +15,7 @@ router.get('/health', (req, res) => {
 });
 
 // TEMPORARY SEED ROUTE - Remove after use
-router.post('/seed', async (req, res) => {
+router.get('/seed', async (req, res) => {
   try {
     // Check if admin exists
     const adminExists = await prisma.user.findUnique({
