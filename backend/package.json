@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-   "start": "npx prisma migrate deploy && npx prisma generate && node src/server.js",
+    "start": "npx prisma migrate deploy && npx prisma generate && node src/server.js",
     "dev": "nodemon src/server.js",
     "build": "prisma generate",
     "migrate": "prisma migrate deploy",
