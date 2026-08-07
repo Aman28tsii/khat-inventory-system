@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authService } from '../services/authService';
 
 const initialState = {
   user: null,
@@ -10,80 +9,50 @@ const initialState = {
   error: null
 };
 
-// Login
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await authService.login(credentials);
-      return response.data.data;
+      const response = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      if (!response.ok) throw new Error('Login failed');
+      const data = await response.json();
+      return data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      return rejectWithValue(error.message || 'Login failed');
     }
   }
 );
 
-// Logout
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await authService.logout();
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       return null;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Logout failed');
+      return rejectWithValue(error.message || 'Logout failed');
     }
   }
 );
 
-// Get current user
 export const getCurrentUser = createAsyncThunk(
   'auth/getCurrentUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await authService.getCurrentUser();
-      return response.data.data;
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('/api/v1/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Failed to get user');
+      const data = await response.json();
+      return data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get user');
-    }
-  }
-);
-
-// Change password
-export const changePassword = createAsyncThunk(
-  'auth/changePassword',
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await authService.changePassword(data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Password change failed');
-    }
-  }
-);
-
-// Forgot password
-export const forgotPassword = createAsyncThunk(
-  'auth/forgotPassword',
-  async (email, { rejectWithValue }) => {
-    try {
-      const response = await authService.forgotPassword(email);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to send reset email');
-    }
-  }
-);
-
-// Reset password
-export const resetPassword = createAsyncThunk(
-  'auth/resetPassword',
-  async ({ token, newPassword }, { rejectWithValue }) => {
-    try {
-      const response = await authService.resetPassword(token, newPassword);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to reset password');
+      return rejectWithValue(error.message || 'Failed to get user');
     }
   }
 );
@@ -92,14 +61,16 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
     setCredentials: (state, action) => {
-      const { accessToken, refreshToken, user } = action.payload;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
-      state.user = user;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('accessToken', action.payload.accessToken);
+      localStorage.setItem('refreshToken', action.payload.refreshToken);
     },
     clearCredentials: (state) => {
       state.user = null;
@@ -108,14 +79,10 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-    },
-    clearError: (state) => {
-      state.error = null;
     }
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(login.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -128,32 +95,12 @@ const authSlice = createSlice({
         state.refreshToken = action.payload.refreshToken;
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
-        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
       })
-      // Get current user
-      .addCase(getCurrentUser.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getCurrentUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.error = null;
-      })
-      .addCase(getCurrentUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-        state.isAuthenticated = false;
-        state.user = null;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      })
-      // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.accessToken = null;
@@ -161,17 +108,19 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        state.error = null;
       })
-      // Change password
-      .addCase(changePassword.fulfilled, (state) => {
-        state.error = null;
+      .addCase(getCurrentUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthenticated = true;
       })
-      .addCase(changePassword.rejected, (state, action) => {
-        state.error = action.payload;
+      .addCase(getCurrentUser.rejected, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
       });
   }
 });
 
-export const { setCredentials, clearCredentials, clearError } = authSlice.actions;
+export const { clearError, setCredentials, clearCredentials } = authSlice.actions;
 export default authSlice.reducer;
