@@ -3,8 +3,8 @@ import store from '../app/store';
 import { logout, setCredentials } from '../features/auth/slices/authSlice';
 import { refreshToken } from '../features/auth/services/authService';
 
-// Use environment variable with fallback to Render URL
-const API_URL = process.env.REACT_APP_API_URL || 'https://khat-inventory-system.onrender.com/api/v1';
+// Hardcoded Render URL
+const API_URL = 'https://khat-inventory-system.onrender.com/api/v1';
 
 // Create axios instance
 const apiClient = axios.create({

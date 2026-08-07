@@ -8,8 +8,8 @@ export const initializeSocket = (token) => {
     disconnectSocket();
   }
 
-  // const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
-  const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'https://khat-inventory-system.onrender.com';
+  // Hardcoded Render URL
+  const SOCKET_URL = 'https://khat-inventory-system.onrender.com';
 
   socket = io(SOCKET_URL, {
     auth: { token },
