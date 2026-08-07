@@ -6,8 +6,7 @@ import { initializeSocket, disconnectSocket } from './services/socketService';
 
 function App() {
   const dispatch = useDispatch();
-  // Add safe access with fallback
-  const { isAuthenticated, accessToken } = useSelector((state) => state.auth || { isAuthenticated: false, accessToken: null });
+  const { isAuthenticated, accessToken } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated && accessToken) {
