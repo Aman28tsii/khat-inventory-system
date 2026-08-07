@@ -21,7 +21,12 @@ import { fetchExecutiveDashboard, fetchRecentActivities, fetchAlerts, clearError
 
 const ExecutiveDashboard = () => {
   const dispatch = useDispatch();
-  const { executive, recentActivities, alerts, isLoading, error } = useSelector((state) => state.dashboard);
+  // Safe access with optional chaining and fallback
+  const executive = useSelector((state) => state.dashboard?.executive);
+  const recentActivities = useSelector((state) => state.dashboard?.recentActivities || []);
+  const alerts = useSelector((state) => state.dashboard?.alerts || []);
+  const isLoading = useSelector((state) => state.dashboard?.isLoading || false);
+  const error = useSelector((state) => state.dashboard?.error || null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
