@@ -6,16 +6,23 @@ import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
-import Input from '../../../components/common/Input/Input';
-// import { fetchRoles, deleteRole, clearError } from '../slices/rolesSlice';
+import { fetchRoles } from '../slices/rolesSlice';
 
 const RoleList = () => {
-  // Temporary mock data
-  const roles = [
-    { id: '1', name: 'SUPER_ADMIN', description: 'Full system access', level: 100, isSystem: true },
-    { id: '2', name: 'ADMIN', description: 'Administrative access', level: 90, isSystem: true },
-    { id: '3', name: 'MANAGER', description: 'Branch manager', level: 70, isSystem: true },
-  ];
+  const dispatch = useDispatch();
+  const { roles, isLoading, error } = useSelector((state) => state.roles || { roles: [], isLoading: false, error: null });
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchRoles());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const columns = [
     {
@@ -48,7 +55,7 @@ const RoleList = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -64,7 +71,7 @@ const RoleList = () => {
         </Button>
       </div>
 
-      <Table columns={columns} data={roles} />
+      <Table columns={columns} data={roles} loading={isLoading} />
     </div>
   );
 };
