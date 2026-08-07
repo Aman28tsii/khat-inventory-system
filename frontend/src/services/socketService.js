@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { store } from '../app/store';
+import store from '../app/store';
 import { addNotification, updateUnreadCount } from '../features/notifications/slices/notificationSlice';
 
 let socket = null;
