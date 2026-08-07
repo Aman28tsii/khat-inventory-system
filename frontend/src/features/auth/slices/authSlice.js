@@ -24,43 +24,7 @@ export const login = createAsyncThunk(
       const data = await response.json();
       return data.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Login failed');
-    }
-  }
-);
-
-export const logout = createAsyncThunk(
-  'auth/logout',
-  async (_, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      await fetch(`${API_URL}/auth/logout`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      return null;
-    } catch (error) {
-      return rejectWithValue(error.message || 'Logout failed');
-    }
-  }
-);
-
-export const getCurrentUser = createAsyncThunk(
-  'auth/getCurrentUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) throw new Error('No token found');
-      const response = await fetch(`${API_URL}/auth/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!response.ok) throw new Error('Failed to get user');
-      const data = await response.json();
-      return data.data;
-    } catch (error) {
-      return rejectWithValue(error.message || 'Failed to get user');
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -69,14 +33,16 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
     setCredentials: (state, action) => {
-      const { accessToken, refreshToken, user } = action.payload;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
-      state.user = user;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('accessToken', action.payload.accessToken);
+      localStorage.setItem('refreshToken', action.payload.refreshToken);
     },
     clearCredentials: (state) => {
       state.user = null;
@@ -85,9 +51,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-    },
-    clearError: (state) => {
-      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -109,27 +72,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
-      })
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null;
-        state.accessToken = null;
-        state.refreshToken = null;
-        state.isAuthenticated = false;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      })
-      .addCase(getCurrentUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isAuthenticated = true;
-      })
-      .addCase(getCurrentUser.rejected, (state) => {
-        state.isAuthenticated = false;
-        state.user = null;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
       });
   }
 });
 
-export const { setCredentials, clearCredentials, clearError } = authSlice.actions;
+export const { clearError, setCredentials, clearCredentials } = authSlice.actions;
 export default authSlice.reducer;
