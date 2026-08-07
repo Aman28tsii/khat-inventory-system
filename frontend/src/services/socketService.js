@@ -1,8 +1,7 @@
 import { io } from 'socket.io-client';
-import store from '../app/store';
-import { addNotification, updateUnreadCount } from '../features/notifications/slices/notificationSlice';
 
 let socket = null;
+let storeInstance = null;
 
 export const initializeSocket = (token) => {
   if (socket) {
@@ -19,7 +18,6 @@ export const initializeSocket = (token) => {
     reconnectionDelay: 1000
   });
 
-  // Connection events
   socket.on('connect', () => {
     console.log('Socket connected');
   });
@@ -32,24 +30,17 @@ export const initializeSocket = (token) => {
     console.error('Socket error:', error);
   });
 
-  // Listen for new notifications
+  // Listen for notifications - dispatch will be handled by the component
   socket.on('notification:new', (notification) => {
-    store.dispatch(addNotification(notification));
-    // Play sound if enabled
-    playNotificationSound();
-  });
-
-  // Listen for notification read updates
-  socket.on('notification:read', (notificationId) => {
-    store.dispatch(realtimeMarkAsRead(notificationId));
-  });
-
-  // Listen for unread count updates
-  socket.on('notification:unread-update', (count) => {
-    store.dispatch(updateUnreadCount(count));
+    // This will be handled by the notification slice
+    console.log('New notification:', notification);
   });
 
   return socket;
+};
+
+export const setStore = (store) => {
+  storeInstance = store;
 };
 
 export const disconnectSocket = () => {
@@ -60,14 +51,3 @@ export const disconnectSocket = () => {
 };
 
 export const getSocket = () => socket;
-
-const playNotificationSound = () => {
-  try {
-    const audio = new Audio('/notification.mp3');
-    audio.play().catch(() => {
-      // Silently fail if audio can't play
-    });
-  } catch (error) {
-    // Silently fail
-  }
-};

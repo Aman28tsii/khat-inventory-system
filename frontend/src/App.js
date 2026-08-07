@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppRoutes from './routes/AppRoutes';
 import { getCurrentUser } from './features/auth/slices/authSlice';
-import { initializeSocket, disconnectSocket } from './services/socketService';
+import { initializeSocket, disconnectSocket, setStore } from './services/socketService';
+import store from './app/store';
+
+// Set store reference for socket service
+setStore(store);
 
 function App() {
   const dispatch = useDispatch();
