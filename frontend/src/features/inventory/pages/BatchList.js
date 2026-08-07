@@ -105,10 +105,10 @@ const BatchList = () => {
       QUARANTINED: { color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
       DISPOSED: { color: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400', icon: XCircle }
     };
-    const status = statuses[status] || statuses.AVAILABLE;
-    const Icon = status.icon;
+    const statusInfo = statuses[status] || statuses.AVAILABLE;
+    const Icon = statusInfo.icon;
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
+      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
         <Icon className="w-3 h-3" />
         {status}
       </span>
