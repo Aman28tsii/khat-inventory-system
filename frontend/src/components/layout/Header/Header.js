@@ -16,7 +16,7 @@ import {
   Shield,
   LayoutDashboard
 } from 'lucide-react';
-import { logout } from '../../features/auth/slices/authSlice';
+import { logout } from '../../../features/auth/slices/authSlice';
 import NotificationBell from './NotificationBell.js';
 
 const Header = ({ toggleSidebar }) => {
