@@ -17,7 +17,7 @@ import {
   LayoutDashboard
 } from 'lucide-react';
 import { logout } from '../../features/auth/slices/authSlice';
-import NotificationBell from '../../features/notifications/components/NotificationBell';
+import NotificationBell from './NotificationBell.js';
 
 const Header = ({ toggleSidebar }) => {
   const dispatch = useDispatch();
