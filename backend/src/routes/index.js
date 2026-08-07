@@ -1,7 +1,17 @@
 import { Router } from 'express';
 import authRoutes from './v1/authRoutes.js';
-import { prisma } from '../config/database.js';
-import bcrypt from 'bcryptjs';
+import userRoutes from './v1/userRoutes.js';
+import productRoutes from './v1/productRoutes.js';
+import supplierRoutes from './v1/supplierRoutes.js';
+import batchRoutes from './v1/batchRoutes.js';
+import customerRoutes from './v1/customerRoutes.js';
+import purchaseRoutes from './v1/purchaseRoutes.js';
+import saleRoutes from './v1/saleRoutes.js';
+import transferRoutes from './v1/transferRoutes.js';
+import reportRoutes from './v1/reportRoutes.js';
+import notificationRoutes from './v1/notificationRoutes.js';
+import auditRoutes from './v1/auditRoutes.js';
+import dashboardRoutes from './v1/dashboardRoutes.js';
 
 const router = Router();
 
@@ -14,55 +24,44 @@ router.get('/health', (req, res) => {
   });
 });
 
-// TEMPORARY SEED ROUTE - Remove after use
-router.get('/seed', async (req, res) => {
-  try {
-    // Check if admin exists
-    const adminExists = await prisma.user.findUnique({
-      where: { email: 'admin@khattrading.com' }
-    });
-
-    if (adminExists) {
-      return res.json({ message: 'Admin already exists' });
-    }
-
-    // Create admin
-    const hashedPassword = await bcrypt.hash('Admin@123', 12);
-    
-    // Get super admin role
-    const role = await prisma.role.findFirst({
-      where: { name: 'SUPER_ADMIN' }
-    });
-
-    if (!role) {
-      return res.status(400).json({ error: 'Role not found. Run seed first.' });
-    }
-
-    const admin = await prisma.user.create({
-      data: {
-        email: 'admin@khattrading.com',
-        passwordHash: hashedPassword,
-        firstName: 'System',
-        lastName: 'Admin',
-        employeeId: 'EMP001',
-        roleId: role.id,
-        isActive: true,
-        isVerified: true,
-      }
-    });
-
-    res.json({ 
-      message: 'Admin created successfully',
-      email: 'admin@khattrading.com',
-      password: 'Admin@123'
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Auth routes
 router.use('/auth', authRoutes);
+
+// User routes
+router.use('/users', userRoutes);
+
+// Product routes
+router.use('/products', productRoutes);
+
+// Supplier routes
+router.use('/suppliers', supplierRoutes);
+
+// Batch routes
+router.use('/batches', batchRoutes);
+
+// Customer routes
+router.use('/customers', customerRoutes);
+
+// Purchase routes
+router.use('/purchases', purchaseRoutes);
+
+// Sale routes
+router.use('/sales', saleRoutes);
+
+// Transfer routes
+router.use('/transfers', transferRoutes);
+
+// Report routes
+router.use('/reports', reportRoutes);
+
+// Notification routes
+router.use('/notifications', notificationRoutes);
+
+// Audit routes
+router.use('/audit-logs', auditRoutes);
+
+// Dashboard routes
+router.use('/dashboard', dashboardRoutes);
 
 // Test route
 router.get('/test', (req, res) => {
