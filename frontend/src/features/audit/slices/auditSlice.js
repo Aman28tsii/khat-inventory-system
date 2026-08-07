@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { auditService } from '../services/auditService';
 
 const initialState = {
   logs: [],
@@ -12,14 +11,40 @@ const initialState = {
   total: 0
 };
 
+// Mock data for now - replace with actual API calls
 export const fetchAuditLogs = createAsyncThunk(
   'audit/fetch',
   async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await auditService.getAll(params);
-      return response.data;
+      // Mock response - replace with actual API call
+      const mockData = [
+        {
+          id: '1',
+          user: { firstName: 'System', lastName: 'Admin', email: 'admin@khattrading.com' },
+          action: 'LOGIN',
+          resourceType: 'USER',
+          resourceId: 'user-123',
+          changes: { success: true },
+          ipAddress: '192.168.1.1',
+          userAgent: 'Chrome/120.0.0.0',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          user: { firstName: 'John', lastName: 'Doe', email: 'john@khattrading.com' },
+          action: 'CREATE',
+          resourceType: 'SALE',
+          resourceId: 'sale-456',
+          changes: { amount: 500, customer: 'Jane Smith' },
+          ipAddress: '192.168.1.2',
+          userAgent: 'Firefox/121.0',
+          createdAt: new Date(Date.now() - 3600000).toISOString()
+        }
+      ];
+      
+      return { data: mockData, total: mockData.length };
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch audit logs');
+      return rejectWithValue(error.message || 'Failed to fetch audit logs');
     }
   }
 );
@@ -28,10 +53,21 @@ export const fetchAuditLogById = createAsyncThunk(
   'audit/fetchById',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await auditService.getById(id);
-      return response.data.data;
+      // Mock response
+      const mockLog = {
+        id: id,
+        user: { firstName: 'System', lastName: 'Admin', email: 'admin@khattrading.com' },
+        action: 'LOGIN',
+        resourceType: 'USER',
+        resourceId: 'user-123',
+        changes: { success: true, timestamp: new Date().toISOString() },
+        ipAddress: '192.168.1.1',
+        userAgent: 'Chrome/120.0.0.0',
+        createdAt: new Date().toISOString()
+      };
+      return mockLog;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch audit log');
+      return rejectWithValue(error.message || 'Failed to fetch audit log');
     }
   }
 );
@@ -40,10 +76,9 @@ export const fetchResources = createAsyncThunk(
   'audit/fetchResources',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await auditService.getResources();
-      return response.data.data;
+      return ['USER', 'ROLE', 'BRANCH', 'PRODUCT', 'INVENTORY', 'SALE', 'PURCHASE', 'TRANSFER'];
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch resources');
+      return rejectWithValue(error.message || 'Failed to fetch resources');
     }
   }
 );
@@ -52,10 +87,9 @@ export const fetchActions = createAsyncThunk(
   'audit/fetchActions',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await auditService.getActions();
-      return response.data.data;
+      return ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW', 'EXPORT'];
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch actions');
+      return rejectWithValue(error.message || 'Failed to fetch actions');
     }
   }
 );
@@ -64,10 +98,11 @@ export const exportAuditLogs = createAsyncThunk(
   'audit/export',
   async (params, { rejectWithValue }) => {
     try {
-      const response = await auditService.export(params);
-      return response.data;
+      // Mock export - returns blob
+      const blob = new Blob(['Mock audit logs data'], { type: 'application/pdf' });
+      return blob;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to export audit logs');
+      return rejectWithValue(error.message || 'Failed to export audit logs');
     }
   }
 );
@@ -95,8 +130,8 @@ const auditSlice = createSlice({
       })
       .addCase(fetchAuditLogs.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.logs = action.payload.data;
-        state.total = action.payload.total || action.payload.data.length;
+        state.logs = action.payload.data || [];
+        state.total = action.payload.total || 0;
       })
       .addCase(fetchAuditLogs.rejected, (state, action) => {
         state.isLoading = false;
@@ -104,6 +139,9 @@ const auditSlice = createSlice({
       })
       .addCase(fetchAuditLogById.fulfilled, (state, action) => {
         state.selectedLog = action.payload;
+      })
+      .addCase(fetchAuditLogById.rejected, (state, action) => {
+        state.error = action.payload;
       })
       .addCase(fetchResources.fulfilled, (state, action) => {
         state.resources = action.payload;
