@@ -25,7 +25,7 @@ import {
   Calculator,
   AlertCircle
 } from 'lucide-react';
-import { logout } from '../../features/auth/slices/authSlice';
+import { logout } from '../../../features/auth/slices/authSlice';
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const dispatch = useDispatch();
