@@ -21,6 +21,22 @@ export const fetchBranches = createAsyncThunk(
   }
 );
 
+// Add this deleteBranch thunk
+export const deleteBranch = createAsyncThunk(
+  'branches/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/v1/branches/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete branch');
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to delete branch');
+    }
+  }
+);
+
 const branchesSlice = createSlice({
   name: 'branches',
   initialState,
@@ -44,6 +60,13 @@ const branchesSlice = createSlice({
       })
       .addCase(fetchBranches.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Add deleteBranch cases
+      .addCase(deleteBranch.fulfilled, (state, action) => {
+        state.branches = state.branches.filter(branch => branch.id !== action.payload);
+      })
+      .addCase(deleteBranch.rejected, (state, action) => {
         state.error = action.payload;
       });
   }
