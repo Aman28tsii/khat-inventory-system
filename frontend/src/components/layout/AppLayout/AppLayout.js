@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import Sidebar from './sidebar/sidebar.js';
-import Header from '.Header/Header.js';
+import Sidebar from '../sidebar/sidebar.js';
+import Header from './Header/Header.js';
 
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
