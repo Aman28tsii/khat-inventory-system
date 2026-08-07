@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
 
 let socket = null;
+let eventHandlers = {};
 
 export const initializeSocket = (token) => {
   if (socket) {
@@ -40,3 +41,17 @@ export const disconnectSocket = () => {
 };
 
 export const getSocket = () => socket;
+
+export const onSocketEvent = (event, callback) => {
+  if (socket) {
+    socket.on(event, callback);
+    eventHandlers[event] = callback;
+  }
+};
+
+export const offSocketEvent = (event) => {
+  if (socket && eventHandlers[event]) {
+    socket.off(event, eventHandlers[event]);
+    delete eventHandlers[event];
+  }
+};
