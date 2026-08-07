@@ -2,11 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppRoutes from './routes/AppRoutes';
 import { getCurrentUser } from './features/auth/slices/authSlice';
-import { initializeSocket, disconnectSocket, setStore } from './services/socketService';
-import store from './app/store';
-
-// Set store reference for socket service
-setStore(store);
+import { initializeSocket, disconnectSocket } from './services/socketService';
 
 function App() {
   const dispatch = useDispatch();
@@ -14,13 +10,9 @@ function App() {
 
   useEffect(() => {
     if (isAuthenticated && accessToken) {
-      // Get current user data
       dispatch(getCurrentUser());
-      
-      // Initialize Socket.IO connection
       initializeSocket(accessToken);
     } else {
-      // Disconnect socket when not authenticated
       disconnectSocket();
     }
 

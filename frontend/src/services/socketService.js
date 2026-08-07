@@ -1,7 +1,6 @@
 import { io } from 'socket.io-client';
 
 let socket = null;
-let storeInstance = null;
 
 export const initializeSocket = (token) => {
   if (socket) {
@@ -30,17 +29,7 @@ export const initializeSocket = (token) => {
     console.error('Socket error:', error);
   });
 
-  // Listen for notifications - dispatch will be handled by the component
-  socket.on('notification:new', (notification) => {
-    // This will be handled by the notification slice
-    console.log('New notification:', notification);
-  });
-
   return socket;
-};
-
-export const setStore = (store) => {
-  storeInstance = store;
 };
 
 export const disconnectSocket = () => {
