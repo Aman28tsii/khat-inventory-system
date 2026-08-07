@@ -11,38 +11,14 @@ const initialState = {
   total: 0
 };
 
-// Mock data for now - replace with actual API calls
 export const fetchAuditLogs = createAsyncThunk(
   'audit/fetch',
   async (params = {}, { rejectWithValue }) => {
     try {
-      // Mock response - replace with actual API call
-      const mockData = [
-        {
-          id: '1',
-          user: { firstName: 'System', lastName: 'Admin', email: 'admin@khattrading.com' },
-          action: 'LOGIN',
-          resourceType: 'USER',
-          resourceId: 'user-123',
-          changes: { success: true },
-          ipAddress: '192.168.1.1',
-          userAgent: 'Chrome/120.0.0.0',
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: '2',
-          user: { firstName: 'John', lastName: 'Doe', email: 'john@khattrading.com' },
-          action: 'CREATE',
-          resourceType: 'SALE',
-          resourceId: 'sale-456',
-          changes: { amount: 500, customer: 'Jane Smith' },
-          ipAddress: '192.168.1.2',
-          userAgent: 'Firefox/121.0',
-          createdAt: new Date(Date.now() - 3600000).toISOString()
-        }
-      ];
-      
-      return { data: mockData, total: mockData.length };
+      const response = await fetch('/api/v1/audit-logs');
+      if (!response.ok) throw new Error('Failed to fetch audit logs');
+      const data = await response.json();
+      return data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch audit logs');
     }
@@ -53,19 +29,10 @@ export const fetchAuditLogById = createAsyncThunk(
   'audit/fetchById',
   async (id, { rejectWithValue }) => {
     try {
-      // Mock response
-      const mockLog = {
-        id: id,
-        user: { firstName: 'System', lastName: 'Admin', email: 'admin@khattrading.com' },
-        action: 'LOGIN',
-        resourceType: 'USER',
-        resourceId: 'user-123',
-        changes: { success: true, timestamp: new Date().toISOString() },
-        ipAddress: '192.168.1.1',
-        userAgent: 'Chrome/120.0.0.0',
-        createdAt: new Date().toISOString()
-      };
-      return mockLog;
+      const response = await fetch(`/api/v1/audit-logs/${id}`);
+      if (!response.ok) throw new Error('Failed to fetch audit log');
+      const data = await response.json();
+      return data.data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch audit log');
     }
@@ -76,7 +43,10 @@ export const fetchResources = createAsyncThunk(
   'audit/fetchResources',
   async (_, { rejectWithValue }) => {
     try {
-      return ['USER', 'ROLE', 'BRANCH', 'PRODUCT', 'INVENTORY', 'SALE', 'PURCHASE', 'TRANSFER'];
+      const response = await fetch('/api/v1/audit-logs/resources');
+      if (!response.ok) throw new Error('Failed to fetch resources');
+      const data = await response.json();
+      return data.data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch resources');
     }
@@ -87,7 +57,10 @@ export const fetchActions = createAsyncThunk(
   'audit/fetchActions',
   async (_, { rejectWithValue }) => {
     try {
-      return ['CREATE', 'READ', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW', 'EXPORT'];
+      const response = await fetch('/api/v1/audit-logs/actions');
+      if (!response.ok) throw new Error('Failed to fetch actions');
+      const data = await response.json();
+      return data.data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to fetch actions');
     }
@@ -98,8 +71,13 @@ export const exportAuditLogs = createAsyncThunk(
   'audit/export',
   async (params, { rejectWithValue }) => {
     try {
-      // Mock export - returns blob
-      const blob = new Blob(['Mock audit logs data'], { type: 'application/pdf' });
+      const response = await fetch('/api/v1/audit-logs/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      if (!response.ok) throw new Error('Failed to export audit logs');
+      const blob = await response.blob();
       return blob;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to export audit logs');
