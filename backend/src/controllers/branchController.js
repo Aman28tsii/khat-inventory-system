@@ -71,6 +71,7 @@ class BranchController {
     try {
       const { id } = req.params;
       const branch = await branchService.toggleStatus(id);
+      const status = branch.isActive ? 'activated' : 'deactivated';
       res.json({
         success: true,
         data: branch,
@@ -83,5 +84,3 @@ class BranchController {
 }
 
 export default new BranchController();
-
-// Force rebuild 08/08/2026 13:22:47
