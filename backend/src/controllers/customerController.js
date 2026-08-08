@@ -1,18 +1,18 @@
-﻿import { AppError } from '../middlewares/errorHandler.js';
-
-// Mock data
-let customers = [
-  { id: '1', name: 'John Doe', code: 'CUST-001', phone: '+251-911-1234', email: 'john@example.com', isActive: true },
-  { id: '2', name: 'Jane Smith', code: 'CUST-002', phone: '+251-922-5678', email: 'jane@example.com', isActive: true },
-];
+﻿import customerService from '../services/customerService.js';
+import { AppError } from '../middlewares/errorHandler.js';
 
 class CustomerController {
   async getAll(req, res, next) {
     try {
+      const { search, type, status, page, limit } = req.query;
+      const result = await customerService.getAll({ search, type, status, page, limit });
+
       res.json({
         success: true,
-        data: customers,
-        total: customers.length,
+        data: result.data,
+        total: result.total,
+        page: parseInt(page) || 1,
+        limit: parseInt(limit) || 10,
       });
     } catch (error) {
       next(error);
@@ -22,10 +22,8 @@ class CustomerController {
   async getById(req, res, next) {
     try {
       const { id } = req.params;
-      const customer = customers.find(c => c.id === id);
-      if (!customer) {
-        throw new AppError('Customer not found', 404);
-      }
+      const customer = await customerService.getById(id);
+
       res.json({
         success: true,
         data: customer,
@@ -37,19 +35,12 @@ class CustomerController {
 
   async create(req, res, next) {
     try {
-      const { name, code, phone, email } = req.body;
-      const newCustomer = {
-        id: String(customers.length + 1),
-        name,
-        code,
-        phone,
-        email,
-        isActive: true,
-      };
-      customers.push(newCustomer);
+      const data = req.body;
+      const customer = await customerService.create(data);
+
       res.status(201).json({
         success: true,
-        data: newCustomer,
+        data: customer,
         message: 'Customer created successfully',
       });
     } catch (error) {
@@ -60,14 +51,12 @@ class CustomerController {
   async update(req, res, next) {
     try {
       const { id } = req.params;
-      const index = customers.findIndex(c => c.id === id);
-      if (index === -1) {
-        throw new AppError('Customer not found', 404);
-      }
-      customers[index] = { ...customers[index], ...req.body };
+      const data = req.body;
+      const customer = await customerService.update(id, data);
+
       res.json({
         success: true,
-        data: customers[index],
+        data: customer,
         message: 'Customer updated successfully',
       });
     } catch (error) {
@@ -78,10 +67,41 @@ class CustomerController {
   async delete(req, res, next) {
     try {
       const { id } = req.params;
-      customers = customers.filter(c => c.id !== id);
+      await customerService.delete(id);
+
       res.json({
         success: true,
         message: 'Customer deleted successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async toggleStatus(req, res, next) {
+    try {
+      const { id } = req.params;
+      const customer = await customerService.toggleStatus(id);
+      const status = customer.isActive ? 'activated' : 'deactivated';
+      
+      res.json({
+        success: true,
+        data: customer,
+        message: Customer  successfully,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCreditHistory(req, res, next) {
+    try {
+      const { id } = req.params;
+      const result = await customerService.getCreditHistory(id);
+
+      res.json({
+        success: true,
+        data: result,
       });
     } catch (error) {
       next(error);
