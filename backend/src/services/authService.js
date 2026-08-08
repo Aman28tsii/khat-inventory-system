@@ -233,7 +233,7 @@ class AuthService {
       },
     });
 
-    console.log(Password reset link: /reset-password?token=);
+    console.log(`Password reset link: ${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`);
     return { success: true };
   }
 
@@ -315,3 +315,4 @@ class AuthService {
 }
 
 export default new AuthService();
+
