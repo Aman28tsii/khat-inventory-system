@@ -16,12 +16,12 @@ class AuthService {
   generateTokens(userId) {
     const accessToken = jwt.sign(
       { id: userId },
-      process.env.JWT_SECRET || 'default-secret',
+      process.env.JWT_SECRET || 'secret',
       { expiresIn: '15m' }
     );
     const refreshToken = jwt.sign(
       { id: userId },
-      process.env.JWT_REFRESH_SECRET || 'default-refresh-secret',
+      process.env.JWT_REFRESH_SECRET || 'refresh-secret',
       { expiresIn: '7d' }
     );
     return { accessToken, refreshToken };
@@ -75,7 +75,6 @@ class AuthService {
     });
 
     const { passwordHash, ...userData } = user;
-
     return {
       user: {
         ...userData,
@@ -116,7 +115,7 @@ class AuthService {
 
   async refreshAccessToken(refreshToken) {
     try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'default-refresh-secret');
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'refresh-secret');
       const storedToken = await prisma.refreshToken.findFirst({
         where: {
           token: refreshToken,
@@ -164,7 +163,6 @@ class AuthService {
       });
 
       const { passwordHash, ...userData } = storedToken.user;
-
       return {
         user: {
           ...userData,

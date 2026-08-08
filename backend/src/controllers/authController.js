@@ -36,8 +36,7 @@ class AuthController {
       if (!req.user) {
         throw new AppError('Unauthorized', 401);
       }
-      const userId = req.user.id;
-      await authService.logout(userId);
+      await authService.logout(req.user.id);
       res.json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
       next(error);
@@ -49,8 +48,7 @@ class AuthController {
       if (!req.user) {
         throw new AppError('Unauthorized', 401);
       }
-      const userId = req.user.id;
-      await authService.logoutAll(userId);
+      await authService.logoutAll(req.user.id);
       res.json({ success: true, message: 'Logged out from all devices' });
     } catch (error) {
       next(error);
@@ -62,9 +60,8 @@ class AuthController {
       if (!req.user) {
         throw new AppError('Unauthorized', 401);
       }
-      const userId = req.user.id;
       const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
-      await authService.changePassword(userId, currentPassword, newPassword);
+      await authService.changePassword(req.user.id, currentPassword, newPassword);
       res.json({ success: true, message: 'Password changed successfully' });
     } catch (error) {
       if (error.name === 'ZodError') {
@@ -78,7 +75,7 @@ class AuthController {
     try {
       const { email } = forgotPasswordSchema.parse(req.body);
       await authService.forgotPassword(email);
-      res.json({ success: true, message: 'Password reset link sent to your email' });
+      res.json({ success: true, message: 'Password reset link sent' });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -103,10 +100,9 @@ class AuthController {
   async getCurrentUser(req, res, next) {
     try {
       if (!req.user) {
-        throw new AppError('Unauthorized - No user found in request', 401);
+        throw new AppError('Unauthorized', 401);
       }
-      const userId = req.user.id;
-      const user = await authService.getCurrentUser(userId);
+      const user = await authService.getCurrentUser(req.user.id);
       res.json({ success: true, data: user });
     } catch (error) {
       next(error);
