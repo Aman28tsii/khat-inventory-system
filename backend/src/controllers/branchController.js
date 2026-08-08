@@ -75,7 +75,7 @@ class BranchController {
       res.json({
         success: true,
         data: branch,
-        message: Branch  successfully,
+        message: 'Branch  successfully',
       });
     } catch (error) {
       next(error);
