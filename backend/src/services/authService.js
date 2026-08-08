@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+﻿import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { prisma } from '../config/database.js';
@@ -19,13 +19,11 @@ class AuthService {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
     );
-
     const refreshToken = jwt.sign(
       { id: userId },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
     );
-
     return { accessToken, refreshToken };
   }
 
@@ -46,7 +44,6 @@ class AuthService {
   }
 
   async login(email, password, ipAddress, userAgent) {
-    // Find user with role
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
@@ -78,7 +75,6 @@ class AuthService {
 
     const { accessToken, refreshToken } = this.generateTokens(user.id);
 
-    // Save refresh token
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
@@ -92,20 +88,9 @@ class AuthService {
       },
     });
 
-    // Update last login
     await prisma.user.update({
       where: { id: user.id },
       data: { lastLogin: new Date() },
-    });
-
-    // Log audit
-    await this.logAudit({
-      userId: user.id,
-      action: 'LOGIN',
-      resourceType: 'USER',
-      ipAddress,
-      userAgent,
-      changes: { success: true },
     });
 
     const { passwordHash, ...userData } = user;
@@ -157,13 +142,11 @@ class AuthService {
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
       this.generateTokens(storedToken.userId);
 
-    // Invalidate old refresh token
     await prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: { revoked: true },
     });
 
-    // Save new refresh token
     await prisma.refreshToken.create({
       data: {
         userId: storedToken.userId,
@@ -187,19 +170,10 @@ class AuthService {
   }
 
   async logout(userId, sessionToken) {
-    // Invalidate all refresh tokens
     await prisma.refreshToken.updateMany({
       where: { userId, revoked: false },
       data: { revoked: true },
     });
-
-    await this.logAudit({
-      userId,
-      action: 'LOGOUT',
-      resourceType: 'USER',
-      changes: { logoutType: 'single' },
-    });
-
     return { success: true };
   }
 
@@ -208,14 +182,6 @@ class AuthService {
       where: { userId },
       data: { revoked: true },
     });
-
-    await this.logAudit({
-      userId,
-      action: 'LOGOUT_ALL',
-      resourceType: 'USER',
-      changes: { logoutType: 'all' },
-    });
-
     return { success: true };
   }
 
@@ -239,18 +205,9 @@ class AuthService {
       data: { passwordHash: hashedPassword },
     });
 
-    // Invalidate all refresh tokens
     await prisma.refreshToken.updateMany({
       where: { userId },
       data: { revoked: true },
-    });
-
-    await this.logAudit({
-      userId,
-      action: 'CHANGE_PASSWORD',
-      resourceType: 'USER',
-      resourceId: userId,
-      changes: { passwordChanged: true },
     });
 
     return { success: true };
@@ -262,12 +219,11 @@ class AuthService {
     });
 
     if (!user) {
-      // Don't reveal if user exists
       return { success: true };
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+    const resetTokenExpiry = new Date(Date.now() + 3600000);
 
     await prisma.user.update({
       where: { id: user.id },
@@ -277,9 +233,7 @@ class AuthService {
       },
     });
 
-    // In production, send email with reset link
-    console.log(`Password reset link: ${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`);
-
+    console.log(Password reset link: /reset-password?token=);
     return { success: true };
   }
 
@@ -305,18 +259,9 @@ class AuthService {
       },
     });
 
-    // Invalidate all sessions
     await prisma.refreshToken.updateMany({
       where: { userId: user.id },
       data: { revoked: true },
-    });
-
-    await this.logAudit({
-      userId: user.id,
-      action: 'RESET_PASSWORD',
-      resourceType: 'USER',
-      resourceId: user.id,
-      changes: { passwordReset: true },
     });
 
     return { success: true };
