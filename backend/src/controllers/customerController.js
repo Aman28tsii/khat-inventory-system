@@ -1,19 +1,18 @@
-import customerService from '../services/customerService.js';
-import { createCustomerSchema, updateCustomerSchema, customerIdSchema } from '../validators/customerValidator.js';
-import { AppError } from '../middlewares/errorHandler.js';
+﻿import { AppError } from '../middlewares/errorHandler.js';
+
+// Mock data
+let customers = [
+  { id: '1', name: 'John Doe', code: 'CUST-001', phone: '+251-911-1234', email: 'john@example.com', isActive: true },
+  { id: '2', name: 'Jane Smith', code: 'CUST-002', phone: '+251-922-5678', email: 'jane@example.com', isActive: true },
+];
 
 class CustomerController {
   async getAll(req, res, next) {
     try {
-      const { search, type, status, page, limit } = req.query;
-      const result = await customerService.getAll({ search, type, status, page, limit });
-
       res.json({
         success: true,
-        data: result.data,
-        total: result.total,
-        page: parseInt(page) || 1,
-        limit: parseInt(limit) || 10,
+        data: customers,
+        total: customers.length,
       });
     } catch (error) {
       next(error);
@@ -22,106 +21,69 @@ class CustomerController {
 
   async getById(req, res, next) {
     try {
-      const { id } = customerIdSchema.parse(req.params);
-      const customer = await customerService.getById(id);
-
+      const { id } = req.params;
+      const customer = customers.find(c => c.id === id);
+      if (!customer) {
+        throw new AppError('Customer not found', 404);
+      }
       res.json({
         success: true,
         data: customer,
       });
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
       next(error);
     }
   }
 
   async create(req, res, next) {
     try {
-      const data = createCustomerSchema.parse(req.body);
-      const customer = await customerService.create(data);
-
+      const { name, code, phone, email } = req.body;
+      const newCustomer = {
+        id: String(customers.length + 1),
+        name,
+        code,
+        phone,
+        email,
+        isActive: true,
+      };
+      customers.push(newCustomer);
       res.status(201).json({
         success: true,
-        data: customer,
+        data: newCustomer,
         message: 'Customer created successfully',
       });
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
       next(error);
     }
   }
 
   async update(req, res, next) {
     try {
-      const { id } = customerIdSchema.parse(req.params);
-      const data = updateCustomerSchema.parse(req.body);
-      const customer = await customerService.update(id, data);
-
+      const { id } = req.params;
+      const index = customers.findIndex(c => c.id === id);
+      if (index === -1) {
+        throw new AppError('Customer not found', 404);
+      }
+      customers[index] = { ...customers[index], ...req.body };
       res.json({
         success: true,
-        data: customer,
+        data: customers[index],
         message: 'Customer updated successfully',
       });
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
       next(error);
     }
   }
 
   async delete(req, res, next) {
     try {
-      const { id } = customerIdSchema.parse(req.params);
-      await customerService.delete(id);
-
+      const { id } = req.params;
+      customers = customers.filter(c => c.id !== id);
       res.json({
         success: true,
         message: 'Customer deleted successfully',
       });
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
-      next(error);
-    }
-  }
-
-  async toggleStatus(req, res, next) {
-    try {
-      const { id } = customerIdSchema.parse(req.params);
-      const customer = await customerService.toggleStatus(id);
-
-      res.json({
-        success: true,
-        data: customer,
-        message: `Customer ${customer.isActive ? 'activated' : 'deactivated'} successfully`,
-      });
-    } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
-      next(error);
-    }
-  }
-
-  async getCreditHistory(req, res, next) {
-    try {
-      const { id } = customerIdSchema.parse(req.params);
-      const result = await customerService.getCreditHistory(id);
-
-      res.json({
-        success: true,
-        data: result,
-      });
-    } catch (error) {
-      if (error.name === 'ZodError') {
-        return next(new AppError(error.errors[0].message, 400));
-      }
       next(error);
     }
   }
