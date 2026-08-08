@@ -11,7 +11,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const decoded = jwt.verify(token, 'your-super-secret-jwt-key-change-this-in-production');
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -114,5 +114,6 @@ export const requireRole = (roleNames) => {
     next();
   };
 };
+
 
 
