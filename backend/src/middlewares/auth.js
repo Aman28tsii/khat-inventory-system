@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import { prisma } from '../config/database.js';
 import { AppError } from './errorHandler.js';
 
@@ -10,7 +10,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -43,7 +43,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
+      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
     };
 
     next();
@@ -68,6 +68,9 @@ export const authenticate = async (req, res, next) => {
 export const requirePermission = (resource, action) => {
   return async (req, res, next) => {
     try {
+      if (!req.user) {
+        throw new AppError('Unauthorized', 401);
+      }
       const userId = req.user.id;
 
       const permission = await prisma.permission.findFirst({
@@ -101,6 +104,9 @@ export const requirePermission = (resource, action) => {
 
 export const requireRole = (roleNames) => {
   return (req, res, next) => {
+    if (!req.user) {
+      throw new AppError('Unauthorized', 401);
+    }
     if (!roleNames.includes(req.user.roleName)) {
       throw new AppError('Insufficient role permissions', 403);
     }
