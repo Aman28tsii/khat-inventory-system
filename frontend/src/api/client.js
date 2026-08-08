@@ -1,12 +1,9 @@
-import axios from 'axios';
-import store from '../app/store';
+﻿import axios from 'axios';
 import { logout, setCredentials } from '../features/auth/slices/authSlice';
 import { refreshToken } from '../features/auth/services/authService';
 
-// Hardcoded Render URL
 const API_URL = 'https://khat-inventory-system.onrender.com/api/v1';
 
-// Create axios instance
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -15,58 +12,57 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
-// Request interceptor
+let storeRef = null;
+
+export const setStore = (store) => {
+  storeRef = store;
+};
+
 apiClient.interceptors.request.use(
   (config) => {
-    const state = store.getState();
-    const token = state.auth.accessToken;
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (storeRef) {
+      const state = storeRef.getState();
+      const token = state.auth.accessToken;
+      if (token) {
+        config.headers.Authorization = Bearer ;
+      }
     }
-    
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor for token refresh
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
     
-    // If unauthorized and not retrying
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       
       try {
-        const state = store.getState();
+        if (!storeRef) throw new Error('Store not initialized');
+        const state = storeRef.getState();
         const refreshTokenValue = state.auth.refreshToken;
         
         if (!refreshTokenValue) {
-          store.dispatch(logout());
+          storeRef.dispatch(logout());
           return Promise.reject(error);
         }
         
-        // Refresh token
         const response = await refreshToken(refreshTokenValue);
         const { accessToken, refreshToken: newRefreshToken, user } = response.data;
         
-        // Update store
-        store.dispatch(setCredentials({
+        storeRef.dispatch(setCredentials({
           accessToken,
           refreshToken: newRefreshToken,
           user,
         }));
         
-        // Retry original request
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = Bearer ;
         return apiClient(originalRequest);
       } catch (refreshError) {
-        store.dispatch(logout());
+        storeRef.dispatch(logout());
         return Promise.reject(refreshError);
       }
     }
