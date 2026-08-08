@@ -16,7 +16,7 @@ class AuthService {
   generateTokens(userId) {
     const accessToken = jwt.sign(
       { id: userId },
-      process.env.JWT_SECRET || 'secret',
+      'PASTE_THE_SECRET_FROM_RENDER_HERE',
       { expiresIn: '15m' }
     );
     const refreshToken = jwt.sign(
@@ -294,3 +294,4 @@ class AuthService {
 }
 
 export default new AuthService();
+
