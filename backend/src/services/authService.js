@@ -21,7 +21,7 @@ class AuthService {
     );
     const refreshToken = jwt.sign(
       { id: userId },
-      process.env.JWT_REFRESH_SECRET || 'refresh-secret',
+      '9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t9u8v7w6x5y4z3',
       { expiresIn: '7d' }
     );
     return { accessToken, refreshToken };
@@ -115,7 +115,7 @@ class AuthService {
 
   async refreshAccessToken(refreshToken) {
     try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'refresh-secret');
+      const decoded = jwt.verify(refreshToken, '9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t9u8v7w6x5y4z3');
       const storedToken = await prisma.refreshToken.findFirst({
         where: {
           token: refreshToken,
@@ -294,6 +294,7 @@ class AuthService {
 }
 
 export default new AuthService();
+
 
 
 

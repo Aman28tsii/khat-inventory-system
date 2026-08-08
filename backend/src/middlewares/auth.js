@@ -1,7 +1,8 @@
-﻿// FORCE REBUILD - 08/08/2026 14:24:16
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import { prisma } from '../config/database.js';
 import { AppError } from './errorHandler.js';
+
+const JWT_SECRET = '3f7a8b9c2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, 'PASTE_THE_SECRET_FROM_RENDER_HERE');
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -44,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
+      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
     };
 
     next();
@@ -114,9 +115,3 @@ export const requireRole = (roleNames) => {
     next();
   };
 };
-
-
-
-
-
-
