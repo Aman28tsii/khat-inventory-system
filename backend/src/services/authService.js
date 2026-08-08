@@ -16,31 +16,15 @@ class AuthService {
   generateTokens(userId) {
     const accessToken = jwt.sign(
       { id: userId },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+      process.env.JWT_SECRET || 'default-secret',
+      { expiresIn: '15m' }
     );
     const refreshToken = jwt.sign(
       { id: userId },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      process.env.JWT_REFRESH_SECRET || 'default-refresh-secret',
+      { expiresIn: '7d' }
     );
     return { accessToken, refreshToken };
-  }
-
-  verifyAccessToken(token) {
-    try {
-      return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  verifyRefreshToken(token) {
-    try {
-      return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    } catch (error) {
-      return null;
-    }
   }
 
   async login(email, password, ipAddress, userAgent) {
@@ -65,7 +49,7 @@ class AuthService {
     }
 
     if (!user.isActive) {
-      throw new AppError('Account is deactivated. Please contact administrator.', 401);
+      throw new AppError('Account deactivated', 401);
     }
 
     const isValid = await this.verifyPassword(password, user.passwordHash);
@@ -75,14 +59,11 @@ class AuthService {
 
     const { accessToken, refreshToken } = this.generateTokens(user.id);
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
-
     await prisma.refreshToken.create({
       data: {
         userId: user.id,
         token: refreshToken,
-        expiresAt,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         deviceInfo: { userAgent },
         ipAddress,
       },
@@ -105,71 +86,99 @@ class AuthService {
     };
   }
 
-  async refreshAccessToken(refreshToken) {
-    const decoded = this.verifyRefreshToken(refreshToken);
-    if (!decoded) {
-      throw new AppError('Invalid refresh token', 401);
-    }
-
-    const storedToken = await prisma.refreshToken.findFirst({
-      where: {
-        token: refreshToken,
-        revoked: false,
-        expiresAt: { gt: new Date() },
-      },
+  async getCurrentUser(userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
       include: {
-        user: {
+        role: {
           include: {
-            role: {
+            permissions: {
               include: {
-                permissions: {
-                  include: {
-                    permission: true,
-                  },
-                },
+                permission: true,
               },
             },
-            branch: true,
           },
         },
+        branch: true,
       },
     });
 
-    if (!storedToken) {
-      throw new AppError('Invalid or expired refresh token', 401);
+    if (!user) {
+      throw new AppError('User not found', 404);
     }
 
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      this.generateTokens(storedToken.userId);
-
-    await prisma.refreshToken.update({
-      where: { id: storedToken.id },
-      data: { revoked: true },
-    });
-
-    await prisma.refreshToken.create({
-      data: {
-        userId: storedToken.userId,
-        token: newRefreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        deviceInfo: storedToken.deviceInfo,
-        ipAddress: storedToken.ipAddress,
-      },
-    });
-
-    const { passwordHash, ...userData } = storedToken.user;
-
+    const { passwordHash, ...userData } = user;
     return {
-      user: {
-        ...userData,
-        permissions: userData.role.permissions.map((p) => p.permission),
-      },
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
+      ...userData,
+      permissions: user.role.permissions.map((p) => p.permission),
     };
   }
 
-  async logout(userId, sessionToken) {
+  async refreshAccessToken(refreshToken) {
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'default-refresh-secret');
+      const storedToken = await prisma.refreshToken.findFirst({
+        where: {
+          token: refreshToken,
+          revoked: false,
+          expiresAt: { gt: new Date() },
+        },
+        include: {
+          user: {
+            include: {
+              role: {
+                include: {
+                  permissions: {
+                    include: {
+                      permission: true,
+                    },
+                  },
+                },
+              },
+              branch: true,
+            },
+          },
+        },
+      });
+
+      if (!storedToken) {
+        throw new AppError('Invalid refresh token', 401);
+      }
+
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        this.generateTokens(storedToken.userId);
+
+      await prisma.refreshToken.update({
+        where: { id: storedToken.id },
+        data: { revoked: true },
+      });
+
+      await prisma.refreshToken.create({
+        data: {
+          userId: storedToken.userId,
+          token: newRefreshToken,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          deviceInfo: storedToken.deviceInfo,
+          ipAddress: storedToken.ipAddress,
+        },
+      });
+
+      const { passwordHash, ...userData } = storedToken.user;
+
+      return {
+        user: {
+          ...userData,
+          permissions: userData.role.permissions.map((p) => p.permission),
+        },
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      throw new AppError('Invalid refresh token', 401);
+    }
+  }
+
+  async logout(userId) {
     await prisma.refreshToken.updateMany({
       where: { userId, revoked: false },
       data: { revoked: true },
@@ -233,7 +242,7 @@ class AuthService {
       },
     });
 
-    console.log(`Password reset link: ${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`);
+    console.log('Password reset token generated for:', email);
     return { success: true };
   }
 
@@ -267,34 +276,6 @@ class AuthService {
     return { success: true };
   }
 
-  async getCurrentUser(userId) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        role: {
-          include: {
-            permissions: {
-              include: {
-                permission: true,
-              },
-            },
-          },
-        },
-        branch: true,
-      },
-    });
-
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-
-    const { passwordHash, ...userData } = user;
-    return {
-      ...userData,
-      permissions: user.role.permissions.map((p) => p.permission),
-    };
-  }
-
   async logAudit(data) {
     try {
       await prisma.auditLog.create({
@@ -315,4 +296,3 @@ class AuthService {
 }
 
 export default new AuthService();
-
