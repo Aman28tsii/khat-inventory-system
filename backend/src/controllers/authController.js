@@ -1,4 +1,4 @@
-import authService from '../services/authService.js';
+﻿import authService from '../services/authService.js';
 import { loginSchema, refreshTokenSchema, changePasswordSchema, forgotPasswordSchema, resetPasswordSchema } from '../validators/authValidator.js';
 import { AppError } from '../middlewares/errorHandler.js';
 
@@ -8,13 +8,8 @@ class AuthController {
       const { email, password } = loginSchema.parse(req.body);
       const ipAddress = req.ip || req.connection.remoteAddress;
       const userAgent = req.headers['user-agent'];
-
       const result = await authService.login(email, password, ipAddress, userAgent);
-
-      res.json({
-        success: true,
-        data: result,
-      });
+      res.json({ success: true, data: result });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -26,13 +21,8 @@ class AuthController {
   async refreshToken(req, res, next) {
     try {
       const { refreshToken } = refreshTokenSchema.parse(req.body);
-
       const result = await authService.refreshAccessToken(refreshToken);
-
-      res.json({
-        success: true,
-        data: result,
-      });
+      res.json({ success: true, data: result });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -45,13 +35,8 @@ class AuthController {
     try {
       const userId = req.user.id;
       const sessionToken = req.headers['x-session-token'];
-
       await authService.logout(userId, sessionToken);
-
-      res.json({
-        success: true,
-        message: 'Logged out successfully',
-      });
+      res.json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
       next(error);
     }
@@ -60,13 +45,8 @@ class AuthController {
   async logoutAll(req, res, next) {
     try {
       const userId = req.user.id;
-
       await authService.logoutAll(userId);
-
-      res.json({
-        success: true,
-        message: 'Logged out from all devices',
-      });
+      res.json({ success: true, message: 'Logged out from all devices' });
     } catch (error) {
       next(error);
     }
@@ -76,13 +56,8 @@ class AuthController {
     try {
       const userId = req.user.id;
       const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
-
       await authService.changePassword(userId, currentPassword, newPassword);
-
-      res.json({
-        success: true,
-        message: 'Password changed successfully',
-      });
+      res.json({ success: true, message: 'Password changed successfully' });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -94,13 +69,8 @@ class AuthController {
   async forgotPassword(req, res, next) {
     try {
       const { email } = forgotPasswordSchema.parse(req.body);
-
       await authService.forgotPassword(email);
-
-      res.json({
-        success: true,
-        message: 'Password reset link sent to your email',
-      });
+      res.json({ success: true, message: 'Password reset link sent to your email' });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -112,13 +82,8 @@ class AuthController {
   async resetPassword(req, res, next) {
     try {
       const { token, newPassword } = resetPasswordSchema.parse(req.body);
-
       await authService.resetPassword(token, newPassword);
-
-      res.json({
-        success: true,
-        message: 'Password reset successfully',
-      });
+      res.json({ success: true, message: 'Password reset successfully' });
     } catch (error) {
       if (error.name === 'ZodError') {
         return next(new AppError(error.errors[0].message, 400));
@@ -130,13 +95,8 @@ class AuthController {
   async getCurrentUser(req, res, next) {
     try {
       const userId = req.user.id;
-
       const user = await authService.getCurrentUser(userId);
-
-      res.json({
-        success: true,
-        data: user,
-      });
+      res.json({ success: true, data: user });
     } catch (error) {
       next(error);
     }
