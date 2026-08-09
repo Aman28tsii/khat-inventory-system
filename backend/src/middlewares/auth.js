@@ -2,11 +2,9 @@
 import { prisma } from '../config/database.js';
 import { AppError } from './errorHandler.js';
 
-// Use the exact secret from Render
 const JWT_SECRET = '3f7a8b9c2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
 
 export const authenticate = async (req, res, next) => {
-  console.log("🔐 Authenticate middleware called");
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -15,7 +13,6 @@ export const authenticate = async (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
-  console.log("✅ Token verified, user ID:", decoded.id);
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -48,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
+      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
     };
 
     next();
@@ -70,33 +67,24 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
+// Simplified permission check - allows super admin everything
 export const requirePermission = (resource, action) => {
   return async (req, res, next) => {
     try {
       if (!req.user) {
         throw new AppError('Unauthorized', 401);
       }
-      const userId = req.user.id;
 
-      const permission = await prisma.permission.findFirst({
-        where: {
-          resource,
-          action,
-          roles: {
-            some: {
-              role: {
-                users: {
-                  some: {
-                    id: userId,
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
+      // Super admin can do everything
+      if (req.user.roleName === 'SUPER_ADMIN') {
+        return next();
+      }
 
-      if (!permission) {
+      const hasPermission = req.user.permissions.some(
+        (p) => p === ${resource}: || p === ${resource}:*
+      );
+
+      if (!hasPermission) {
         throw new AppError('Insufficient permissions', 403);
       }
 
