@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -29,7 +29,7 @@ import { fetchPurchases, deletePurchase, clearError } from '../slices/purchaseSl
 const PurchaseList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { purchases, isLoading, error, total } = useSelector((state) => state.purchases);
+  const { purchases = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.purchases || { purchases: [], isLoading: false, error: null, total: 0 });
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
@@ -70,11 +70,17 @@ const PurchaseList = () => {
     const statusInfo = statuses[status] || statuses.DRAFT;
     const Icon = statusInfo.icon;
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+      <span className={'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ' + statusInfo.color}>
         <Icon className="w-3 h-3" />
         {status}
       </span>
     );
+  };
+
+  const formatCurrency = (amount) => {
+    if (amount === undefined || amount === null || isNaN(amount)) return '.00';
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return '$' + num.toFixed(2);
   };
 
   const columns = [
@@ -112,7 +118,7 @@ const PurchaseList = () => {
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm font-medium text-gray-900 dark:text-white">
-            ${row.totalAmount?.toFixed(2) || '0.00'}
+            {formatCurrency(row.totalAmount)}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
             Items: {row.items?.length || 0}
@@ -131,7 +137,7 @@ const PurchaseList = () => {
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
-            onClick={() => navigate(`/purchases/${row.id}`)}
+            onClick={() => navigate('/purchases/' + row.id)}
             className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
             title="View Details"
           >
@@ -140,7 +146,7 @@ const PurchaseList = () => {
           {row.status === 'DRAFT' && (
             <>
               <button
-                onClick={() => navigate(`/purchases/${row.id}/edit`)}
+                onClick={() => navigate('/purchases/' + row.id + '/edit')}
                 className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
                 title="Edit"
               >
@@ -160,7 +166,7 @@ const PurchaseList = () => {
           )}
           {row.status === 'ORDERED' && (
             <button
-              onClick={() => navigate(`/purchases/${row.id}/receive`)}
+              onClick={() => navigate('/purchases/' + row.id + '/receive')}
               className="p-1 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
               title="Receive"
             >
@@ -173,8 +179,7 @@ const PurchaseList = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -192,7 +197,6 @@ const PurchaseList = () => {
         </Link>
       </div>
 
-      {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -220,15 +224,13 @@ const PurchaseList = () => {
         </div>
       </div>
 
-      {/* Purchases Table */}
       <Table
         columns={columns}
         data={purchases}
         loading={isLoading}
-        onRowClick={(row) => navigate(`/purchases/${row.id}`)}
+        onRowClick={(row) => navigate('/purchases/' + row.id)}
       />
 
-      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={showDeleteModal}
         onClose={() => {
