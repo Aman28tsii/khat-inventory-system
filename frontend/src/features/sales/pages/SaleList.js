@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,7 +10,6 @@ import {
   DollarSign,
   Users,
   Eye,
-  Filter,
   CreditCard,
   CheckCircle,
   XCircle,
@@ -19,13 +18,12 @@ import {
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
 import Button from '../../../components/common/Button/Button';
-import Modal from '../../../components/common/Modal/Modal';
-import { fetchSales, deleteSale, clearError } from '../slices/saleSlice';
+import { fetchSales, clearError } from '../slices/saleSlice';
 
 const SaleList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { sales, isLoading, error, total } = useSelector((state) => state.sales);
+  const { sales = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.sales || { sales: [], isLoading: false, error: null, total: 0 });
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({ status: '', paymentStatus: '' });
 
@@ -40,6 +38,12 @@ const SaleList = () => {
     }
   }, [error, dispatch]);
 
+  const formatCurrency = (amount) => {
+    if (amount === undefined || amount === null || isNaN(amount)) return '.00';
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return '$' + num.toFixed(2);
+  };
+
   const getStatusBadge = (status) => {
     const statuses = {
       PENDING: { color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', icon: Clock },
@@ -50,7 +54,7 @@ const SaleList = () => {
     const statusInfo = statuses[status] || statuses.PENDING;
     const Icon = statusInfo.icon;
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+      <span className={'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ' + statusInfo.color}>
         <Icon className="w-3 h-3" />
         {status}
       </span>
@@ -65,7 +69,7 @@ const SaleList = () => {
       OVERDUE: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
     };
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statuses[status] || statuses.PENDING}`}>
+      <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (statuses[status] || statuses.PENDING)}>
         {status}
       </span>
     );
@@ -101,10 +105,10 @@ const SaleList = () => {
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm font-medium text-gray-900 dark:text-white">
-            ${row.totalAmount?.toFixed(2) || '0.00'}
+            {formatCurrency(row.totalAmount)}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Paid: ${row.paidAmount?.toFixed(2) || '0.00'}
+            Paid: {formatCurrency(row.paidAmount)}
           </div>
         </div>
       )
@@ -125,14 +129,14 @@ const SaleList = () => {
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
-            onClick={() => navigate(`/sales/${row.id}`)}
+            onClick={() => navigate('/sales/' + row.id)}
             className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
           >
             <Eye className="w-4 h-4" />
           </button>
           {row.paymentStatus !== 'PAID' && row.status === 'COMPLETED' && (
             <button
-              onClick={() => navigate(`/sales/${row.id}/payment`)}
+              onClick={() => navigate('/sales/' + row.id + '/payment')}
               className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
             >
               <CreditCard className="w-4 h-4" />
@@ -144,7 +148,7 @@ const SaleList = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales Management</h1>
@@ -198,7 +202,7 @@ const SaleList = () => {
         columns={columns}
         data={sales}
         loading={isLoading}
-        onRowClick={(row) => navigate(`/sales/${row.id}`)}
+        onRowClick={(row) => navigate('/sales/' + row.id)}
       />
     </div>
   );
