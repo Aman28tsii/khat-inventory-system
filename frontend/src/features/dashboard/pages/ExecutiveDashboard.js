@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -21,7 +21,7 @@ import { fetchExecutiveDashboard, fetchRecentActivities, fetchAlerts, clearError
 
 const ExecutiveDashboard = () => {
   const dispatch = useDispatch();
-  // Safe access with optional chaining and fallback
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const executive = useSelector((state) => state.dashboard?.executive);
   const recentActivities = useSelector((state) => state.dashboard?.recentActivities || []);
   const alerts = useSelector((state) => state.dashboard?.alerts || []);
@@ -30,8 +30,10 @@ const ExecutiveDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    loadDashboardData();
-  }, [dispatch]);
+    if (isAuthenticated) {
+      loadDashboardData();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (error) {
@@ -55,7 +57,6 @@ const ExecutiveDashboard = () => {
     }
   };
 
-  // Mock data for charts
   const salesData = [
     { month: 'Jan', sales: 4000, revenue: 2400 },
     { month: 'Feb', sales: 3000, revenue: 1398 },
@@ -82,7 +83,7 @@ const ExecutiveDashboard = () => {
   const stats = [
     { 
       title: 'Total Revenue', 
-      value: '$124,500', 
+      value: ',500', 
       icon: DollarSign, 
       color: 'green',
       trend: 'up',
@@ -118,9 +119,19 @@ const ExecutiveDashboard = () => {
     }
   ];
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">Please log in to view dashboard</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -140,13 +151,12 @@ const ExecutiveDashboard = () => {
             isLoading={isRefreshing}
             onClick={loadDashboardData}
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={'w-4 h-4 mr-2 ' + (isRefreshing ? 'animate-spin' : '')} />
             Refresh
           </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <motion.div
@@ -160,7 +170,6 @@ const ExecutiveDashboard = () => {
         ))}
       </div>
 
-      {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartWidget
           title="Sales & Revenue Trend"
@@ -184,7 +193,6 @@ const ExecutiveDashboard = () => {
         />
       </div>
 
-      {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <ChartWidget
@@ -210,7 +218,6 @@ const ExecutiveDashboard = () => {
         </div>
       </div>
 
-      {/* Activity and Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RecentActivity activities={recentActivities} />
         <AlertsList alerts={alerts} />

@@ -19,12 +19,15 @@ import { fetchInventoryReport, exportReportPDF, exportReportExcel, clearError } 
 
 const InventoryReport = () => {
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { inventoryReport, isLoading, exporting, error } = useSelector((state) => state.reports);
   const [filters, setFilters] = useState({});
 
   useEffect(() => {
-    loadReport();
-  }, []);
+    if (isAuthenticated) {
+      loadReport();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (error) {
@@ -86,6 +89,17 @@ const InventoryReport = () => {
   const handlePrint = () => {
     window.print();
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">Please log in to view reports</p>
+        </div>
+      </div>
+    );
+  }
 
   const columns = [
     {
@@ -166,7 +180,6 @@ const InventoryReport = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -209,14 +222,12 @@ const InventoryReport = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <ReportFilters
         onApply={(newFilters) => loadReport(newFilters)}
         onClear={() => loadReport({})}
         isLoading={isLoading}
       />
 
-      {/* Summary Cards */}
       {inventoryReport && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
@@ -246,7 +257,6 @@ const InventoryReport = () => {
         </div>
       )}
 
-      {/* Report Table */}
       <Table
         columns={columns}
         data={inventoryReport?.data || []}
