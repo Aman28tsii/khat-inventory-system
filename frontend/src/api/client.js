@@ -10,17 +10,21 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
+// Request interceptor - ALWAYS add token
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = 'Bearer ' + token;
+    } else {
+      console.warn('No token found for request:', config.url);
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
