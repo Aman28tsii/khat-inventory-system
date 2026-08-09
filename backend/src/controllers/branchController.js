@@ -8,6 +8,7 @@ class BranchController {
       res.json({ success: true, data: branches });
     } catch (error) { next(error); }
   }
+
   async getById(req, res, next) {
     try {
       const { id } = req.params;
@@ -15,12 +16,14 @@ class BranchController {
       res.json({ success: true, data: branch });
     } catch (error) { next(error); }
   }
+
   async create(req, res, next) {
     try {
       const branch = await branchService.create(req.body);
       res.status(201).json({ success: true, data: branch, message: 'Branch created' });
     } catch (error) { next(error); }
   }
+
   async update(req, res, next) {
     try {
       const { id } = req.params;
@@ -28,6 +31,7 @@ class BranchController {
       res.json({ success: true, data: branch, message: 'Branch updated' });
     } catch (error) { next(error); }
   }
+
   async delete(req, res, next) {
     try {
       const { id } = req.params;
@@ -35,6 +39,7 @@ class BranchController {
       res.json({ success: true, message: 'Branch deleted' });
     } catch (error) { next(error); }
   }
+
   async toggleStatus(req, res, next) {
     try {
       const { id } = req.params;
@@ -43,5 +48,5 @@ class BranchController {
     } catch (error) { next(error); }
   }
 }
-export default new BranchController();clear
 
+export default new BranchController();
