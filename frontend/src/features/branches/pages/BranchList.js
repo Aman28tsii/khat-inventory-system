@@ -10,7 +10,7 @@ import { fetchBranches, deleteBranch, toggleBranchStatus, clearError } from '../
 
 const BranchList = () => {
   const dispatch = useDispatch();
-  const { branches = [], isLoading = false, error = null } = useSelector((state) => state.branches || { branches: [], isLoading: false, error: null });
+  const { branches, isLoading, error } = useSelector((state) => state.branches);
   const [showModal, setShowModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,7 +25,7 @@ const BranchList = () => {
   });
 
   useEffect(() => {
-    loadBranches();
+    dispatch(fetchBranches());
   }, [dispatch]);
 
   useEffect(() => {
@@ -35,27 +35,17 @@ const BranchList = () => {
     }
   }, [error, dispatch]);
 
-  const loadBranches = async () => {
-    try {
-      await dispatch(fetchBranches()).unwrap();
-    } catch (err) {
-      // Error is handled by the slice
-      console.error('Failed to load branches:', err);
-    }
-  };
-
   const handleDelete = async (branch) => {
     if (branch.type === 'HEADQUARTERS') {
       toast.error('Cannot delete headquarters');
       return;
     }
-    if (window.confirm(Are you sure you want to delete ""?)) {
+    if (window.confirm('Are you sure you want to delete "' + branch.name + '"?')) {
       try {
         await dispatch(deleteBranch(branch.id)).unwrap();
         toast.success('Branch deleted successfully');
-        loadBranches();
       } catch (error) {
-        toast.error(error.message || 'Failed to delete branch');
+        toast.error(error);
       }
     }
   };
@@ -63,10 +53,9 @@ const BranchList = () => {
   const handleToggleStatus = async (branch) => {
     try {
       await dispatch(toggleBranchStatus(branch.id)).unwrap();
-      toast.success(Branch  successfully);
-      loadBranches();
+      toast.success('Branch ' + (branch.isActive ? 'deactivated' : 'activated') + ' successfully');
     } catch (error) {
-      toast.error(error.message || 'Failed to toggle status');
+      toast.error(error);
     }
   };
 
@@ -74,16 +63,13 @@ const BranchList = () => {
     try {
       if (isEditing) {
         await dispatch(updateBranch({ id: selectedBranch.id, data: formData })).unwrap();
-        toast.success('Branch updated successfully');
       } else {
         await dispatch(createBranch(formData)).unwrap();
-        toast.success('Branch created successfully');
       }
       setShowModal(false);
-      setSelectedBranch(null);
-      loadBranches();
+      toast.success(isEditing ? 'Branch updated successfully' : 'Branch created successfully');
     } catch (error) {
-      toast.error(error.message || 'Operation failed');
+      toast.error(error);
     }
   };
 
@@ -118,7 +104,7 @@ const BranchList = () => {
       render: (row) => (
         <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <MapPin className="w-3 h-3" />
-          <span className="truncate max-w-xs">{row.address || 'N/A'}</span>
+          <span className="truncate max-w-xs">{row.address}</span>
         </div>
       )
     },
@@ -172,21 +158,18 @@ const BranchList = () => {
               setShowModal(true);
             }}
             className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-            title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleToggleStatus(row)}
             className={'p-1 rounded-lg transition-colors ' + (row.isActive ? 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20' : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20')}
-            title={row.isActive ? 'Deactivate' : 'Activate'}
           >
             <Power className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(row)}
             className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-            title="Delete"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -196,7 +179,7 @@ const BranchList = () => {
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Branch Management</h1>
@@ -219,42 +202,15 @@ const BranchList = () => {
             setShowModal(true);
           }}
         >
-          <Plus className="w-4 h-4 mr-2" /> Add Branch
+          <Plus className="w-4 h-4 mr-2" />
+          Add Branch
         </Button>
       </div>
 
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400">
-          <p>Error loading branches: {error}</p>
-          <button
-            onClick={loadBranches}
-            className="mt-2 text-sm text-red-700 dark:text-red-300 hover:underline"
-          >
-            Try Again
-          </button>
-        </div>
-      )}
-
       <Table
         columns={columns}
-        data={branches}
+        data={branches || []}
         loading={isLoading}
-        pagination={true}
-        pageSize={10}
-        onRowClick={(row) => {
-          setSelectedBranch(row);
-          setFormData({
-            name: row.name,
-            code: row.code,
-            type: row.type,
-            address: row.address || '',
-            phone: row.phone || '',
-            email: row.email || '',
-            isActive: row.isActive
-          });
-          setIsEditing(true);
-          setShowModal(true);
-        }}
       />
 
       <Modal
@@ -273,14 +229,12 @@ const BranchList = () => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Addis Ababa Branch"
-              required
             />
             <Input
               label="Branch Code"
               value={formData.code}
               onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
               placeholder="e.g., ADD001"
-              required
             />
           </div>
 
@@ -344,7 +298,7 @@ const BranchList = () => {
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={handleSubmit} isLoading={isLoading}>
+            <Button variant="primary" onClick={handleSubmit}>
               {isEditing ? 'Update Branch' : 'Create Branch'}
             </Button>
           </div>
