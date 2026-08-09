@@ -1,8 +1,9 @@
 ﻿import axios from 'axios';
+import store from '../app/store';
 import { logout, setCredentials } from '../features/auth/slices/authSlice';
 import { refreshToken } from '../features/auth/services/authService';
 
-const API_URL = 'https://khat-inventory-system.onrender.com/api/v1';
+const API_URL = process.env.REACT_APP_API_URL || 'https://khat-inventory-system.onrender.com/api/v1';
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -12,26 +13,21 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
-let storeRef = null;
-
-export const setStore = (store) => {
-  storeRef = store;
-};
-
+// Request interceptor - always use fresh token from localStorage
 apiClient.interceptors.request.use(
   (config) => {
-    if (storeRef) {
-      const state = storeRef.getState();
-      const token = state.auth.accessToken;
-      if (token) {
-        config.headers.Authorization = Bearer ;
-      }
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjI2NzE2MywiZXhwIjoxNzg2MjY4MDYzfQ.nWbSBPh1_616lyodGdyfuABuEJ4EM11ntuV4gx1trVU;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
+// Response interceptor for token refresh
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -41,28 +37,35 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       
       try {
-        if (!storeRef) throw new Error('Store not initialized');
-        const state = storeRef.getState();
-        const refreshTokenValue = state.auth.refreshToken;
+        const refreshTokenValue = localStorage.getItem('refreshToken');
         
         if (!refreshTokenValue) {
-          storeRef.dispatch(logout());
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          window.location.href = '/login';
           return Promise.reject(error);
         }
         
-        const response = await refreshToken(refreshTokenValue);
-        const { accessToken, refreshToken: newRefreshToken, user } = response.data;
+        const response = await axios.post(${API_URL}/auth/refresh, { refreshToken: refreshTokenValue });
+        const { accessToken, refreshToken: newRefreshToken, user } = response.data.data;
         
-        storeRef.dispatch(setCredentials({
-          accessToken,
-          refreshToken: newRefreshToken,
-          user,
-        }));
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
+        
+        if (store) {
+          store.dispatch(setCredentials({
+            accessToken,
+            refreshToken: newRefreshToken,
+            user,
+          }));
+        }
         
         originalRequest.headers.Authorization = Bearer ;
         return apiClient(originalRequest);
       } catch (refreshError) {
-        storeRef.dispatch(logout());
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
@@ -72,4 +75,3 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
-

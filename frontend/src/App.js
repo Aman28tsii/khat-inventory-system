@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppRoutes from './routes/AppRoutes';
 import { getCurrentUser } from './features/auth/slices/authSlice';
@@ -15,10 +15,6 @@ function App() {
     } else {
       disconnectSocket();
     }
-
-    return () => {
-      disconnectSocket();
-    };
   }, [dispatch, isAuthenticated, accessToken]);
 
   return <AppRoutes />;

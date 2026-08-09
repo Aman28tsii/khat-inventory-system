@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_URL = 'https://khat-inventory-system.onrender.com/api/v1';
+const API_URL = process.env.REACT_APP_API_URL || 'https://khat-inventory-system.onrender.com/api/v1';
 
 const initialState = {
   user: null,
-  accessToken: localStorage.getItem('accessToken'),
-  refreshToken: localStorage.getItem('refreshToken'),
+  accessToken: localStorage.getItem('accessToken') || null,
+  refreshToken: localStorage.getItem('refreshToken') || null,
   isAuthenticated: !!localStorage.getItem('accessToken'),
   isLoading: false,
   error: null
@@ -15,7 +15,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(${API_URL}/auth/login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -34,10 +34,12 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('accessToken');
-      await fetch(`${API_URL}/auth/logout`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      if (token) {
+        await fetch(${API_URL}/auth/logout, {
+          method: 'POST',
+          headers: { 'Authorization': Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjI2NzE2MywiZXhwIjoxNzg2MjY4MDYzfQ.nWbSBPh1_616lyodGdyfuABuEJ4EM11ntuV4gx1trVU }
+        });
+      }
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       return null;
@@ -53,35 +55,14 @@ export const getCurrentUser = createAsyncThunk(
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) throw new Error('No token found');
-      const response = await fetch(`${API_URL}/auth/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await fetch(${API_URL}/auth/me, {
+        headers: { 'Authorization': Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjI2NzE2MywiZXhwIjoxNzg2MjY4MDYzfQ.nWbSBPh1_616lyodGdyfuABuEJ4EM11ntuV4gx1trVU }
       });
       if (!response.ok) throw new Error('Failed to get user');
       const data = await response.json();
       return data.data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to get user');
-    }
-  }
-);
-
-export const changePassword = createAsyncThunk(
-  'auth/changePassword',
-  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch(`${API_URL}/auth/change-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ currentPassword, newPassword })
-      });
-      if (!response.ok) throw new Error('Password change failed');
-      return await response.json();
-    } catch (error) {
-      return rejectWithValue(error.message || 'Password change failed');
     }
   }
 );
@@ -136,8 +117,6 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.isAuthenticated = false;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -148,12 +127,6 @@ const authSlice = createSlice({
         state.user = null;
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-      })
-      .addCase(changePassword.fulfilled, (state) => {
-        state.error = null;
-      })
-      .addCase(changePassword.rejected, (state, action) => {
-        state.error = action.payload;
       });
   }
 });
