@@ -36,7 +36,7 @@ const BatchList = () => {
 
   useEffect(() => {
     loadBatches();
-  }, []);
+  }, [searchTerm, filters]);
 
   useEffect(() => {
     if (error) {
