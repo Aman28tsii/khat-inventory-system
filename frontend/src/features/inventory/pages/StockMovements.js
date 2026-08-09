@@ -1,11 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
-import { Package, ArrowLeftRight, Calendar, Search } from 'lucide-react';
+import { Calendar, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
-import Button from '../../../components/common/Button/Button';
-import { fetchStockMovements, clearError } from '../slices/inventorySlice';
+import { clearError } from '../slices/inventorySlice';
 
 const StockMovements = () => {
   const dispatch = useDispatch();
@@ -13,9 +11,36 @@ const StockMovements = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({ type: '', dateRange: '' });
 
+  // Mock data for now
   useEffect(() => {
-    dispatch(fetchStockMovements({ search: searchTerm, ...filters }));
-  }, [dispatch, searchTerm, filters]);
+    // Mock data - replace with actual API call
+    const mockMovements = [
+      {
+        id: 1,
+        movementType: 'IN',
+        quantity: 100,
+        previousQuantity: 0,
+        newQuantity: 100,
+        createdAt: new Date().toISOString(),
+        product: { name: 'Green Khat' },
+        branch: { name: 'Main Warehouse' },
+        creator: { firstName: 'System', lastName: 'Admin' }
+      },
+      {
+        id: 2,
+        movementType: 'OUT',
+        quantity: 25,
+        previousQuantity: 100,
+        newQuantity: 75,
+        createdAt: new Date().toISOString(),
+        product: { name: 'Green Khat' },
+        branch: { name: 'Branch A' },
+        creator: { firstName: 'John', lastName: 'Doe' }
+      }
+    ];
+    // Simulate loading
+    // In real app, dispatch fetchStockMovements here
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -39,11 +64,7 @@ const StockMovements = () => {
       key: 'type',
       label: 'Type',
       render: (row) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          row.movementType === 'IN' ? 'bg-green-100 text-green-700' : 
-          row.movementType === 'OUT' ? 'bg-red-100 text-red-700' :
-          'bg-blue-100 text-blue-700'
-        }`}>
+        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.movementType === 'IN' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
           {row.movementType}
         </span>
       )
@@ -76,7 +97,7 @@ const StockMovements = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Stock Movements</h1>
@@ -125,7 +146,7 @@ const StockMovements = () => {
         data={movements || []}
         loading={isLoading}
         pagination={true}
-        pageSize={20}
+        pageSize={10}
       />
     </div>
   );
