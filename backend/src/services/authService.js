@@ -4,6 +4,10 @@ import crypto from 'crypto';
 import { prisma } from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
 
+// Use the exact secret from Render
+const JWT_SECRET = '3f7a8b9c2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
+const JWT_REFRESH_SECRET = '9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t9u8v7w6x5y4z3';
+
 class AuthService {
   async hashPassword(password) {
     return bcrypt.hash(password, 12);
@@ -16,12 +20,12 @@ class AuthService {
   generateTokens(userId) {
     const accessToken = jwt.sign(
       { id: userId },
-      'PASTE_THE_SECRET_FROM_RENDER_HERE',
+      JWT_SECRET,
       { expiresIn: '15m' }
     );
     const refreshToken = jwt.sign(
       { id: userId },
-      '9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t9u8v7w6x5y4z3',
+      JWT_REFRESH_SECRET,
       { expiresIn: '7d' }
     );
     return { accessToken, refreshToken };
@@ -115,7 +119,7 @@ class AuthService {
 
   async refreshAccessToken(refreshToken) {
     try {
-      const decoded = jwt.verify(refreshToken, '9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t9u8v7w6x5y4z3');
+      const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
       const storedToken = await prisma.refreshToken.findFirst({
         where: {
           token: refreshToken,
@@ -294,7 +298,3 @@ class AuthService {
 }
 
 export default new AuthService();
-
-
-
-

@@ -2,6 +2,7 @@
 import { prisma } from '../config/database.js';
 import { AppError } from './errorHandler.js';
 
+// Use the exact secret from Render
 const JWT_SECRET = '3f7a8b9c2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
 
 export const authenticate = async (req, res, next) => {
@@ -45,7 +46,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
+      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
     };
 
     next();
