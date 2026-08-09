@@ -10,7 +10,7 @@ import { fetchBranches, deleteBranch, toggleBranchStatus, clearError } from '../
 
 const BranchList = () => {
   const dispatch = useDispatch();
-  const { branches, isLoading, error } = useSelector((state) => state.branches);
+  const { branches = [], isLoading = false, error = null } = useSelector((state) => state.branches || { branches: [], isLoading: false, error: null });
   const [showModal, setShowModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -23,17 +23,32 @@ const BranchList = () => {
     email: '',
     isActive: true
   });
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchBranches());
+    loadBranches();
   }, [dispatch]);
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error('Failed to load branches. Please try again.');
+      setHasError(true);
       dispatch(clearError());
     }
   }, [error, dispatch]);
+
+  const loadBranches = async () => {
+    setHasError(false);
+    try {
+      const result = await dispatch(fetchBranches()).unwrap();
+      if (!result || result.length === 0) {
+        // No data is fine, just show empty
+      }
+    } catch (err) {
+      setHasError(true);
+      toast.error('Could not load branches. The server may be unavailable.');
+    }
+  };
 
   const handleDelete = async (branch) => {
     if (branch.type === 'HEADQUARTERS') {
@@ -44,8 +59,9 @@ const BranchList = () => {
       try {
         await dispatch(deleteBranch(branch.id)).unwrap();
         toast.success('Branch deleted successfully');
+        loadBranches();
       } catch (error) {
-        toast.error(error);
+        toast.error(error.message || 'Failed to delete branch');
       }
     }
   };
@@ -54,8 +70,9 @@ const BranchList = () => {
     try {
       await dispatch(toggleBranchStatus(branch.id)).unwrap();
       toast.success('Branch ' + (branch.isActive ? 'deactivated' : 'activated') + ' successfully');
+      loadBranches();
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || 'Failed to toggle status');
     }
   };
 
@@ -68,8 +85,9 @@ const BranchList = () => {
       }
       setShowModal(false);
       toast.success(isEditing ? 'Branch updated successfully' : 'Branch created successfully');
+      loadBranches();
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || 'Operation failed');
     }
   };
 
@@ -104,7 +122,7 @@ const BranchList = () => {
       render: (row) => (
         <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <MapPin className="w-3 h-3" />
-          <span className="truncate max-w-xs">{row.address}</span>
+          <span className="truncate max-w-xs">{row.address || 'N/A'}</span>
         </div>
       )
     },
@@ -179,7 +197,7 @@ const BranchList = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Branch Management</h1>
@@ -202,14 +220,25 @@ const BranchList = () => {
             setShowModal(true);
           }}
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Branch
+          <Plus className="w-4 h-4 mr-2" /> Add Branch
         </Button>
       </div>
 
+      {hasError && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-yellow-700 dark:text-yellow-400">Unable to load branches. The API may be unavailable.</p>
+          <button
+            onClick={loadBranches}
+            className="mt-2 text-sm text-yellow-700 dark:text-yellow-400 hover:underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       <Table
         columns={columns}
-        data={branches || []}
+        data={branches}
         loading={isLoading}
       />
 
