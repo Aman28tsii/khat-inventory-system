@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -19,7 +19,7 @@ import { fetchInventoryReport, exportReportPDF, exportReportExcel, clearError } 
 
 const InventoryReport = () => {
   const dispatch = useDispatch();
-  const { inventoryReport, isLoading, exporting } = useSelector((state) => state.reports);
+  const { inventoryReport, isLoading, exporting, error } = useSelector((state) => state.reports);
   const [filters, setFilters] = useState({});
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const InventoryReport = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `inventory-report-${new Date().toISOString().split('T')[0]}.pdf`;
+      link.download = inventory-report-.pdf;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -72,7 +72,7 @@ const InventoryReport = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `inventory-report-${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.download = inventory-report-.xlsx;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
