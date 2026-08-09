@@ -1,4 +1,4 @@
-﻿import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { prisma } from '../config/database.js';
 import { AppError } from './errorHandler.js';
 
@@ -45,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
+      permissions: user.role.permissions.map((p) => p.permission.resource + ':' + p.permission.action),
     };
 
     next();
@@ -79,7 +79,7 @@ export const requirePermission = (resource, action) => {
         return next();
       }
 
-      const requiredPermission = `${resource}:${action}`;
+      const requiredPermission = resource + ':' + action;
       const hasPermission = req.user.permissions.some((p) => p === requiredPermission);
 
       if (!hasPermission) {

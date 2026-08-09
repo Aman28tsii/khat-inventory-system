@@ -1,6 +1,6 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://khat-inventory-system.onrender.com/api/v1';
+const API_URL = 'https://khat-inventory-system.onrender.com/api/v1';
 
 const initialState = {
   user: null,
@@ -15,7 +15,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await fetch(${API_URL}/auth/login, {
+      const response = await fetch(API_URL + '/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -35,9 +35,9 @@ export const logout = createAsyncThunk(
     try {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        await fetch(${API_URL}/auth/logout, {
+        await fetch(API_URL + '/auth/logout', {
           method: 'POST',
-          headers: { 'Authorization': Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjI2NzE2MywiZXhwIjoxNzg2MjY4MDYzfQ.nWbSBPh1_616lyodGdyfuABuEJ4EM11ntuV4gx1trVU }
+          headers: { 'Authorization': 'Bearer ' + token }
         });
       }
       localStorage.removeItem('accessToken');
@@ -55,8 +55,8 @@ export const getCurrentUser = createAsyncThunk(
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) throw new Error('No token found');
-      const response = await fetch(${API_URL}/auth/me, {
-        headers: { 'Authorization': Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjI2NzE2MywiZXhwIjoxNzg2MjY4MDYzfQ.nWbSBPh1_616lyodGdyfuABuEJ4EM11ntuV4gx1trVU }
+      const response = await fetch(API_URL + '/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
       });
       if (!response.ok) throw new Error('Failed to get user');
       const data = await response.json();
