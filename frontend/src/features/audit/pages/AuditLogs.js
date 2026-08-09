@@ -219,7 +219,7 @@ const AuditLogs = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Total Logs</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{total}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{total || 0}</p>
             </div>
           </div>
         </div>
@@ -263,7 +263,7 @@ const AuditLogs = () => {
       {/* Logs Table */}
       <Table
         columns={columns}
-        data={logs}
+        data={logs || []}
         loading={isLoading}
         pagination={true}
         pageSize={20}

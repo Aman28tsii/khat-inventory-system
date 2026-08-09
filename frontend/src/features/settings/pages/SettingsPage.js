@@ -1,33 +1,40 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { Settings, Save, Key, Globe, DollarSign } from 'lucide-react';
+import { Settings, Save, RefreshCw, Key, Globe, DollarSign } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
+import { fetchSettings, updateSettings, clearError } from '../slices/settingsSlice';
 
 const SettingsPage = () => {
-  const [formData, setFormData] = useState({
-    companyName: 'Khat Trading Company',
-    companyEmail: 'info@khattrading.com',
-    companyPhone: '+251-XXX-XXXX',
-    companyAddress: 'Addis Ababa, Ethiopia',
-    currency: 'ETB',
-    timezone: 'Africa/Addis_Ababa',
-    dateFormat: 'DD/MM/YYYY',
-    sessionTimeout: 30,
-    maxLoginAttempts: 5
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { settings, isLoading, error } = useSelector((state) => state.settings);
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (settings) {
+      setFormData(settings);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   const handleSubmit = async () => {
-    setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await dispatch(updateSettings(formData)).unwrap();
       toast.success('Settings updated successfully');
     } catch (error) {
       toast.error('Failed to update settings');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -61,8 +68,16 @@ const SettingsPage = () => {
     }
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>

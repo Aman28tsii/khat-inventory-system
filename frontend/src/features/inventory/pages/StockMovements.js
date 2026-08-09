@@ -1,41 +1,28 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { Calendar, Search } from 'lucide-react';
+import { Package, ArrowLeftRight, Calendar, Search } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
+import Button from '../../../components/common/Button/Button';
+import { fetchStockMovements, clearError } from '../slices/inventorySlice';
 
 const StockMovements = () => {
-  const [movements, setMovements] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { movements, isLoading, error } = useSelector((state) => state.inventory);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({ type: '', dateRange: '' });
 
   useEffect(() => {
-    // Mock data for now
-    const mockMovements = [
-      {
-        id: 1,
-        movementType: 'IN',
-        quantity: 100,
-        previousQuantity: 0,
-        newQuantity: 100,
-        createdAt: '2024-01-15T10:30:00Z',
-        product: { name: 'Green Khat' },
-        branch: { name: 'Main Warehouse' },
-        creator: { firstName: 'System', lastName: 'Admin' }
-      },
-      {
-        id: 2,
-        movementType: 'OUT',
-        quantity: 25,
-        previousQuantity: 100,
-        newQuantity: 75,
-        createdAt: '2024-01-15T14:20:00Z',
-        product: { name: 'Green Khat' },
-        branch: { name: 'Branch A' },
-        creator: { firstName: 'John', lastName: 'Doe' }
-      }
-    ];
-    setMovements(mockMovements);
-  }, []);
+    dispatch(fetchStockMovements({ search: searchTerm, ...filters }));
+  }, [dispatch, searchTerm, filters]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   const columns = [
     {
@@ -52,7 +39,11 @@ const StockMovements = () => {
       key: 'type',
       label: 'Type',
       render: (row) => (
-        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.movementType === 'IN' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+          row.movementType === 'IN' ? 'bg-green-100 text-green-700' : 
+          row.movementType === 'OUT' ? 'bg-red-100 text-red-700' :
+          'bg-blue-100 text-blue-700'
+        }`}>
           {row.movementType}
         </span>
       )
@@ -85,7 +76,7 @@ const StockMovements = () => {
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Stock Movements</h1>
@@ -104,14 +95,37 @@ const StockMovements = () => {
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
+        <div className="flex gap-2">
+          <select
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            value={filters.type}
+            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+          >
+            <option value="">All Types</option>
+            <option value="IN">Stock In</option>
+            <option value="OUT">Stock Out</option>
+            <option value="TRANSFER">Transfer</option>
+            <option value="ADJUSTMENT">Adjustment</option>
+          </select>
+          <select
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            value={filters.dateRange}
+            onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
+          >
+            <option value="">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
       </div>
 
       <Table
         columns={columns}
-        data={movements}
+        data={movements || []}
         loading={isLoading}
         pagination={true}
-        pageSize={10}
+        pageSize={20}
       />
     </div>
   );

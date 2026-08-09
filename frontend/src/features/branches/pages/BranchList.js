@@ -253,7 +253,7 @@ const BranchList = () => {
       {/* Branches Table */}
       <Table
         columns={columns}
-        data={branches}
+        data={branches || []}
         loading={isLoading}
       />
 
