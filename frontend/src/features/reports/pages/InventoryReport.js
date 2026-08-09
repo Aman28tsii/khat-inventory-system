@@ -50,7 +50,7 @@ const InventoryReport = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = inventory-report-.pdf;
+      link.download = 'inventory-report-' + new Date().toISOString().split('T')[0] + '.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -72,7 +72,7 @@ const InventoryReport = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = inventory-report-.xlsx;
+      link.download = 'inventory-report-' + new Date().toISOString().split('T')[0] + '.xlsx';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
