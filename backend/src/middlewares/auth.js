@@ -45,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
+      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
     };
 
     next();
@@ -67,7 +67,6 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
-// Simplified permission check - allows super admin everything
 export const requirePermission = (resource, action) => {
   return async (req, res, next) => {
     try {
@@ -80,9 +79,12 @@ export const requirePermission = (resource, action) => {
         return next();
       }
 
-      const hasPermission = req.user.permissions.some(
-        (p) => p === ${resource}: || p === ${resource}:*
-      );
+      const resourceAction = ${resource}:;
+      const resourceWildcard = ${resource}:*;
+      
+      const hasPermission = req.user.permissions.some((p) => {
+        return p === resourceAction || p === resourceWildcard;
+      });
 
       if (!hasPermission) {
         throw new AppError('Insufficient permissions', 403);
@@ -106,4 +108,3 @@ export const requireRole = (roleNames) => {
     next();
   };
 };
-
