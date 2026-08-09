@@ -10,7 +10,7 @@ import { fetchBranches, deleteBranch, toggleBranchStatus, clearError } from '../
 
 const BranchList = () => {
   const dispatch = useDispatch();
-  const { branches = [], isLoading, error } = useSelector((state) => state.branches || { branches: [], isLoading: false, error: null });
+  const { branches = [], isLoading = false, error = null } = useSelector((state) => state.branches || { branches: [], isLoading: false, error: null });
   const [showModal, setShowModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,7 +25,7 @@ const BranchList = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchBranches());
+    loadBranches();
   }, [dispatch]);
 
   useEffect(() => {
@@ -35,8 +35,57 @@ const BranchList = () => {
     }
   }, [error, dispatch]);
 
-  // Rest of the component...
-  // Keep the rest of the component as is
+  const loadBranches = async () => {
+    try {
+      await dispatch(fetchBranches()).unwrap();
+    } catch (err) {
+      // Error is handled by the slice
+      console.error('Failed to load branches:', err);
+    }
+  };
+
+  const handleDelete = async (branch) => {
+    if (branch.type === 'HEADQUARTERS') {
+      toast.error('Cannot delete headquarters');
+      return;
+    }
+    if (window.confirm(Are you sure you want to delete ""?)) {
+      try {
+        await dispatch(deleteBranch(branch.id)).unwrap();
+        toast.success('Branch deleted successfully');
+        loadBranches();
+      } catch (error) {
+        toast.error(error.message || 'Failed to delete branch');
+      }
+    }
+  };
+
+  const handleToggleStatus = async (branch) => {
+    try {
+      await dispatch(toggleBranchStatus(branch.id)).unwrap();
+      toast.success(Branch  successfully);
+      loadBranches();
+    } catch (error) {
+      toast.error(error.message || 'Failed to toggle status');
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (isEditing) {
+        await dispatch(updateBranch({ id: selectedBranch.id, data: formData })).unwrap();
+        toast.success('Branch updated successfully');
+      } else {
+        await dispatch(createBranch(formData)).unwrap();
+        toast.success('Branch created successfully');
+      }
+      setShowModal(false);
+      setSelectedBranch(null);
+      loadBranches();
+    } catch (error) {
+      toast.error(error.message || 'Operation failed');
+    }
+  };
 
   const columns = [
     {
@@ -58,7 +107,7 @@ const BranchList = () => {
       key: 'type',
       label: 'Type',
       render: (row) => (
-        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.type === 'HEADQUARTERS' ? 'bg-purple-100 text-purple-700' : row.type === 'WAREHOUSE' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700')}>
+        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.type === 'HEADQUARTERS' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : row.type === 'WAREHOUSE' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400')}>
           {row.type}
         </span>
       )
@@ -69,7 +118,7 @@ const BranchList = () => {
       render: (row) => (
         <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <MapPin className="w-3 h-3" />
-          <span className="truncate max-w-xs">{row.address}</span>
+          <span className="truncate max-w-xs">{row.address || 'N/A'}</span>
         </div>
       )
     },
@@ -114,7 +163,7 @@ const BranchList = () => {
                 name: row.name,
                 code: row.code,
                 type: row.type,
-                address: row.address,
+                address: row.address || '',
                 phone: row.phone || '',
                 email: row.email || '',
                 isActive: row.isActive
@@ -123,18 +172,21 @@ const BranchList = () => {
               setShowModal(true);
             }}
             className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+            title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleToggleStatus(row)}
             className={'p-1 rounded-lg transition-colors ' + (row.isActive ? 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20' : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20')}
+            title={row.isActive ? 'Deactivate' : 'Activate'}
           >
             <Power className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(row)}
             className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            title="Delete"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -144,29 +196,103 @@ const BranchList = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Branch Management</h1>
           <p className="text-gray-500 dark:text-gray-400">Manage company branches, warehouses and headquarters</p>
         </div>
-        <Button variant="primary" onClick={() => { setSelectedBranch(null); setIsEditing(false); setShowModal(true); }}>
+        <Button
+          variant="primary"
+          onClick={() => {
+            setSelectedBranch(null);
+            setFormData({
+              name: '',
+              code: '',
+              type: 'BRANCH',
+              address: '',
+              phone: '',
+              email: '',
+              isActive: true
+            });
+            setIsEditing(false);
+            setShowModal(true);
+          }}
+        >
           <Plus className="w-4 h-4 mr-2" /> Add Branch
         </Button>
       </div>
 
-      <Table columns={columns} data={branches} loading={isLoading} />
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-600 dark:text-red-400">
+          <p>Error loading branches: {error}</p>
+          <button
+            onClick={loadBranches}
+            className="mt-2 text-sm text-red-700 dark:text-red-300 hover:underline"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
 
-      <Modal isOpen={showModal} onClose={() => { setShowModal(false); setSelectedBranch(null); }} title={isEditing ? 'Edit Branch' : 'Add New Branch'} size="lg">
+      <Table
+        columns={columns}
+        data={branches}
+        loading={isLoading}
+        pagination={true}
+        pageSize={10}
+        onRowClick={(row) => {
+          setSelectedBranch(row);
+          setFormData({
+            name: row.name,
+            code: row.code,
+            type: row.type,
+            address: row.address || '',
+            phone: row.phone || '',
+            email: row.email || '',
+            isActive: row.isActive
+          });
+          setIsEditing(true);
+          setShowModal(true);
+        }}
+      />
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setSelectedBranch(null);
+        }}
+        title={isEditing ? 'Edit Branch' : 'Add New Branch'}
+        size="lg"
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Branch Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g., Addis Ababa Branch" />
-            <Input label="Branch Code" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })} placeholder="e.g., ADD001" />
+            <Input
+              label="Branch Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="e.g., Addis Ababa Branch"
+              required
+            />
+            <Input
+              label="Branch Code"
+              value={formData.code}
+              onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+              placeholder="e.g., ADD001"
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Branch Type</label>
-            <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Branch Type
+            </label>
+            <select
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            >
               <option value="HEADQUARTERS">Headquarters</option>
               <option value="WAREHOUSE">Warehouse</option>
               <option value="BRANCH">Branch</option>
@@ -174,23 +300,53 @@ const BranchList = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-            <textarea className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" rows="2" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} placeholder="Full address" />
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Address
+            </label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              rows="2"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              placeholder="Full address"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="+251-XXX-XXXX" />
-            <Input label="Email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="branch@company.com" />
+            <Input
+              label="Phone Number"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="+251-XXX-XXXX"
+            />
+            <Input
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="branch@company.com"
+            />
           </div>
 
           <div className="flex items-center gap-2">
-            <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" />
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
+            <input
+              type="checkbox"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+            />
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Active
+            </label>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button variant="primary" onClick={handleSubmit}>{isEditing ? 'Update Branch' : 'Create Branch'}</Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSubmit} isLoading={isLoading}>
+              {isEditing ? 'Update Branch' : 'Create Branch'}
+            </Button>
           </div>
         </div>
       </Modal>
