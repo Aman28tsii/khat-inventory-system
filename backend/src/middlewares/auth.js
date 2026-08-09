@@ -6,6 +6,7 @@ import { AppError } from './errorHandler.js';
 const JWT_SECRET = '3f7a8b9c2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
 
 export const authenticate = async (req, res, next) => {
+  console.log("🔐 Authenticate middleware called");
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,6 +15,7 @@ export const authenticate = async (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
+  console.log("✅ Token verified, user ID:", decoded.id);
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
