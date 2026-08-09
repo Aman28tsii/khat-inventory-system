@@ -13,6 +13,7 @@ import reportsReducer from '../features/reports/slices/reportSlice';
 import notificationsReducer from '../features/notifications/slices/notificationSlice';
 import auditReducer from '../features/audit/slices/auditSlice';
 import settingsReducer from '../features/settings/slices/settingsSlice';
+import supplierReducer from '../features/suppliers/slices/supplierSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   audit: auditReducer,
   settings: settingsReducer,
+  suppliers: supplierReducer,
 });
 
 export default rootReducer;
