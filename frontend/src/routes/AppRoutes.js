@@ -1,5 +1,8 @@
 ﻿import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import AppLayout from '../components/layout/AppLayout/AppLayout';
+import Login from '../features/auth/pages/Login';
 import ExecutiveDashboard from '../features/dashboard/pages/ExecutiveDashboard';
 import BranchList from '../features/branches/pages/BranchList';
 import ProductList from '../features/inventory/pages/ProductList';
@@ -24,42 +27,49 @@ import SalesReport from '../features/reports/pages/SalesReport';
 import ProfitReport from '../features/reports/pages/ProfitReport';
 import StockMovements from '../features/inventory/pages/StockMovements';
 import SettingsPage from '../features/settings/pages/SettingsPage';
-import { useSelector } from 'react-redux';
-
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
 
 const AppRoutes = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (!isAuthenticated) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }
+
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-      <Route path="/dashboard" element={<ProtectedRoute><ExecutiveDashboard /></ProtectedRoute>} />
-      <Route path="/branches" element={<ProtectedRoute><BranchList /></ProtectedRoute>} />
-      <Route path="/products" element={<ProtectedRoute><ProductList /></ProtectedRoute>} />
-      <Route path="/batches" element={<ProtectedRoute><BatchList /></ProtectedRoute>} />
-      <Route path="/customers" element={<ProtectedRoute><CustomerList /></ProtectedRoute>} />
-      <Route path="/suppliers" element={<ProtectedRoute><SupplierList /></ProtectedRoute>} />
-      <Route path="/purchases" element={<ProtectedRoute><PurchaseList /></ProtectedRoute>} />
-      <Route path="/purchases/create" element={<ProtectedRoute><CreatePurchase /></ProtectedRoute>} />
-      <Route path="/purchases/:id" element={<ProtectedRoute><PurchaseDetail /></ProtectedRoute>} />
-      <Route path="/sales" element={<ProtectedRoute><SaleList /></ProtectedRoute>} />
-      <Route path="/sales/create" element={<ProtectedRoute><CreateSale /></ProtectedRoute>} />
-      <Route path="/sales/:id" element={<ProtectedRoute><SaleDetail /></ProtectedRoute>} />
-      <Route path="/transfers" element={<ProtectedRoute><TransferList /></ProtectedRoute>} />
-      <Route path="/transfers/create" element={<ProtectedRoute><CreateTransfer /></ProtectedRoute>} />
-      <Route path="/transfers/:id" element={<ProtectedRoute><TransferDetail /></ProtectedRoute>} />
-      <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
-      <Route path="/roles" element={<ProtectedRoute><RoleList /></ProtectedRoute>} />
-      <Route path="/audit-logs" element={<ProtectedRoute><AuditLogs /></ProtectedRoute>} />
-      <Route path="/notifications" element={<ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
-      <Route path="/reports/inventory" element={<ProtectedRoute><InventoryReport /></ProtectedRoute>} />
-      <Route path="/reports/sales" element={<ProtectedRoute><SalesReport /></ProtectedRoute>} />
-      <Route path="/reports/profit" element={<ProtectedRoute><ProfitReport /></ProtectedRoute>} />
-      <Route path="/inventory/stock-movements" element={<ProtectedRoute><StockMovements /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-    </Routes>
+    <AppLayout>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/dashboard" element={<ExecutiveDashboard />} />
+        <Route path="/branches" element={<BranchList />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/batches" element={<BatchList />} />
+        <Route path="/customers" element={<CustomerList />} />
+        <Route path="/suppliers" element={<SupplierList />} />
+        <Route path="/purchases" element={<PurchaseList />} />
+        <Route path="/purchases/create" element={<CreatePurchase />} />
+        <Route path="/purchases/:id" element={<PurchaseDetail />} />
+        <Route path="/sales" element={<SaleList />} />
+        <Route path="/sales/create" element={<CreateSale />} />
+        <Route path="/sales/:id" element={<SaleDetail />} />
+        <Route path="/transfers" element={<TransferList />} />
+        <Route path="/transfers/create" element={<CreateTransfer />} />
+        <Route path="/transfers/:id" element={<TransferDetail />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/roles" element={<RoleList />} />
+        <Route path="/audit-logs" element={<AuditLogs />} />
+        <Route path="/notifications" element={<NotificationCenter />} />
+        <Route path="/reports/inventory" element={<InventoryReport />} />
+        <Route path="/reports/sales" element={<SalesReport />} />
+        <Route path="/reports/profit" element={<ProfitReport />} />
+        <Route path="/inventory/stock-movements" element={<StockMovements />} />
+        <Route path="/settings" element={<SettingsPage />} />
+      </Routes>
+    </AppLayout>
   );
 };
 

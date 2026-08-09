@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,9 +56,9 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     {
       section: 'Inventory',
       items: [
-        { path: '/inventory/products', icon: Package, label: 'Products' },
-        { path: '/inventory/batches', icon: ClipboardList, label: 'Batches' },
-        { path: '/inventory/movements', icon: TrendingUp, label: 'Stock Movements' },
+        { path: '/products', icon: Package, label: 'Products' },
+        { path: '/batches', icon: ClipboardList, label: 'Batches' },
+        { path: '/inventory/stock-movements', icon: TrendingUp, label: 'Stock Movements' },
       ]
     },
     {
