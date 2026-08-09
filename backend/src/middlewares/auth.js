@@ -45,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
+      permissions: user.role.permissions.map((p) => p.permission.resource + ':' + p.permission.action),
     };
 
     next();
@@ -79,7 +79,7 @@ export const requirePermission = (resource, action) => {
         return next();
       }
 
-      const requiredPermission = ${resource}:;
+      const requiredPermission = resource + ':' + action;
       const hasPermission = req.user.permissions.some((p) => p === requiredPermission);
 
       if (!hasPermission) {
@@ -104,5 +104,3 @@ export const requireRole = (roleNames) => {
     next();
   };
 };
-
-// Fresh build trigger 08/09/2026 00:44:16
