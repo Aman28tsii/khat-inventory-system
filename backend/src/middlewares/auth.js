@@ -45,7 +45,7 @@ export const authenticate = async (req, res, next) => {
       roleId: user.roleId,
       roleName: user.role.name,
       branchId: user.branchId,
-      permissions: user.role.permissions.map((p) => ${p.permission.resource}:),
+      permissions: user.role.permissions.map((p) => `${p.permission.resource}:${p.permission.action}`),
     };
 
     next();
@@ -106,3 +106,4 @@ export const requireRole = (roleNames) => {
     next();
   };
 };
+
