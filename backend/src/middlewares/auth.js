@@ -79,12 +79,8 @@ export const requirePermission = (resource, action) => {
         return next();
       }
 
-      const resourceAction = ${resource}:;
-      const resourceWildcard = ${resource}:*;
-      
-      const hasPermission = req.user.permissions.some((p) => {
-        return p === resourceAction || p === resourceWildcard;
-      });
+      const requiredPermission = ${resource}:;
+      const hasPermission = req.user.permissions.some((p) => p === requiredPermission);
 
       if (!hasPermission) {
         throw new AppError('Insufficient permissions', 403);
