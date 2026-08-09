@@ -1,8 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import apiClient from '../../../api/client';
 
 const initialState = {
   products: [],
   batches: [],
+  movements: [],
   selectedProduct: null,
   selectedBatch: null,
   isLoading: false,
@@ -15,12 +17,10 @@ export const fetchProducts = createAsyncThunk(
   'inventory/fetchProducts',
   async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/products');
-      if (!response.ok) throw new Error('Failed to fetch products');
-      const data = await response.json();
-      return data;
+      const response = await apiClient.get('/products', { params });
+      return response.data.data || response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to fetch products');
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch products');
     }
   }
 );
@@ -29,20 +29,10 @@ export const createProduct = createAsyncThunk(
   'inventory/createProduct',
   async (data, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/v1/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error('Failed to create product');
-      const result = await response.json();
-      return result.data;
+      const response = await apiClient.post('/products', data);
+      return response.data.data || response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to create product');
+      return rejectWithValue(error.response?.data?.message || 'Failed to create product');
     }
   }
 );
@@ -51,20 +41,10 @@ export const updateProduct = createAsyncThunk(
   'inventory/updateProduct',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/api/v1/products/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error('Failed to update product');
-      const result = await response.json();
-      return result.data;
+      const response = await apiClient.put(/products/, data);
+      return response.data.data || response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to update product');
+      return rejectWithValue(error.response?.data?.message || 'Failed to update product');
     }
   }
 );
@@ -73,15 +53,10 @@ export const deleteProduct = createAsyncThunk(
   'inventory/deleteProduct',
   async (id, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/api/v1/products/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!response.ok) throw new Error('Failed to delete product');
+      await apiClient.delete(/products/);
       return id;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to delete product');
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete product');
     }
   }
 );
@@ -91,12 +66,23 @@ export const fetchBatches = createAsyncThunk(
   'inventory/fetchBatches',
   async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/batches');
-      if (!response.ok) throw new Error('Failed to fetch batches');
-      const data = await response.json();
-      return data;
+      const response = await apiClient.get('/batches', { params });
+      return response.data.data || response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to fetch batches');
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch batches');
+    }
+  }
+);
+
+// Stock Movement actions
+export const fetchStockMovements = createAsyncThunk(
+  'inventory/fetchStockMovements',
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get('/inventory/movements', { params });
+      return response.data.data || response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch stock movements');
     }
   }
 );
@@ -124,8 +110,8 @@ const inventorySlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.products = action.payload.data || [];
-        state.total = action.payload.total || 0;
+        state.products = action.payload.data || action.payload || [];
+        state.total = action.payload.total || state.products.length;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.isLoading = false;
@@ -146,12 +132,28 @@ const inventorySlice = createSlice({
       // Batches
       .addCase(fetchBatches.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchBatches.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.batches = action.payload.data || [];
+        state.batches = action.payload.data || action.payload || [];
+        state.total = action.payload.total || state.batches.length;
       })
       .addCase(fetchBatches.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Stock Movements
+      .addCase(fetchStockMovements.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchStockMovements.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.movements = action.payload.data || action.payload || [];
+        state.total = action.payload.total || state.movements.length;
+      })
+      .addCase(fetchStockMovements.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

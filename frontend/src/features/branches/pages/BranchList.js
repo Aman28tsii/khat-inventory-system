@@ -23,32 +23,17 @@ const BranchList = () => {
     email: '',
     isActive: true
   });
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    loadBranches();
+    dispatch(fetchBranches());
   }, [dispatch]);
 
   useEffect(() => {
     if (error) {
-      toast.error('Failed to load branches. Please try again.');
-      setHasError(true);
+      toast.error(error);
       dispatch(clearError());
     }
   }, [error, dispatch]);
-
-  const loadBranches = async () => {
-    setHasError(false);
-    try {
-      const result = await dispatch(fetchBranches()).unwrap();
-      if (!result || result.length === 0) {
-        // No data is fine, just show empty
-      }
-    } catch (err) {
-      setHasError(true);
-      toast.error('Could not load branches. The server may be unavailable.');
-    }
-  };
 
   const handleDelete = async (branch) => {
     if (branch.type === 'HEADQUARTERS') {
@@ -59,9 +44,8 @@ const BranchList = () => {
       try {
         await dispatch(deleteBranch(branch.id)).unwrap();
         toast.success('Branch deleted successfully');
-        loadBranches();
       } catch (error) {
-        toast.error(error.message || 'Failed to delete branch');
+        toast.error(error);
       }
     }
   };
@@ -70,9 +54,8 @@ const BranchList = () => {
     try {
       await dispatch(toggleBranchStatus(branch.id)).unwrap();
       toast.success('Branch ' + (branch.isActive ? 'deactivated' : 'activated') + ' successfully');
-      loadBranches();
     } catch (error) {
-      toast.error(error.message || 'Failed to toggle status');
+      toast.error(error);
     }
   };
 
@@ -85,9 +68,8 @@ const BranchList = () => {
       }
       setShowModal(false);
       toast.success(isEditing ? 'Branch updated successfully' : 'Branch created successfully');
-      loadBranches();
     } catch (error) {
-      toast.error(error.message || 'Operation failed');
+      toast.error(error);
     }
   };
 
@@ -224,12 +206,12 @@ const BranchList = () => {
         </Button>
       </div>
 
-      {hasError && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-yellow-700 dark:text-yellow-400">Unable to load branches. The API may be unavailable.</p>
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">Failed to load branches: {error}</p>
           <button
-            onClick={loadBranches}
-            className="mt-2 text-sm text-yellow-700 dark:text-yellow-400 hover:underline"
+            onClick={() => dispatch(fetchBranches())}
+            className="mt-2 text-sm text-red-700 dark:text-red-300 hover:underline"
           >
             Retry
           </button>
@@ -240,6 +222,22 @@ const BranchList = () => {
         columns={columns}
         data={branches}
         loading={isLoading}
+        pagination={true}
+        pageSize={10}
+        onRowClick={(row) => {
+          setSelectedBranch(row);
+          setFormData({
+            name: row.name,
+            code: row.code,
+            type: row.type,
+            address: row.address || '',
+            phone: row.phone || '',
+            email: row.email || '',
+            isActive: row.isActive
+          });
+          setIsEditing(true);
+          setShowModal(true);
+        }}
       />
 
       <Modal
@@ -258,12 +256,14 @@ const BranchList = () => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Addis Ababa Branch"
+              required
             />
             <Input
               label="Branch Code"
               value={formData.code}
               onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
               placeholder="e.g., ADD001"
+              required
             />
           </div>
 

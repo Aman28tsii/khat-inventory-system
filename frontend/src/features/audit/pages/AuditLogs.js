@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText, Search, Eye, User, Clock } from 'lucide-react';
+import { FileText, Eye, User, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
@@ -10,29 +10,17 @@ import { fetchAuditLogs, clearError } from '../slices/auditSlice';
 const AuditLogs = () => {
   const dispatch = useDispatch();
   const { logs = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.audit || { logs: [], isLoading: false, error: null, total: 0 });
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    loadLogs();
+    dispatch(fetchAuditLogs());
   }, [dispatch]);
 
   useEffect(() => {
     if (error) {
-      toast.error('Failed to load audit logs. Please try again.');
-      setHasError(true);
+      toast.error(error);
       dispatch(clearError());
     }
   }, [error, dispatch]);
-
-  const loadLogs = async () => {
-    setHasError(false);
-    try {
-      await dispatch(fetchAuditLogs()).unwrap();
-    } catch (err) {
-      setHasError(true);
-      toast.error('Could not load audit logs. The server may be unavailable.');
-    }
-  };
 
   const columns = [
     {
@@ -71,7 +59,7 @@ const AuditLogs = () => {
       key: 'action',
       label: 'Action',
       render: (row) => (
-        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.action === 'CREATE' ? 'bg-green-100 text-green-700' : row.action === 'UPDATE' ? 'bg-blue-100 text-blue-700' : row.action === 'DELETE' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700')}>
+        <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.action === 'CREATE' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : row.action === 'UPDATE' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : row.action === 'DELETE' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300')}>
           {row.action}
         </span>
       )
@@ -108,20 +96,14 @@ const AuditLogs = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h1>
           <p className="text-gray-500 dark:text-gray-400">Complete audit trail of all system activities</p>
         </div>
-        <Button variant="secondary" size="sm" onClick={loadLogs} isLoading={isLoading}>
+        <Button variant="secondary" size="sm" onClick={() => dispatch(fetchAuditLogs())} isLoading={isLoading}>
           Refresh
         </Button>
       </div>
 
-      {hasError && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-yellow-700 dark:text-yellow-400">Unable to load audit logs. The API may be unavailable.</p>
-          <button
-            onClick={loadLogs}
-            className="mt-2 text-sm text-yellow-700 dark:text-yellow-400 hover:underline"
-          >
-            Retry
-          </button>
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">Failed to load audit logs: {error}</p>
         </div>
       )}
 
