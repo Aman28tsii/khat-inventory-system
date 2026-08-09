@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -22,13 +22,11 @@ import Table from '../../../components/common/Table/Table';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
-import BatchForm from '../components/BatchForm';
-import QualityInspectionModal from '../components/QualityInspectionModal';
+import { fetchBatches, deleteBatch, clearError } from '../slices/inventorySlice';
 
-// This would connect to the actual API
 const BatchList = () => {
-  const [batches, setBatches] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { batches = [], isLoading = false, error = null } = useSelector((state) => state.inventory || { batches: [], isLoading: false, error: null });
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showQualityModal, setShowQualityModal] = useState(false);
@@ -36,66 +34,24 @@ const BatchList = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [filters, setFilters] = useState({ status: '', productId: '' });
 
-  // Mock data - would fetch from API
   useEffect(() => {
-    const mockBatches = [
-      {
-        id: '1',
-        batchNumber: 'BATCH-001',
-        product: { name: 'Green Khat', sku: 'KHAT-001' },
-        supplier: { name: 'Supplier A' },
-        purchasePrice: 100,
-        sellingPrice: 150,
-        quantity: 500,
-        remainingQuantity: 350,
-        arrivalDate: '2024-01-15',
-        expiryDate: '2024-06-15',
-        grade: 'Premium',
-        moisturePercentage: 12.5,
-        freshnessScore: 85,
-        status: 'AVAILABLE',
-        isQualityChecked: true,
-        branch: { name: 'Main Warehouse' }
-      },
-      {
-        id: '2',
-        batchNumber: 'BATCH-002',
-        product: { name: 'Yellow Khat', sku: 'KHAT-002' },
-        supplier: { name: 'Supplier B' },
-        purchasePrice: 120,
-        sellingPrice: 180,
-        quantity: 300,
-        remainingQuantity: 80,
-        arrivalDate: '2024-02-01',
-        expiryDate: '2024-07-01',
-        grade: 'Standard',
-        moisturePercentage: 14.2,
-        freshnessScore: 70,
-        status: 'PARTIAL',
-        isQualityChecked: true,
-        branch: { name: 'Branch A' }
-      },
-      {
-        id: '3',
-        batchNumber: 'BATCH-003',
-        product: { name: 'Green Khat', sku: 'KHAT-001' },
-        supplier: { name: 'Supplier C' },
-        purchasePrice: 95,
-        sellingPrice: 140,
-        quantity: 200,
-        remainingQuantity: 200,
-        arrivalDate: '2024-03-01',
-        expiryDate: '2024-08-01',
-        grade: 'Premium',
-        moisturePercentage: 11.8,
-        freshnessScore: 90,
-        status: 'AVAILABLE',
-        isQualityChecked: false,
-        branch: { name: 'Main Warehouse' }
-      }
-    ];
-    setBatches(mockBatches);
+    loadBatches();
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
+
+  const loadBatches = async () => {
+    try {
+      await dispatch(fetchBatches({ search: searchTerm, ...filters })).unwrap();
+    } catch (err) {
+      // Error handled by slice
+    }
+  };
 
   const getStatusBadge = (status) => {
     const statuses = {
@@ -108,7 +64,7 @@ const BatchList = () => {
     const statusInfo = statuses[status] || statuses.AVAILABLE;
     const Icon = statusInfo.icon;
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+      <span className={'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ' + statusInfo.color}>
         <Icon className="w-3 h-3" />
         {status}
       </span>
@@ -122,7 +78,7 @@ const BatchList = () => {
       render: (row) => (
         <div>
           <p className="font-medium text-gray-900 dark:text-white">{row.batchNumber}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{row.product?.name}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{row.product?.name || 'N/A'}</p>
         </div>
       )
     },
@@ -178,10 +134,12 @@ const BatchList = () => {
             <Calendar className="w-3 h-3" />
             <span>Arrival: {new Date(row.arrivalDate).toLocaleDateString()}</span>
           </div>
-          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-            <Calendar className="w-3 h-3" />
-            <span>Expiry: {new Date(row.expiryDate).toLocaleDateString()}</span>
-          </div>
+          {row.expiryDate && (
+            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+              <Calendar className="w-3 h-3" />
+              <span>Expiry: {new Date(row.expiryDate).toLocaleDateString()}</span>
+            </div>
+          )}
         </div>
       )
     },
@@ -226,8 +184,7 @@ const BatchList = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -250,7 +207,6 @@ const BatchList = () => {
         </Button>
       </div>
 
-      {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -278,66 +234,16 @@ const BatchList = () => {
         </div>
       </div>
 
-      {/* Batches Table */}
       <Table
         columns={columns}
         data={batches}
-        loading={loading}
+        loading={isLoading}
         onRowClick={(row) => {
           setSelectedBatch(row);
           setIsEditing(true);
           setShowModal(true);
         }}
       />
-
-      {/* Batch Form Modal */}
-      <Modal
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setSelectedBatch(null);
-        }}
-        title={isEditing ? 'Edit Batch' : 'Create New Batch'}
-        size="lg"
-      >
-        <BatchForm
-          batch={selectedBatch}
-          isEditing={isEditing}
-          onSuccess={() => {
-            setShowModal(false);
-            setSelectedBatch(null);
-            toast.success(isEditing ? 'Batch updated successfully' : 'Batch created successfully');
-          }}
-          onCancel={() => {
-            setShowModal(false);
-            setSelectedBatch(null);
-          }}
-        />
-      </Modal>
-
-      {/* Quality Inspection Modal */}
-      <Modal
-        isOpen={showQualityModal}
-        onClose={() => {
-          setShowQualityModal(false);
-          setSelectedBatch(null);
-        }}
-        title={`Quality Inspection: ${selectedBatch?.batchNumber}`}
-        size="lg"
-      >
-        <QualityInspectionModal
-          batch={selectedBatch}
-          onSuccess={() => {
-            setShowQualityModal(false);
-            setSelectedBatch(null);
-            toast.success('Quality inspection completed successfully');
-          }}
-          onCancel={() => {
-            setShowQualityModal(false);
-            setSelectedBatch(null);
-          }}
-        />
-      </Modal>
     </div>
   );
 };
