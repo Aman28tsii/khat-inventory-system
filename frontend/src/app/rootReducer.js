@@ -12,6 +12,7 @@ import dashboardReducer from '../features/dashboard/slices/dashboardSlice';
 import reportsReducer from '../features/reports/slices/reportSlice';
 import notificationsReducer from '../features/notifications/slices/notificationSlice';
 import auditReducer from '../features/audit/slices/auditSlice';
+import settingsReducer from '../features/settings/slices/settingsSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   reports: reportsReducer,
   notifications: notificationsReducer,
   audit: auditReducer,
+  settings: settingsReducer,
 });
 
 export default rootReducer;

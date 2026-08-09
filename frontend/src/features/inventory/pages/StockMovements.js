@@ -1,19 +1,15 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Calendar, Search } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
-import { clearError } from '../slices/inventorySlice';
 
 const StockMovements = () => {
-  const dispatch = useDispatch();
-  const { movements, isLoading, error } = useSelector((state) => state.inventory);
+  const [movements, setMovements] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({ type: '', dateRange: '' });
 
-  // Mock data for now
   useEffect(() => {
-    // Mock data - replace with actual API call
+    // Mock data for now
     const mockMovements = [
       {
         id: 1,
@@ -38,16 +34,8 @@ const StockMovements = () => {
         creator: { firstName: 'John', lastName: 'Doe' }
       }
     ];
-    // Simulate loading
-    // In real app, dispatch fetchStockMovements here
+    setMovements(mockMovements);
   }, []);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
 
   const columns = [
     {
@@ -116,34 +104,11 @@ const StockMovements = () => {
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
-        <div className="flex gap-2">
-          <select
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            value={filters.type}
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-          >
-            <option value="">All Types</option>
-            <option value="IN">Stock In</option>
-            <option value="OUT">Stock Out</option>
-            <option value="TRANSFER">Transfer</option>
-            <option value="ADJUSTMENT">Adjustment</option>
-          </select>
-          <select
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            value={filters.dateRange}
-            onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
-          >
-            <option value="">All Time</option>
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-          </select>
-        </div>
       </div>
 
       <Table
         columns={columns}
-        data={movements || []}
+        data={movements}
         loading={isLoading}
         pagination={true}
         pageSize={10}
