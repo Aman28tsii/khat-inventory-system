@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calendar, Filter, X } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { Filter, X } from 'lucide-react';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 
@@ -121,9 +121,6 @@ const ReportFilters = ({ onApply, onClear, isLoading = false }) => {
             onChange={(e) => setFilters({ ...filters, branchId: e.target.value })}
           >
             <option value="">All Branches</option>
-            <option value="branch1">Headquarters</option>
-            <option value="branch2">Branch A</option>
-            <option value="branch3">Warehouse</option>
           </select>
         </div>
 
