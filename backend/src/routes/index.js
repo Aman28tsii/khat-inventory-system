@@ -41,7 +41,11 @@ router.use('/dashboard', authenticate, dashboardRoutes);
 router.use('/reports', authenticate, reportRoutes);
 router.use('/settings', authenticate, settingsRoutes);
 router.use('/audit-logs', authenticate, auditRoutes);
+router.use('/roles', authenticate, rolesRoutes);
 router.use('/notifications', authenticate, notificationRoutes);
 
 export default router;
+
+
+
 
