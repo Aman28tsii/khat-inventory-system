@@ -86,7 +86,7 @@ const Header = ({ toggleSidebar }) => {
             )}
           </button>
 
-          {/* Notification Bell - ADD THIS */}
+          {/* Notification Bell */}
           <NotificationBell />
 
           {/* User Menu */}
@@ -112,6 +112,7 @@ const Header = ({ toggleSidebar }) => {
                   className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
                 >
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">🌿 Welcome</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {user?.firstName} {user?.lastName}
                     </p>
