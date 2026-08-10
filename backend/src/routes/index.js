@@ -14,6 +14,7 @@ import dashboardRoutes from './dashboardRoutes.js';
 import reportRoutes from './reportRoutes.js';
 import settingsRoutes from './settingsRoutes.js';
 import auditRoutes from './auditRoutes.js';
+import rolesRoutes from './rolesRoutes.js';
 import notificationRoutes from './notificationRoutes.js';
 import { authenticate } from '../middlewares/auth.js';
 
@@ -43,3 +44,4 @@ router.use('/audit-logs', authenticate, auditRoutes);
 router.use('/notifications', authenticate, notificationRoutes);
 
 export default router;
+
