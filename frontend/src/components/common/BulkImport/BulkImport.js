@@ -10,8 +10,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import Button from '../../../components/common/Button/Button';
-import Modal from '../../../components/common/Modal/Modal';
+import Button from '../../Button/Button';
+import Modal from '../../Modal/Modal';
 
 const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
   const dispatch = useDispatch();
@@ -48,18 +48,18 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
 
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(https://khat-inventory-system.onrender.com/api/v1//bulk-import, {
+      const response = await fetch('https://khat-inventory-system.onrender.com/api/v1/' + type + '/bulk-import', {
         method: 'POST',
         body: formData,
         headers: {
-          'Authorization': Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5YzI5YmFjLTZkOTctNGI3Yi04ODQ2LTI4MGZlNmUwYzdiNiIsImlhdCI6MTc4NjM1NTM0NSwiZXhwIjoxNzg2MzU2MjQ1fQ.xfZLz00MHTVb4fNMv40WZwmIiciX_XrFDOnuLqXcACo
+          'Authorization': 'Bearer ' + token
         }
       });
 
       if (!response.ok) throw new Error('Upload failed');
       
       const data = await response.json();
-      toast.success(Successfully imported  );
+      toast.success('Successfully imported ' + (data.count || 0) + ' ' + type);
       setFile(null);
       setUploadProgress(0);
       onSuccess();
@@ -81,7 +81,7 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={Bulk Import } size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={'Bulk Import ' + getTypeLabel()} size="lg">
       <div className="space-y-6">
         <div className="text-center">
           <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -142,7 +142,7 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div 
               className="bg-primary-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: ${uploadProgress}% }}
+              style={{ width: uploadProgress + '%' }}
             />
           </div>
         )}
