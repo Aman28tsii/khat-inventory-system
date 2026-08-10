@@ -1,11 +1,14 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Truck, Plus, Edit, Trash2, Power, Search, Mail, Phone, MapPin } from 'lucide-react';
+import { Truck, Plus, Edit, Trash2, Power, Search, Mail, Phone, MapPin, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
+import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpinner';
+import EmptyState from '../../../components/common/EmptyState/EmptyState';
+import BulkImport from '../../../components/common/BulkImport/BulkImport';
 import { fetchSuppliers, deleteSupplier, toggleSupplierStatus, clearError } from '../slices/supplierSlice';
 
 const SupplierList = () => {
@@ -15,6 +18,7 @@ const SupplierList = () => {
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -195,9 +199,56 @@ const SupplierList = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Supplier Management</h1>
           <p className="text-gray-500 dark:text-gray-400">Manage suppliers and vendors</p>
         </div>
-        <Button
-          variant="primary"
-          onClick={() => {
+        <div className="flex gap-2">
+          <Button variant="secondary" onClick={() => setShowBulkImport(true)}>
+            <Upload className="w-4 h-4 mr-2" /> Import CSV
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setSelectedSupplier(null);
+              setFormData({
+                name: '',
+                code: '',
+                contactPerson: '',
+                phone: '',
+                email: '',
+                address: '',
+                taxId: '',
+                paymentTerms: '',
+                creditLimit: '',
+                isActive: true
+              });
+              setIsEditing(false);
+              setShowModal(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Supplier
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search suppliers by name, code, or contact..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+      </div>
+
+      {isLoading && <LoadingSpinner />}
+      {suppliers.length === 0 && !isLoading && (
+        <EmptyState
+          title="No Suppliers Found"
+          description="Start by adding your first supplier"
+          actionText="Add Supplier"
+          onAction={() => {
             setSelectedSupplier(null);
             setFormData({
               name: '',
@@ -214,25 +265,8 @@ const SupplierList = () => {
             setIsEditing(false);
             setShowModal(true);
           }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Supplier
-        </Button>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search suppliers by name, code, or contact..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
-        </div>
-      </div>
-
+        />
+      )}
       <Table
         columns={columns}
         data={suppliers}
@@ -366,6 +400,16 @@ const SupplierList = () => {
           </div>
         </div>
       </Modal>
+
+      <BulkImport
+        isOpen={showBulkImport}
+        onClose={() => setShowBulkImport(false)}
+        type="suppliers"
+        onSuccess={() => {
+          dispatch(fetchSuppliers());
+          toast.success('Suppliers imported successfully');
+        }}
+      />
     </div>
   );
 };

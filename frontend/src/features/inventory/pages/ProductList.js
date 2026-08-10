@@ -1,11 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
+import BulkImport from '../../../components/common/BulkImport/BulkImport';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
   Package, 
   Plus, 
   Edit, 
-  Trash2, 
+  Trash2,
+  Upload, 
   Power,
   Search,
   Box,
@@ -29,6 +31,7 @@ const ProductList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
@@ -198,29 +201,38 @@ const ProductList = () => {
             Manage products and inventory items
           </p>
         </div>
-        <Button
-          variant="primary"
-          onClick={() => {
-            setSelectedProduct(null);
-            setFormData({
-              name: '',
-              sku: '',
-              category: '',
-              subCategory: '',
-              description: '',
-              unit: 'KG',
-              minStockQuantity: '',
-              maxStockQuantity: '',
-              reorderLevel: '',
-              isActive: true
-            });
-            setIsEditing(false);
-            setShowModal(true);
-          }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Product
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => setShowBulkImport(true)}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Import CSV
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setSelectedProduct(null);
+              setFormData({
+                name: '',
+                sku: '',
+                category: '',
+                subCategory: '',
+                description: '',
+                unit: 'KG',
+                minStockQuantity: '',
+                maxStockQuantity: '',
+                reorderLevel: '',
+                isActive: true
+              });
+              setIsEditing(false);
+              setShowModal(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Product
+          </Button>
+        </div>
       </div>
 
       {/* Search */}
@@ -236,7 +248,6 @@ const ProductList = () => {
       </div>
 
       {/* Products Table */}
-      
       {isLoading && <LoadingSpinner />}
       {products.length === 0 && !isLoading && (
         <EmptyState 
@@ -374,9 +385,19 @@ const ProductList = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Bulk Import Modal */}
+      <BulkImport
+        isOpen={showBulkImport}
+        onClose={() => setShowBulkImport(false)}
+        type="products"
+        onSuccess={() => {
+          dispatch(fetchProducts());
+          toast.success('Products imported successfully');
+        }}
+      />
     </div>
   );
 };
 
 export default ProductList;
-

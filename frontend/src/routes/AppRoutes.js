@@ -10,8 +10,14 @@ import BatchList from '../features/inventory/pages/BatchList';
 import CustomerList from '../features/customers/pages/CustomerList';
 import SupplierList from '../features/suppliers/pages/SupplierList';
 import PurchaseList from '../features/purchases/pages/PurchaseList';
+import CreatePurchase from '../features/purchases/pages/CreatePurchase';
+import PurchaseDetail from '../features/purchases/pages/PurchaseDetail';
 import SaleList from '../features/sales/pages/SaleList';
+import CreateSale from '../features/sales/pages/CreateSale';
+import SaleDetail from '../features/sales/pages/SaleDetail';
 import TransferList from '../features/transfers/pages/TransferList';
+import CreateTransfer from '../features/transfers/pages/CreateTransfer';
+import TransferDetail from '../features/transfers/pages/TransferDetail';
 import UserList from '../features/users/pages/UserList';
 import UserProfile from '../features/users/pages/UserProfile';
 import RoleList from '../features/roles/pages/RoleList';
@@ -22,6 +28,7 @@ import SalesReport from '../features/reports/pages/SalesReport';
 import ProfitReport from '../features/reports/pages/ProfitReport';
 import StockMovements from '../features/inventory/pages/StockMovements';
 import SettingsPage from '../features/settings/pages/SettingsPage';
+import ChangePassword from '../features/auth/pages/ChangePassword';
 
 const AppRoutes = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -46,9 +53,17 @@ const AppRoutes = () => {
         <Route path="/customers" element={<CustomerList />} />
         <Route path="/suppliers" element={<SupplierList />} />
         <Route path="/purchases" element={<PurchaseList />} />
+        <Route path="/purchases/create" element={<CreatePurchase />} />
+        <Route path="/purchases/:id" element={<PurchaseDetail />} />
         <Route path="/sales" element={<SaleList />} />
+        <Route path="/sales/create" element={<CreateSale />} />
+        <Route path="/sales/:id" element={<SaleDetail />} />
         <Route path="/transfers" element={<TransferList />} />
-        <Route path="/users" element={<UserList />} />`n        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/transfers/create" element={<CreateTransfer />} />
+        <Route path="/transfers/:id" element={<TransferDetail />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/roles" element={<RoleList />} />
         <Route path="/audit-logs" element={<AuditLogs />} />
         <Route path="/notifications" element={<NotificationCenter />} />
@@ -63,4 +78,3 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
-
