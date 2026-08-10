@@ -1,0 +1,10 @@
+warning: in the working copy of 'frontend/src/features/dashboard/pages/ExecutiveDashboard.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/theme/brand.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tailwind.config.js', LF will be replaced by CRLF the next time Git touches it
+frontend/public/index.html
+frontend/src/components/layout/Header/Header.js
+frontend/src/components/layout/Sidebar/Sidebar.js
+frontend/src/features/auth/pages/Login.js
+frontend/src/features/dashboard/pages/ExecutiveDashboard.js
+frontend/src/theme/brand.js
+frontend/tailwind.config.js
