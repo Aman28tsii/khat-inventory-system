@@ -209,3 +209,4 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
+

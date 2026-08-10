@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -63,7 +63,7 @@ const Login = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900/30 rounded-2xl mb-4">
-              <span className="text-4xl">📦</span>
+              <span className="text-4xl">ðŸ“¦</span>
             </div>
             <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">
               Khat Inventory System

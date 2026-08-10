@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="20" fill="#1a5c2a"/>
+  <path d="M60 105 L60 30" stroke="#4ade80" stroke-width="4" fill="none"/>
+  <path d="M60 105 C35 105 25 65 60 30 C95 65 85 105 60 105Z" fill="#22c55e" opacity="0.9"/>
+  <path d="M60 98 L45 73" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+  <path d="M60 98 L75 73" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+  <path d="M60 86 L48 65" stroke="#16a34a" stroke-width="2" fill="none"/>
+  <path d="M60 86 L72 65" stroke="#16a34a" stroke-width="2" fill="none"/>
+  <circle cx="60" cy="30" r="6" fill="#4ade80"/>
+  <circle cx="60" cy="30" r="3" fill="#86efac"/>
+  <text x="60" y="112" font-family="Arial" font-size="10" font-weight="bold" fill="#86efac" text-anchor="middle">K</text>
+</svg>
