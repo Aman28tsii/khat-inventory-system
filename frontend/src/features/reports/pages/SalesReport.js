@@ -1,16 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
-import { 
-  ShoppingCart, 
-  Download, 
-  FileText, 
-  FileSpreadsheet,
-  Printer,
-  TrendingUp,
-  DollarSign,
-  Users
-} from 'lucide-react';
+import { ShoppingCart, FileText, FileSpreadsheet, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
 import ChartWidget from '../../dashboard/components/ChartWidget';
@@ -42,12 +32,7 @@ const SalesReport = () => {
 
   const handleExportPDF = async () => {
     try {
-      const blob = await dispatch(exportReportPDF({ 
-        type: 'sales', 
-        filters,
-        data: salesReport 
-      })).unwrap();
-      
+      const blob = await dispatch(exportReportPDF({ type: 'sales', filters, data: salesReport })).unwrap();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -64,12 +49,7 @@ const SalesReport = () => {
 
   const handleExportExcel = async () => {
     try {
-      const blob = await dispatch(exportReportExcel({ 
-        type: 'sales', 
-        filters,
-        data: salesReport 
-      })).unwrap();
-      
+      const blob = await dispatch(exportReportExcel({ type: 'sales', filters, data: salesReport })).unwrap();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -82,6 +62,12 @@ const SalesReport = () => {
     } catch (error) {
       toast.error('Failed to export Excel');
     }
+  };
+
+  const formatCurrency = (amount) => {
+    if (amount === undefined || amount === null || isNaN(amount)) return '.00';
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return '$' + num.toFixed(2);
   };
 
   const columns = [
@@ -101,7 +87,7 @@ const SalesReport = () => {
       render: (row) => (
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-gray-400" />
-          <span className="text-gray-900 dark:text-white">{row.customer}</span>
+          <span className="text-gray-900 dark:text-white">{row.customer || 'Walk-in'}</span>
         </div>
       )
     },
@@ -110,8 +96,8 @@ const SalesReport = () => {
       label: 'Items',
       render: (row) => (
         <div className="space-y-0.5">
-          <div className="text-sm text-gray-900 dark:text-white">{row.itemCount} items</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{row.productNames}</div>
+          <div className="text-sm text-gray-900 dark:text-white">{row.itemCount || 0} items</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{row.productNames || ''}</div>
         </div>
       )
     },
@@ -121,10 +107,10 @@ const SalesReport = () => {
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm font-medium text-gray-900 dark:text-white">
-            
+            {formatCurrency(row.totalAmount)}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Paid: 
+            Paid: {formatCurrency(row.paidAmount)}
           </div>
         </div>
       )
@@ -140,104 +126,55 @@ const SalesReport = () => {
     }
   ];
 
-  const salesTrendData = [
-    { day: 'Mon', sales: 1200, revenue: 1500 },
-    { day: 'Tue', sales: 1800, revenue: 2100 },
-    { day: 'Wed', sales: 1500, revenue: 1800 },
-    { day: 'Thu', sales: 2200, revenue: 2500 },
-    { day: 'Fri', sales: 2800, revenue: 3200 },
-    { day: 'Sat', sales: 2000, revenue: 2300 },
-    { day: 'Sun', sales: 900, revenue: 1100 },
-  ];
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Sales Report
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Sales performance and revenue analysis
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales Report</h1>
+          <p className="text-gray-500 dark:text-gray-400">Sales performance and revenue analysis</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleExportPDF}
-            isLoading={exporting}
-            disabled={isLoading || !salesReport}
-          >
-            <FileText className="w-4 h-4 mr-1" />
-            PDF
+          <Button variant="secondary" size="sm" isLoading={exporting} onClick={handleExportPDF} disabled={isLoading || !salesReport}>
+            <FileText className="w-4 h-4 mr-1" /> PDF
           </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            isLoading={exporting}
-            onClick={handleExportExcel}
-            disabled={isLoading || !salesReport}
-          >
-            <FileSpreadsheet className="w-4 h-4 mr-1" />
-            Excel
+          <Button variant="primary" size="sm" isLoading={exporting} onClick={handleExportExcel} disabled={isLoading || !salesReport}>
+            <FileSpreadsheet className="w-4 h-4 mr-1" /> Excel
           </Button>
         </div>
       </div>
 
-      <ReportFilters
-        onApply={(newFilters) => loadReport(newFilters)}
-        onClear={() => loadReport({})}
-        isLoading={isLoading}
-      />
+      <ReportFilters onApply={(newFilters) => loadReport(newFilters)} onClear={() => loadReport({})} isLoading={isLoading} />
 
-      {salesReport && (
+      {salesReport && salesReport.summary && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
             <p className="text-sm text-gray-500 dark:text-gray-400">Total Sales</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {salesReport.summary?.totalSales || 0}
-            </p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{salesReport.summary.totalSales || 0}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
             <p className="text-sm text-gray-500 dark:text-gray-400">Total Revenue</p>
-            <p className="text-2xl font-bold text-green-600">
-              
-            </p>
+            <p className="text-2xl font-bold text-green-600">{formatCurrency(salesReport.summary.totalRevenue)}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
             <p className="text-sm text-gray-500 dark:text-gray-400">Average Order Value</p>
-            <p className="text-2xl font-bold text-blue-600">
-              
-            </p>
+            <p className="text-2xl font-bold text-blue-600">{formatCurrency(salesReport.summary.averageOrderValue)}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
             <p className="text-sm text-gray-500 dark:text-gray-400">Top Product</p>
-            <p className="text-lg font-bold text-gray-900 dark:text-white truncate">
-              {salesReport.summary?.topProduct || 'N/A'}
-            </p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white truncate">{salesReport.summary.topProduct || 'N/A'}</p>
           </div>
         </div>
       )}
 
       <ChartWidget
         title="Sales Trend"
-        data={salesTrendData}
+        data={salesReport?.trendData || []}
         type="line"
-        series={[
-          { key: 'sales', name: 'Sales' },
-          { key: 'revenue', name: 'Revenue' }
-        ]}
+        series={[{ key: 'sales', name: 'Sales' }, { key: 'revenue', name: 'Revenue' }]}
         xAxisKey="day"
       />
 
-      <Table
-        columns={columns}
-        data={salesReport?.data || []}
-        loading={isLoading}
-        pagination={true}
-        pageSize={20}
-      />
+      <Table columns={columns} data={salesReport?.data || []} loading={isLoading} pagination={true} pageSize={20} />
     </div>
   );
 };
