@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { reportService } from '../services/reportService';
 
 const initialState = {
@@ -17,7 +17,7 @@ export const fetchInventoryReport = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await reportService.getInventoryReport(params);
-      return response.data.data;
+      return response.data.data || response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch inventory report');
     }
@@ -29,7 +29,7 @@ export const fetchSalesReport = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await reportService.getSalesReport(params);
-      return response.data.data;
+      return response.data.data || response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch sales report');
     }
@@ -41,21 +41,9 @@ export const fetchProfitReport = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await reportService.getProfitReport(params);
-      return response.data.data;
+      return response.data.data || response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch profit report');
-    }
-  }
-);
-
-export const fetchBranchReport = createAsyncThunk(
-  'reports/fetchBranch',
-  async (params = {}, { rejectWithValue }) => {
-    try {
-      const response = await reportService.getBranchReport(params);
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch branch report');
     }
   }
 );
@@ -118,9 +106,6 @@ const reportSlice = createSlice({
       })
       .addCase(fetchProfitReport.fulfilled, (state, action) => {
         state.profitReport = action.payload;
-      })
-      .addCase(fetchBranchReport.fulfilled, (state, action) => {
-        state.branchReport = action.payload;
       })
       .addCase(exportReportPDF.pending, (state) => {
         state.exporting = true;
