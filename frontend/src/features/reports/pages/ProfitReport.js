@@ -70,6 +70,12 @@ const ProfitReport = () => {
     return '$' + num.toFixed(2);
   };
 
+  const formatPercentage = (value) => {
+    if (value === undefined || value === null || isNaN(value)) return '0.0%';
+    const num = typeof value === 'string' ? parseFloat(value) : value;
+    return num.toFixed(1) + '%';
+  };
+
   const columns = [
     {
       key: 'date',
@@ -100,7 +106,9 @@ const ProfitReport = () => {
       key: 'margin',
       label: 'Margin %',
       render: (row) => {
-        const margin = row.revenue > 0 ? (row.profit / row.revenue) * 100 : 0;
+        const revenue = typeof row.revenue === 'string' ? parseFloat(row.revenue) : (row.revenue || 0);
+        const profit = typeof row.profit === 'string' ? parseFloat(row.profit) : (row.profit || 0);
+        const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
         return <span className={'font-medium ' + (margin > 30 ? 'text-green-600' : margin > 15 ? 'text-yellow-600' : 'text-red-600')}>{margin.toFixed(1)}%</span>;
       }
     }
@@ -141,7 +149,7 @@ const ProfitReport = () => {
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
             <p className="text-sm text-gray-500 dark:text-gray-400">Profit Margin</p>
-            <p className="text-2xl font-bold text-purple-600">{profitReport.summary.averageMargin?.toFixed(1) || '0.0'}%</p>
+            <p className="text-2xl font-bold text-purple-600">{formatPercentage(profitReport.summary.averageMargin)}</p>
           </div>
         </div>
       )}
