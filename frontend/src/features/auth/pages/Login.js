@@ -63,7 +63,7 @@ const Login = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900/30 rounded-2xl mb-4">
-              <span className="text-4xl">ðŸ“¦</span>
+              <span className="text-4xl">🌿</span>
             </div>
             <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">
               Khat Inventory System
