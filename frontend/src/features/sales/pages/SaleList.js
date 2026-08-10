@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
+import EmptyState from '../../../components/common/EmptyState/EmptyState';
 import Button from '../../../components/common/Button/Button';
 import { fetchSales, clearError } from '../slices/saleSlice';
 
@@ -198,6 +199,15 @@ const SaleList = () => {
         </div>
       </div>
 
+      
+      {sales.length === 0 && !isLoading && (
+        <EmptyState 
+          title='No Sales Found' 
+          description='Start by creating your first sale' 
+          actionText='New Sale' 
+          onAction={() => navigate('/sales/create')} 
+        />
+      )}
       <Table
         columns={columns}
         data={sales}
@@ -209,3 +219,4 @@ const SaleList = () => {
 };
 
 export default SaleList;
+

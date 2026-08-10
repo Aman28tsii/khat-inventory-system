@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
+import EmptyState from '../../../components/common/EmptyState/EmptyState';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
@@ -224,6 +225,15 @@ const PurchaseList = () => {
         </div>
       </div>
 
+      
+      {purchases.length === 0 && !isLoading && (
+        <EmptyState 
+          title='No Purchases Found' 
+          description='Start by creating your first purchase order' 
+          actionText='Create Purchase' 
+          onAction={() => navigate('/purchases/create')} 
+        />
+      )}
       <Table
         columns={columns}
         data={purchases}
@@ -279,3 +289,4 @@ const PurchaseList = () => {
 };
 
 export default PurchaseList;
+

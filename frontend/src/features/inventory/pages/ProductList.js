@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
+import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpinner';
+import EmptyState from '../../../components/common/EmptyState/EmptyState';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
@@ -234,6 +236,32 @@ const ProductList = () => {
       </div>
 
       {/* Products Table */}
+      
+      {isLoading && <LoadingSpinner />}
+      {products.length === 0 && !isLoading && (
+        <EmptyState 
+          title='No Products Found' 
+          description='Start by adding your first product' 
+          actionText='Add Product' 
+          onAction={() => {
+            setSelectedProduct(null);
+            setFormData({
+              name: '',
+              sku: '',
+              category: '',
+              subCategory: '',
+              description: '',
+              unit: 'KG',
+              minStockQuantity: '',
+              maxStockQuantity: '',
+              reorderLevel: '',
+              isActive: true
+            });
+            setIsEditing(false);
+            setShowModal(true);
+          }}
+        />
+      )}
       <Table
         columns={columns}
         data={products}
@@ -351,3 +379,4 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
