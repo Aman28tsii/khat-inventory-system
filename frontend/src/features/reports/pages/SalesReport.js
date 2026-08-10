@@ -84,12 +84,16 @@ const SalesReport = () => {
     {
       key: 'customer',
       label: 'Customer',
-      render: (row) => (
-        <div className="flex items-center gap-2">
-          <Users className="w-4 h-4 text-gray-400" />
-          <span className="text-gray-900 dark:text-white">{row.customer || 'Walk-in'}</span>
-        </div>
-      )
+      render: (row) => {
+        // Fix: Access the customer name property, not the whole object
+        const customerName = typeof row.customer === 'object' ? row.customer?.name || 'Walk-in' : row.customer || 'Walk-in';
+        return (
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-900 dark:text-white">{customerName}</span>
+          </div>
+        );
+      }
     },
     {
       key: 'items',
