@@ -62,3 +62,4 @@ const customerSlice = createSlice({
 
 export const { clearError, setSelectedCustomer } = customerSlice.actions;
 export default customerSlice.reducer;
+
