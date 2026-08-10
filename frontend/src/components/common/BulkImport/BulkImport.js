@@ -10,8 +10,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import Button from '../../Button/Button';
-import Modal from '../../Modal/Modal';
+import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
 
 const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
   const dispatch = useDispatch();
