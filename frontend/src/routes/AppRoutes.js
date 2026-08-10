@@ -13,6 +13,7 @@ import PurchaseList from '../features/purchases/pages/PurchaseList';
 import SaleList from '../features/sales/pages/SaleList';
 import TransferList from '../features/transfers/pages/TransferList';
 import UserList from '../features/users/pages/UserList';
+import UserProfile from '../features/users/pages/UserProfile';
 import RoleList from '../features/roles/pages/RoleList';
 import AuditLogs from '../features/audit/pages/AuditLogs';
 import NotificationCenter from '../features/notifications/pages/NotificationCenter';
@@ -47,7 +48,7 @@ const AppRoutes = () => {
         <Route path="/purchases" element={<PurchaseList />} />
         <Route path="/sales" element={<SaleList />} />
         <Route path="/transfers" element={<TransferList />} />
-        <Route path="/users" element={<UserList />} />
+        <Route path="/users" element={<UserList />} />`n        <Route path="/profile" element={<UserProfile />} />
         <Route path="/roles" element={<RoleList />} />
         <Route path="/audit-logs" element={<AuditLogs />} />
         <Route path="/notifications" element={<NotificationCenter />} />
@@ -62,3 +63,4 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
+
