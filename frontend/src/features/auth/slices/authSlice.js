@@ -29,6 +29,30 @@ export const login = createAsyncThunk(
   }
 );
 
+export const changePassword = createAsyncThunk(
+  'auth/changePassword',
+  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(API_URL + '/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Password change failed');
+      }
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to change password');
+    }
+  }
+);
+
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -122,6 +146,18 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
       })
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
       .addCase(getCurrentUser.rejected, (state) => {
         state.isAuthenticated = false;
         state.user = null;
@@ -133,4 +169,6 @@ const authSlice = createSlice({
 
 export const { setCredentials, clearCredentials, clearError } = authSlice.actions;
 export default authSlice.reducer;
+
+
 
