@@ -117,7 +117,7 @@ const ExecutiveDashboard = () => {
       color: 'orange',
       trend: 'down',
       trendValue: '2.1%',
-      subtitle: ${t('onlineNow')}: 12
+      subtitle: t('onlineNow') + ': 12'
     }
   ];
 
