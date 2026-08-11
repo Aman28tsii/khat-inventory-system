@@ -12,8 +12,10 @@ import {
 import { toast } from 'react-hot-toast';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +30,7 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       ];
       if (!validTypes.includes(selectedFile.type)) {
-        toast.error('Please upload a CSV or Excel file');
+        toast.error(t('validation.invalidFormat'));
         return;
       }
       setFile(selectedFile);
@@ -37,7 +39,7 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
 
   const handleUpload = async () => {
     if (!file) {
-      toast.error('Please select a file');
+      toast.error(t('validation.required'));
       return;
     }
 
@@ -59,13 +61,13 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
       if (!response.ok) throw new Error('Upload failed');
       
       const data = await response.json();
-      toast.success('Successfully imported ' + (data.count || 0) + ' ' + type);
+      toast.success(t('common.success'));
       setFile(null);
       setUploadProgress(0);
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error.message || 'Failed to import');
+      toast.error(t('errors.generic'));
     } finally {
       setIsLoading(false);
     }
@@ -73,25 +75,25 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
 
   const getTypeLabel = () => {
     const labels = {
-      products: 'Products',
-      suppliers: 'Suppliers',
-      customers: 'Customers'
+      products: t('inventory.products'),
+      suppliers: t('suppliers.title'),
+      customers: t('customers.title')
     };
     return labels[type] || type;
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={'Bulk Import ' + getTypeLabel()} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={t('products.bulkImport') + ' ' + getTypeLabel()} size="lg">
       <div className="space-y-6">
         <div className="text-center">
           <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <Upload className="w-8 h-8 text-primary-600" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Upload {getTypeLabel()} File
+            {t('products.bulkImport')}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Upload a CSV or Excel file to bulk import {type}
+            {t('products.bulkImport') + ' ' + getTypeLabel()}
           </p>
         </div>
 
@@ -122,10 +124,10 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
             <div>
               <File className="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Click to upload or drag and drop
+                {t('common.clickToUpload')}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                CSV or Excel files supported
+                CSV {t('common.or')} Excel {t('common.files')}
               </p>
             </div>
           )}
@@ -149,10 +151,10 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleUpload} isLoading={isLoading}>
-            {isLoading ? 'Uploading...' : 'Upload File'}
+            {isLoading ? t('common.loading') : t('common.upload')}
           </Button>
         </div>
       </div>

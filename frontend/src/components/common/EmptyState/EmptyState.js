@@ -1,6 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import Button from '../Button/Button';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const EmptyState = ({
   icon: Icon,
@@ -10,11 +11,13 @@ const EmptyState = ({
   onAction,
   className = ''
 }) => {
+  const { t } = useLanguage();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`flex flex-col items-center justify-center py-12 px-4 ${className}`}
+      className={'flex flex-col items-center justify-center py-12 px-4 ' + className}
     >
       {Icon && (
         <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">

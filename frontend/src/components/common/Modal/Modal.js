@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const Modal = ({
   isOpen,
@@ -12,9 +13,9 @@ const Modal = ({
   showCloseButton = true,
   className = ''
 }) => {
+  const { t } = useLanguage();
   const modalRef = useRef();
 
-  // Close on escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') onClose();
@@ -29,7 +30,6 @@ const Modal = ({
     };
   }, [isOpen, onClose]);
 
-  // Close on click outside
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       onClose();
@@ -60,9 +60,8 @@ const Modal = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'spring', damping: 25 }}
-            className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full ${sizes[size]} ${className}`}
+            className={'bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full ' + sizes[size] + ' ' + className}
           >
-            {/* Header */}
             {(title || showCloseButton) && (
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 {title && (
@@ -74,6 +73,7 @@ const Modal = ({
                   <button
                     onClick={onClose}
                     className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    aria-label={t('common.close')}
                   >
                     <X className="w-5 h-5 text-gray-500" />
                   </button>
@@ -81,7 +81,6 @@ const Modal = ({
               </div>
             )}
 
-            {/* Content */}
             <div className="px-6 py-4">
               {children}
             </div>
