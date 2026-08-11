@@ -83,12 +83,16 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const t = (key) => {
-    return translations[language]?.[key] || key;
+    if (!translations[language]) {
+      return translations.en[key] || key;
+    }
+    return translations[language][key] || key;
   };
 
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'am' : 'en';
     setLanguage(newLang);
+    localStorage.setItem('language', newLang);
   };
 
   return (
