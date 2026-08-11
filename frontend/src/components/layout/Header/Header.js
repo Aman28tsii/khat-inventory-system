@@ -3,18 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Menu, 
-  Bell, 
-  Search, 
-  User, 
-  Settings, 
-  LogOut,
-  Moon,
-  Sun,
-  ChevronDown,
-  UserCircle,
-  Shield,
-  LayoutDashboard
+  Menu, Bell, Search, User, Settings, LogOut,
+  Moon, Sun, ChevronDown, UserCircle, Shield
 } from 'lucide-react';
 import { logout } from '../../../features/auth/slices/authSlice';
 import NotificationBell from './NotificationBell.js';
@@ -22,7 +12,7 @@ import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../context/LanguageContext';
 
 const Header = ({ toggleSidebar }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -69,6 +59,7 @@ const Header = ({ toggleSidebar }) => {
               type="text"
               placeholder={t('search')}
               className="pl-10 pr-4 py-2 w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              key={language}
             />
           </div>
         </div>
