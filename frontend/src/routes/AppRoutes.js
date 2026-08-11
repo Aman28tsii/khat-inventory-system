@@ -29,6 +29,7 @@ import ProfitReport from '../features/reports/pages/ProfitReport';
 import StockMovements from '../features/inventory/pages/StockMovements';
 import SettingsPage from '../features/settings/pages/SettingsPage';
 import ChangePassword from '../features/auth/pages/ChangePassword';
+import AppLayout from '../components/layout/AppLayout/AppLayout';
 
 const AppRoutes = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -43,37 +44,38 @@ const AppRoutes = () => {
   }
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={<ExecutiveDashboard />} />
-        <Route path="/branches" element={<BranchList />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/batches" element={<BatchList />} />
-        <Route path="/customers" element={<CustomerList />} />
-        <Route path="/suppliers" element={<SupplierList />} />
-        <Route path="/purchases" element={<PurchaseList />} />
-        <Route path="/purchases/create" element={<CreatePurchase />} />
-        <Route path="/purchases/:id" element={<PurchaseDetail />} />
-        <Route path="/sales" element={<SaleList />} />
-        <Route path="/sales/create" element={<CreateSale />} />
-        <Route path="/sales/:id" element={<SaleDetail />} />
-        <Route path="/transfers" element={<TransferList />} />
-        <Route path="/transfers/create" element={<CreateTransfer />} />
-        <Route path="/transfers/:id" element={<TransferDetail />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/roles" element={<RoleList />} />
-        <Route path="/audit-logs" element={<AuditLogs />} />
-        <Route path="/notifications" element={<NotificationCenter />} />
-        <Route path="/reports/inventory" element={<InventoryReport />} />
-        <Route path="/reports/sales" element={<SalesReport />} />
-        <Route path="/reports/profit" element={<ProfitReport />} />
-        <Route path="/inventory/stock-movements" element={<StockMovements />} />
-        <Route path="/settings" element={<SettingsPage />} />
+    <Routes>
+      <Route path="/" element={<AppLayout />}>
+        <Route index element={<Navigate to="/dashboard" />} />
+        <Route path="dashboard" element={<ExecutiveDashboard />} />
+        <Route path="branches" element={<BranchList />} />
+        <Route path="products" element={<ProductList />} />
+        <Route path="batches" element={<BatchList />} />
+        <Route path="customers" element={<CustomerList />} />
+        <Route path="suppliers" element={<SupplierList />} />
+        <Route path="purchases" element={<PurchaseList />} />
+        <Route path="purchases/create" element={<CreatePurchase />} />
+        <Route path="purchases/:id" element={<PurchaseDetail />} />
+        <Route path="sales" element={<SaleList />} />
+        <Route path="sales/create" element={<CreateSale />} />
+        <Route path="sales/:id" element={<SaleDetail />} />
+        <Route path="transfers" element={<TransferList />} />
+        <Route path="transfers/create" element={<CreateTransfer />} />
+        <Route path="transfers/:id" element={<TransferDetail />} />
+        <Route path="users" element={<UserList />} />
+        <Route path="profile" element={<UserProfile />} />
+        <Route path="change-password" element={<ChangePassword />} />
+        <Route path="roles" element={<RoleList />} />
+        <Route path="audit-logs" element={<AuditLogs />} />
+        <Route path="notifications" element={<NotificationCenter />} />
+        <Route path="reports/inventory" element={<InventoryReport />} />
+        <Route path="reports/sales" element={<SalesReport />} />
+        <Route path="reports/profit" element={<ProfitReport />} />
+        <Route path="inventory/stock-movements" element={<StockMovements />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
-    </Layout>
+    </Routes>
   );
 };
 
