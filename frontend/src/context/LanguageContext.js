@@ -1,22 +1,107 @@
-import React from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import { Globe } from 'lucide-react';
+﻿import React, { createContext, useState, useContext, useEffect } from 'react';
 
-const LanguageSwitcher = () => {
-  const { language, toggleLanguage } = useLanguage();
+const LanguageContext = createContext();
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'en';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  const translations = {
+    en: {
+      search: "Search...",
+      welcome: "Welcome",
+      profile: "My Profile",
+      changePassword: "Change Password",
+      notifications: "Notifications",
+      logout: "Logout",
+      loading: "Loading...",
+      save: "Save",
+      cancel: "Cancel",
+      delete: "Delete",
+      edit: "Edit",
+      add: "Add",
+      create: "Create",
+      update: "Update",
+      close: "Close",
+      submit: "Submit",
+      confirm: "Confirm",
+      yes: "Yes",
+      no: "No",
+      dashboard: "Dashboard",
+      inventory: "Inventory",
+      sales: "Sales",
+      purchases: "Purchases",
+      transfers: "Transfers",
+      reports: "Reports",
+      customers: "Customers",
+      suppliers: "Suppliers",
+      users: "Users",
+      roles: "Roles",
+      branches: "Branches",
+      settings: "Settings",
+      user: "User"
+    },
+    am: {
+      search: "ፈልግ...",
+      welcome: "እንኳን በደህና መጡ",
+      profile: "መገለጫ",
+      changePassword: "የይለፍ ቃል ቀይር",
+      notifications: "ማሳወቂያዎች",
+      logout: "ውጣ",
+      loading: "በመጫን ላይ...",
+      save: "አስቀምጥ",
+      cancel: "ሰርዝ",
+      delete: "ሰርዝ",
+      edit: "አስተካክል",
+      add: "ጨምር",
+      create: "ፍጠር",
+      update: "አዘምን",
+      close: "ዝጋ",
+      submit: "አስገባ",
+      confirm: "አረጋግጥ",
+      yes: "አዎ",
+      no: "አይ",
+      dashboard: "ዳሽቦርድ",
+      inventory: "ኢንቬንተሪ",
+      sales: "ሽያጭ",
+      purchases: "ግዢ",
+      transfers: "ዝውውር",
+      reports: "ሪፖርቶች",
+      customers: "ደንበኞች",
+      suppliers: "አቅራቢዎች",
+      users: "ተጠቃሚዎች",
+      roles: "ሚናዎች",
+      branches: "ቅርንጫፎች",
+      settings: "ቅንብሮች",
+      user: "ተጠቃሚ"
+    }
+  };
+
+  const t = (key) => {
+    return translations[language]?.[key] || key;
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'am' : 'en';
+    setLanguage(newLang);
+  };
 
   return (
-    <button
-      onClick={toggleLanguage}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      aria-label="Toggle language"
-    >
-      <Globe className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {language === 'en' ? 'አማርኛ' : 'English'}
-      </span>
-    </button>
+    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
   );
 };
 
-export default LanguageSwitcher;
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+};

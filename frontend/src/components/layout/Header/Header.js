@@ -22,7 +22,7 @@ import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../context/LanguageContext';
 
 const Header = ({ toggleSidebar }) => {
-  const { t } = useLanguage(); // Add this
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -56,7 +56,6 @@ const Header = ({ toggleSidebar }) => {
   return (
     <header className="fixed top-0 right-0 left-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
-        {/* Left Section */}
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
@@ -64,23 +63,17 @@ const Header = ({ toggleSidebar }) => {
           >
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
-          
           <div className="hidden md:flex items-center relative">
             <Search className="absolute left-3 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder={t('search')} // Updated
+              placeholder={t('search')}
               className="pl-10 pr-4 py-2 w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
-
-        {/* Right Section */}
         <div className="flex items-center gap-3">
-          {/* Language Switcher */}
           <LanguageSwitcher />
-
-          {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -91,11 +84,7 @@ const Header = ({ toggleSidebar }) => {
               <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             )}
           </button>
-
-          {/* Notification Bell */}
           <NotificationBell />
-
-          {/* User Menu */}
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -108,7 +97,6 @@ const Header = ({ toggleSidebar }) => {
               </div>
               <ChevronDown className="w-4 h-4 text-gray-400" />
             </button>
-
             <AnimatePresence>
               {showUserMenu && (
                 <motion.div

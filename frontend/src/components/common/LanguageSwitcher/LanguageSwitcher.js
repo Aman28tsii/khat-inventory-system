@@ -1,17 +1,9 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Globe } from 'lucide-react';
+﻿import React from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
+import { Globe } from 'lucide-react';
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
-  const currentLanguage = i18n.language || 'en';
-
-  const toggleLanguage = () => {
-    const newLang = currentLanguage === 'en' ? 'am' : 'en';
-    i18n.changeLanguage(newLang);
-    localStorage.setItem('i18nextLng', newLang);
-  };
+  const { language, toggleLanguage } = useLanguage();
 
   return (
     <button
@@ -21,7 +13,7 @@ const LanguageSwitcher = () => {
     >
       <Globe className="w-5 h-5 text-gray-600 dark:text-gray-300" />
       <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {currentLanguage === 'en' ? 'አማርኛ' : 'English'}
+        {language === 'en' ? 'አማርኛ' : 'English'}
       </span>
     </button>
   );
