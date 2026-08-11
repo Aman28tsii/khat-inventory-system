@@ -12,13 +12,17 @@ const AppLayout = () => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      // On desktop, keep sidebar open by default
       if (!mobile) setSidebarOpen(true);
+      else setSidebarOpen(false);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -28,12 +32,8 @@ const AppLayout = () => {
         isMobile={isMobile}
       />
       
-      {/* Main content - margin only on desktop when sidebar is open */}
-      <div className={`flex-1 transition-all duration-300 ${
-        !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
-      }`}>
-        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        
+      <div className="flex-1 min-h-screen transition-all duration-300 ease-in-out">
+        <Header toggleSidebar={toggleSidebar} />
         <main className="pt-16 min-h-screen">
           <motion.div
             initial={{ opacity: 0 }}

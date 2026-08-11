@@ -73,17 +73,18 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
   ];
 
   return (
-    <AnimatePresence>
-      {(isOpen || !isMobile) && (
+    <AnimatePresence mode="wait">
+      {isOpen && (
         <>
-          {isMobile && isOpen && (
+          {isMobile && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />
           )}
           <motion.aside
-            initial={{ x: isMobile ? -300 : (isOpen ? 0 : -300) }}
-            animate={{ x: isMobile ? (isOpen ? 0 : -300) : (isOpen ? 0 : -300) }}
-            transition={{ type: 'spring', damping: 20 }}
-            className="fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto"
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto shadow-xl"
           >
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-800">
               <div className="flex items-center gap-3">
@@ -136,11 +137,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                         key={item.path}
                         to={item.path}
                         className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
-                            isActive
-                              ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                          }`
+                          lex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 
                         }
                       >
                         <item.icon className="w-5 h-5" />
