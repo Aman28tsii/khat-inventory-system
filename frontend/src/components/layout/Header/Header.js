@@ -53,8 +53,8 @@ const Header = ({ toggleSidebar }) => {
     navigate('/login');
   };
 
-  // Debug: Check if toggleSidebar is a function
-  console.log('toggleSidebar type:', typeof toggleSidebar);
+  // Check if toggleSidebar prop exists
+  console.log('Header received toggleSidebar:', typeof toggleSidebar);
 
   return (
     <header className="fixed top-0 right-0 left-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
@@ -62,11 +62,11 @@ const Header = ({ toggleSidebar }) => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
-              console.log('Hamburger clicked');
+              console.log('Hamburger clicked - calling toggleSidebar');
               if (typeof toggleSidebar === 'function') {
                 toggleSidebar();
               } else {
-                console.log('toggleSidebar is not a function!');
+                console.log('toggleSidebar is not a function! Type:', typeof toggleSidebar);
               }
             }}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"

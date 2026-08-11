@@ -5,16 +5,14 @@ import Sidebar from '../Sidebar/Sidebar';
 import Header from '../Header/Header';
 
 const AppLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      // On desktop, keep sidebar open by default
       if (!mobile) setSidebarOpen(true);
-      // On mobile, close sidebar by default
       else setSidebarOpen(false);
     };
 
@@ -26,6 +24,9 @@ const AppLayout = () => {
     console.log('toggleSidebar called, current state:', sidebarOpen);
     setSidebarOpen(!sidebarOpen);
   };
+
+  // Debug: Verify toggleSidebar is defined
+  console.log('AppLayout: toggleSidebar is defined');
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
