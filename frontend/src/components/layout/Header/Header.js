@@ -16,10 +16,13 @@ import {
   Shield,
   LayoutDashboard
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { logout } from '../../../features/auth/slices/authSlice';
 import NotificationBell from './NotificationBell.js';
+import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
 
 const Header = ({ toggleSidebar }) => {
+  const { t } = useTranslation('common');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -66,7 +69,7 @@ const Header = ({ toggleSidebar }) => {
             <Search className="absolute left-3 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={t('common.search')}
               className="pl-10 pr-4 py-2 w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
@@ -74,6 +77,9 @@ const Header = ({ toggleSidebar }) => {
 
         {/* Right Section */}
         <div className="flex items-center gap-3">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
@@ -112,7 +118,7 @@ const Header = ({ toggleSidebar }) => {
                   className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
                 >
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">🌿 Welcome</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">🌿 {t('auth.welcomeBack')}</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {user?.firstName} {user?.lastName}
                     </p>
@@ -120,7 +126,7 @@ const Header = ({ toggleSidebar }) => {
                       {user?.email}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {user?.role?.name || 'User'}
+                      {user?.role?.name || t('common.user')}
                     </p>
                   </div>
                   <div className="py-2">
@@ -132,7 +138,7 @@ const Header = ({ toggleSidebar }) => {
                       className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <UserCircle className="w-4 h-4" />
-                      My Profile
+                      {t('navigation.profile')}
                     </button>
                     <button
                       onClick={() => {
@@ -142,7 +148,7 @@ const Header = ({ toggleSidebar }) => {
                       className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <Shield className="w-4 h-4" />
-                      Change Password
+                      {t('auth.changePassword')}
                     </button>
                     <button
                       onClick={() => {
@@ -152,7 +158,7 @@ const Header = ({ toggleSidebar }) => {
                       className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <Bell className="w-4 h-4" />
-                      Notifications
+                      {t('navigation.notifications')}
                     </button>
                     <hr className="my-2 border-gray-200 dark:border-gray-700" />
                     <button
@@ -160,7 +166,7 @@ const Header = ({ toggleSidebar }) => {
                       className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
-                      Logout
+                      {t('auth.logout')}
                     </button>
                   </div>
                 </motion.div>
