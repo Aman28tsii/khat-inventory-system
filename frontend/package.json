@@ -11,6 +11,7 @@
     "date-fns": "^4.4.0",
     "framer-motion": "^10.16.4",
     "i18next": "^23.7.11",
+    "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,12 +26,12 @@
     "socket.io-client": "^4.5.4",
     "zod": "^3.22.4"
   },
- "scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject"
-},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "autoprefixer": "^10.4.16",
