@@ -12,7 +12,9 @@ const AppLayout = () => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
+      // On desktop, keep sidebar open by default
       if (!mobile) setSidebarOpen(true);
+      // On mobile, close sidebar by default
       else setSidebarOpen(false);
     };
 
@@ -21,6 +23,7 @@ const AppLayout = () => {
   }, []);
 
   const toggleSidebar = () => {
+    console.log('toggleSidebar called, current state:', sidebarOpen);
     setSidebarOpen(!sidebarOpen);
   };
 

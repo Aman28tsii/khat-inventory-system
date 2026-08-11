@@ -3,8 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Menu, Bell, Search, User, Settings, LogOut,
-  Moon, Sun, ChevronDown, UserCircle, Shield
+  Menu, 
+  Bell, 
+  Search, 
+  User, 
+  Settings, 
+  LogOut,
+  Moon,
+  Sun,
+  ChevronDown,
+  UserCircle,
+  Shield,
+  LayoutDashboard
 } from 'lucide-react';
 import { logout } from '../../../features/auth/slices/authSlice';
 import NotificationBell from './NotificationBell.js';
@@ -12,16 +22,12 @@ import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../context/LanguageContext';
 
 const Header = ({ toggleSidebar }) => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    console.log('Header: Current language is', language);
-  }, [language]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -47,16 +53,27 @@ const Header = ({ toggleSidebar }) => {
     navigate('/login');
   };
 
+  // Debug: Check if toggleSidebar is a function
+  console.log('toggleSidebar type:', typeof toggleSidebar);
+
   return (
     <header className="fixed top-0 right-0 left-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
         <div className="flex items-center gap-4">
           <button
-            onClick={toggleSidebar}
+            onClick={() => {
+              console.log('Hamburger clicked');
+              if (typeof toggleSidebar === 'function') {
+                toggleSidebar();
+              } else {
+                console.log('toggleSidebar is not a function!');
+              }
+            }}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
+          
           <div className="hidden md:flex items-center relative">
             <Search className="absolute left-3 w-4 h-4 text-gray-400" />
             <input
@@ -66,6 +83,7 @@ const Header = ({ toggleSidebar }) => {
             />
           </div>
         </div>
+
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
           <button
@@ -91,6 +109,7 @@ const Header = ({ toggleSidebar }) => {
               </div>
               <ChevronDown className="w-4 h-4 text-gray-400" />
             </button>
+
             <AnimatePresence>
               {showUserMenu && (
                 <motion.div
