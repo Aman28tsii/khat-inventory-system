@@ -136,7 +136,11 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                         key={item.path}
                         to={item.path}
                         className={({ isActive }) =>
-                          lex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 
+                          `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                            isActive
+                              ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                          }`
                         }
                       >
                         <item.icon className="w-5 h-5" />
