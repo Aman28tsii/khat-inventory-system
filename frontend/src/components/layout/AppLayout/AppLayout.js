@@ -12,8 +12,8 @@ const AppLayout = () => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
+      // On desktop, keep sidebar open by default
       if (!mobile) setSidebarOpen(true);
-      else setSidebarOpen(false);
     };
 
     window.addEventListener('resize', handleResize);
@@ -28,9 +28,9 @@ const AppLayout = () => {
         isMobile={isMobile}
       />
       
-      {/* Main content - only add margin when sidebar is open on desktop */}
+      {/* Main content - margin only on desktop when sidebar is open */}
       <div className={`flex-1 transition-all duration-300 ${
-        sidebarOpen && !isMobile ? 'ml-72' : 'ml-0'
+        !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         

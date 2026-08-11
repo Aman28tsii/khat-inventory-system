@@ -1,5 +1,4 @@
-﻿
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -81,8 +80,8 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />
           )}
           <motion.aside
-            initial={isMobile ? { x: -300 } : false}
-            animate={isMobile ? { x: isOpen ? 0 : -300 } : { x: 0 }}
+            initial={{ x: isMobile ? -300 : (isOpen ? 0 : -300) }}
+            animate={{ x: isMobile ? (isOpen ? 0 : -300) : (isOpen ? 0 : -300) }}
             transition={{ type: 'spring', damping: 20 }}
             className="fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto"
           >
