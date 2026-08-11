@@ -3,8 +3,50 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Add Ethiopic font support */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap');
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Noto Sans Ethiopic', sans-serif;
   background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Improve Amharic text rendering */
+.amharic-text {
+  font-family: 'Noto Sans Ethiopic', 'Inter', sans-serif;
+  line-height: 1.8;
+  word-spacing: 0.05em;
+}
+
+/* Better touch targets for mobile */
+button, 
+a,
+input[type="button"],
+input[type="submit"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Better table responsiveness */
+@media (max-width: 640px) {
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table-responsive table {
+    min-width: 600px;
+  }
+}
+
+/* Improved modal on mobile */
+@media (max-width: 640px) {
+  .modal-content {
+    max-width: 100% !important;
+    margin: 1rem !important;
+  }
 }

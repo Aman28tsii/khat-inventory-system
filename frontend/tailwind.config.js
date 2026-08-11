@@ -36,7 +36,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Inter', 'Noto Sans Ethiopic', 'system-ui', '-apple-system', 'sans-serif'],
       },
       spacing: {
         '18': '4.5rem',
@@ -68,7 +68,20 @@ module.exports = {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-      }
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            // Better Amharic typography
+            'h1, h2, h3, h4, h5, h6': {
+              'font-family': '"Inter", "Noto Sans Ethiopic", sans-serif',
+            },
+            'p, li, span': {
+              'line-height': '1.8',
+            },
+          },
+        },
+      },
     },
   },
   plugins: [
@@ -76,5 +89,3 @@ module.exports = {
     require('@tailwindcss/typography'),
   ],
 }
-
-
