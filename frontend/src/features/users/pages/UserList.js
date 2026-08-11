@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -21,8 +21,10 @@ import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import UserForm from '../components/UserForm';
 import { fetchUsers, deleteUser, toggleUserStatus, clearError } from '../slices/usersSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const UserList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { users, isLoading, error, total } = useSelector((state) => state.users);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,10 +45,10 @@ const UserList = () => {
   }, [error, dispatch]);
 
   const handleDelete = async (user) => {
-    if (window.confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`)) {
+    if (window.confirm(${t('modals.areYouSure')}  ?)) {
       try {
         await dispatch(deleteUser(user.id)).unwrap();
-        toast.success('User deleted successfully');
+        toast.success(t('common.delete') + ' ' + t('users.title'));
       } catch (error) {
         toast.error(error);
       }
@@ -56,7 +58,7 @@ const UserList = () => {
   const handleToggleStatus = async (user) => {
     try {
       await dispatch(toggleUserStatus(user.id)).unwrap();
-      toast.success(`User ${user.isActive ? 'deactivated' : 'activated'} successfully`);
+      toast.success(user.isActive ? t('common.inactive') : t('common.active'));
     } catch (error) {
       toast.error(error);
     }
@@ -65,7 +67,7 @@ const UserList = () => {
   const columns = [
     {
       key: 'employeeId',
-      label: 'Employee ID',
+      label: t('users.employeeId'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
@@ -77,12 +79,12 @@ const UserList = () => {
     },
     {
       key: 'name',
-      label: 'Name',
-      render: (row) => `${row.firstName} ${row.lastName}`
+      label: t('users.fullName'),
+      render: (row) => ${row.firstName} 
     },
     {
       key: 'email',
-      label: 'Email',
+      label: t('auth.email'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Mail className="w-4 h-4 text-gray-400" />
@@ -92,7 +94,7 @@ const UserList = () => {
     },
     {
       key: 'role',
-      label: 'Role',
+      label: t('users.role'),
       render: (row) => (
         <span className="px-2 py-1 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-full text-xs font-medium">
           {row.role?.name || 'N/A'}
@@ -101,30 +103,26 @@ const UserList = () => {
     },
     {
       key: 'branch',
-      label: 'Branch',
+      label: t('branches.branch'),
       render: (row) => row.branch?.name || 'N/A'
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          row.isActive
-            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-            : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-        }`}>
-          {row.isActive ? 'Active' : 'Inactive'}
+        <span className={px-2 py-1 rounded-full text-xs font-medium }>
+          {row.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'lastLogin',
-      label: 'Last Login',
+      label: t('users.lastLogin'),
       render: (row) => row.lastLogin ? new Date(row.lastLogin).toLocaleDateString() : 'Never'
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -139,11 +137,7 @@ const UserList = () => {
           </button>
           <button
             onClick={() => handleToggleStatus(row)}
-            className={`p-1 rounded-lg transition-colors ${
-              row.isActive
-                ? 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20'
-            }`}
+            className={p-1 rounded-lg transition-colors }
           >
             <Power className="w-4 h-4" />
           </button>
@@ -160,14 +154,13 @@ const UserList = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            User Management
+            {t('users.title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage system users and their access
+            {t('users.title')}
           </p>
         </div>
         <Button
@@ -179,17 +172,16 @@ const UserList = () => {
           }}
         >
           <UserPlus className="w-4 h-4 mr-2" />
-          Add User
+          {t('users.createUser')}
         </Button>
       </div>
 
-      {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search users by name, email, or employee ID..."
+            placeholder={t('common.search') + ' ' + t('users.title')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -201,9 +193,9 @@ const UserList = () => {
             value={filters.role}
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
           >
-            <option value="">All Roles</option>
+            <option value="">{t('common.all')}</option>
             <option value="ADMIN">Admin</option>
-            <option value="MANAGER">Manager</option>
+            <option value="MANAGER">{t('users.role')}</option>
             <option value="CASHIER">Cashier</option>
           </select>
           <select
@@ -211,14 +203,13 @@ const UserList = () => {
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="">{t('common.all')}</option>
+            <option value="active">{t('common.active')}</option>
+            <option value="inactive">{t('common.inactive')}</option>
           </select>
         </div>
       </div>
 
-      {/* Users Table */}
       <Table
         columns={columns}
         data={users}
@@ -230,14 +221,13 @@ const UserList = () => {
         }}
       />
 
-      {/* User Modal */}
       <Modal
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
           setSelectedUser(null);
         }}
-        title={isEditing ? 'Edit User' : 'Add New User'}
+        title={isEditing ? t('users.editUser') : t('users.createUser')}
         size="lg"
       >
         <UserForm
@@ -247,7 +237,7 @@ const UserList = () => {
             setShowModal(false);
             setSelectedUser(null);
             dispatch(fetchUsers({ search: searchTerm, ...filters }));
-            toast.success(isEditing ? 'User updated successfully' : 'User created successfully');
+            toast.success(isEditing ? t('users.editUser') + ' ' + t('common.success') : t('users.createUser') + ' ' + t('common.success'));
           }}
           onCancel={() => {
             setShowModal(false);

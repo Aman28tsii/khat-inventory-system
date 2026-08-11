@@ -6,8 +6,10 @@ import { toast } from 'react-hot-toast';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { fetchSettings, updateSettings, clearError } from '../slices/settingsSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SettingsPage = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { settings, isLoading, error } = useSelector((state) => state.settings);
   const [formData, setFormData] = useState({});
@@ -32,38 +34,38 @@ const SettingsPage = () => {
   const handleSubmit = async () => {
     try {
       await dispatch(updateSettings(formData)).unwrap();
-      toast.success('Settings updated successfully');
+      toast.success(t('settings.settingsSaved'));
     } catch (error) {
-      toast.error('Failed to update settings');
+      toast.error(t('errors.generic'));
     }
   };
 
   const sections = [
     {
-      title: 'General Settings',
+      title: t('settings.general'),
       icon: Settings,
       fields: [
-        { key: 'companyName', label: 'Company Name', type: 'text' },
-        { key: 'companyEmail', label: 'Company Email', type: 'email' },
-        { key: 'companyPhone', label: 'Company Phone', type: 'text' },
-        { key: 'companyAddress', label: 'Company Address', type: 'text' },
+        { key: 'companyName', label: t('settings.companyName'), type: 'text' },
+        { key: 'companyEmail', label: t('settings.companyEmail'), type: 'email' },
+        { key: 'companyPhone', label: t('settings.companyPhone'), type: 'text' },
+        { key: 'companyAddress', label: t('settings.companyAddress'), type: 'text' },
       ]
     },
     {
-      title: 'Currency & Locale',
+      title: t('settings.currency'),
       icon: DollarSign,
       fields: [
-        { key: 'currency', label: 'Currency', type: 'text' },
-        { key: 'timezone', label: 'Timezone', type: 'text' },
-        { key: 'dateFormat', label: 'Date Format', type: 'text' },
+        { key: 'currency', label: t('settings.currency'), type: 'text' },
+        { key: 'timezone', label: t('settings.timezone'), type: 'text' },
+        { key: 'dateFormat', label: t('settings.dateFormat'), type: 'text' },
       ]
     },
     {
-      title: 'Security',
+      title: t('settings.security'),
       icon: Key,
       fields: [
-        { key: 'sessionTimeout', label: 'Session Timeout (minutes)', type: 'number' },
-        { key: 'maxLoginAttempts', label: 'Max Login Attempts', type: 'number' },
+        { key: 'sessionTimeout', label: t('settings.sessionTimeout'), type: 'number' },
+        { key: 'maxLoginAttempts', label: t('settings.maxLoginAttempts'), type: 'number' },
       ]
     }
   ];
@@ -80,12 +82,12 @@ const SettingsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
-          <p className="text-gray-500 dark:text-gray-400">Configure system settings and preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('settings.title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t('settings.title')}</p>
         </div>
         <Button variant="primary" onClick={handleSubmit} isLoading={isLoading}>
           <Save className="w-4 h-4 mr-2" />
-          Save Settings
+          {t('settings.saveSettings')}
         </Button>
       </div>
 

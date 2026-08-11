@@ -26,8 +26,10 @@ import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { fetchPurchases, deletePurchase, clearError } from '../slices/purchaseSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const PurchaseList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { purchases = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.purchases || { purchases: [], isLoading: false, error: null, total: 0 });
@@ -51,7 +53,7 @@ const PurchaseList = () => {
     if (!selectedPurchase) return;
     try {
       await dispatch(deletePurchase(selectedPurchase.id)).unwrap();
-      toast.success('Purchase deleted successfully');
+      toast.success(t('common.delete') + ' ' + t('purchases.title'));
       setShowDeleteModal(false);
       setSelectedPurchase(null);
     } catch (error) {
@@ -87,7 +89,7 @@ const PurchaseList = () => {
   const columns = [
     {
       key: 'purchaseNumber',
-      label: 'Purchase',
+      label: t('purchases.purchaseNumber'),
       render: (row) => (
         <div>
           <p className="font-medium text-gray-900 dark:text-white">{row.purchaseNumber}</p>
@@ -100,7 +102,7 @@ const PurchaseList = () => {
     },
     {
       key: 'supplier',
-      label: 'Supplier',
+      label: t('purchases.supplier'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-gray-400" />
@@ -110,37 +112,37 @@ const PurchaseList = () => {
     },
     {
       key: 'branch',
-      label: 'Branch',
+      label: t('branches.branch'),
       render: (row) => row.branch?.name || 'N/A'
     },
     {
       key: 'amount',
-      label: 'Amount',
+      label: t('sales.totalAmount'),
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             {formatCurrency(row.totalAmount)}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Items: {row.items?.length || 0}
+            {t('sales.items')}: {row.items?.length || 0}
           </div>
         </div>
       )
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => getStatusBadge(row.status)
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
             onClick={() => navigate('/purchases/' + row.id)}
             className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-            title="View Details"
+            title={t('sales.view')}
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -149,7 +151,7 @@ const PurchaseList = () => {
               <button
                 onClick={() => navigate('/purchases/' + row.id + '/edit')}
                 className="p-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                title="Edit"
+                title={t('common.edit')}
               >
                 <Edit className="w-4 h-4" />
               </button>
@@ -159,7 +161,7 @@ const PurchaseList = () => {
                   setShowDeleteModal(true);
                 }}
                 className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                title="Delete"
+                title={t('common.delete')}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -169,7 +171,7 @@ const PurchaseList = () => {
             <button
               onClick={() => navigate('/purchases/' + row.id + '/receive')}
               className="p-1 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
-              title="Receive"
+              title={t('purchases.receiveItems')}
             >
               <Package className="w-4 h-4" />
             </button>
@@ -184,16 +186,16 @@ const PurchaseList = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Purchase Management
+            {t('purchases.title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage purchase orders and receiving
+            {t('purchases.title')}
           </p>
         </div>
         <Link to="/purchases/create">
           <Button variant="primary">
             <Plus className="w-4 h-4 mr-2" />
-            Create Purchase
+            {t('purchases.newPurchase')}
           </Button>
         </Link>
       </div>
@@ -203,7 +205,7 @@ const PurchaseList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search purchases by number, supplier, or branch..."
+            placeholder={t('common.search') + ' ' + t('purchases.purchaseNumber') + ' ' + t('common.or') + ' ' + t('purchases.supplier') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -215,12 +217,12 @@ const PurchaseList = () => {
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
-            <option value="">All Status</option>
-            <option value="DRAFT">Draft</option>
-            <option value="ORDERED">Ordered</option>
-            <option value="RECEIVED">Received</option>
-            <option value="PARTIAL">Partial</option>
-            <option value="CANCELLED">Cancelled</option>
+            <option value="">{t('common.all')}</option>
+            <option value="DRAFT">{t('purchases.draft')}</option>
+            <option value="ORDERED">{t('purchases.ordered')}</option>
+            <option value="RECEIVED">{t('purchases.received')}</option>
+            <option value="PARTIAL">{t('sales.partial')}</option>
+            <option value="CANCELLED">{t('sales.cancelled')}</option>
           </select>
         </div>
       </div>
@@ -228,9 +230,9 @@ const PurchaseList = () => {
       
       {purchases.length === 0 && !isLoading && (
         <EmptyState 
-          title='No Purchases Found' 
-          description='Start by creating your first purchase order' 
-          actionText='Create Purchase' 
+          title={t('purchases.noPurchases')} 
+          description={t('common.add') + ' ' + t('purchases.purchases')} 
+          actionText={t('purchases.createPurchase')} 
           onAction={() => navigate('/purchases/create')} 
         />
       )}
@@ -247,7 +249,7 @@ const PurchaseList = () => {
           setShowDeleteModal(false);
           setSelectedPurchase(null);
         }}
-        title="Delete Purchase Order"
+        title={t('modals.confirmDelete')}
         size="sm"
       >
         <div className="space-y-4">
@@ -257,11 +259,10 @@ const PurchaseList = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900 dark:text-white">
-                Delete Purchase Order?
+                {t('modals.confirmDelete')}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                This action cannot be undone. This will permanently delete 
-                purchase order <span className="font-medium">{selectedPurchase?.purchaseNumber}</span>
+                {t('modals.deleteWarning')}
               </p>
             </div>
           </div>
@@ -273,13 +274,13 @@ const PurchaseList = () => {
                 setSelectedPurchase(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button 
               variant="danger" 
               onClick={handleDelete}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         </div>
@@ -289,4 +290,3 @@ const PurchaseList = () => {
 };
 
 export default PurchaseList;
-

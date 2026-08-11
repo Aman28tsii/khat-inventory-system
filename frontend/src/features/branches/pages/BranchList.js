@@ -7,8 +7,10 @@ import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { fetchBranches, deleteBranch, toggleBranchStatus, clearError } from '../slices/branchesSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const BranchList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { branches = [], isLoading = false, error = null } = useSelector((state) => state.branches || { branches: [], isLoading: false, error: null });
   const [showModal, setShowModal] = useState(false);
@@ -37,13 +39,13 @@ const BranchList = () => {
 
   const handleDelete = async (branch) => {
     if (branch.type === 'HEADQUARTERS') {
-      toast.error('Cannot delete headquarters');
+      toast.error(t('errors.forbidden'));
       return;
     }
-    if (window.confirm('Are you sure you want to delete "' + branch.name + '"?')) {
+    if (window.confirm(${t('modals.areYouSure')} ""?)) {
       try {
         await dispatch(deleteBranch(branch.id)).unwrap();
-        toast.success('Branch deleted successfully');
+        toast.success(t('common.delete') + ' ' + t('branches.title'));
       } catch (error) {
         toast.error(error);
       }
@@ -53,7 +55,7 @@ const BranchList = () => {
   const handleToggleStatus = async (branch) => {
     try {
       await dispatch(toggleBranchStatus(branch.id)).unwrap();
-      toast.success('Branch ' + (branch.isActive ? 'deactivated' : 'activated') + ' successfully');
+      toast.success(branch.isActive ? t('common.inactive') : t('common.active'));
     } catch (error) {
       toast.error(error);
     }
@@ -67,7 +69,7 @@ const BranchList = () => {
         await dispatch(createBranch(formData)).unwrap();
       }
       setShowModal(false);
-      toast.success(isEditing ? 'Branch updated successfully' : 'Branch created successfully');
+      toast.success(isEditing ? t('branches.editBranch') + ' ' + t('common.success') : t('branches.createBranch') + ' ' + t('common.success'));
     } catch (error) {
       toast.error(error);
     }
@@ -76,7 +78,7 @@ const BranchList = () => {
   const columns = [
     {
       key: 'name',
-      label: 'Branch',
+      label: t('branches.branchName'),
       render: (row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
@@ -91,7 +93,7 @@ const BranchList = () => {
     },
     {
       key: 'type',
-      label: 'Type',
+      label: t('branches.branchType'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.type === 'HEADQUARTERS' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : row.type === 'WAREHOUSE' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400')}>
           {row.type}
@@ -100,7 +102,7 @@ const BranchList = () => {
     },
     {
       key: 'address',
-      label: 'Address',
+      label: t('branches.address'),
       render: (row) => (
         <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <MapPin className="w-3 h-3" />
@@ -110,7 +112,7 @@ const BranchList = () => {
     },
     {
       key: 'contact',
-      label: 'Contact',
+      label: t('common.contact'),
       render: (row) => (
         <div className="space-y-0.5 text-sm">
           {row.phone && (
@@ -130,16 +132,16 @@ const BranchList = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400')}>
-          {row.isActive ? 'Active' : 'Inactive'}
+          {row.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -182,8 +184,8 @@ const BranchList = () => {
     <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Branch Management</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage company branches, warehouses and headquarters</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('branches.title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t('branches.title')}</p>
         </div>
         <Button
           variant="primary"
@@ -202,18 +204,18 @@ const BranchList = () => {
             setShowModal(true);
           }}
         >
-          <Plus className="w-4 h-4 mr-2" /> Add Branch
+          <Plus className="w-4 h-4 mr-2" /> {t('branches.addBranch')}
         </Button>
       </div>
 
       {error && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Failed to load branches: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errors.generic')}: {error}</p>
           <button
             onClick={() => dispatch(fetchBranches())}
             className="mt-2 text-sm text-red-700 dark:text-red-300 hover:underline"
           >
-            Retry
+            {t('errors.retry')}
           </button>
         </div>
       )}
@@ -246,20 +248,20 @@ const BranchList = () => {
           setShowModal(false);
           setSelectedBranch(null);
         }}
-        title={isEditing ? 'Edit Branch' : 'Add New Branch'}
+        title={isEditing ? t('branches.editBranch') : t('branches.createBranch')}
         size="lg"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Branch Name"
+              label={t('branches.branchName')}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Addis Ababa Branch"
               required
             />
             <Input
-              label="Branch Code"
+              label={t('branches.branchCode')}
               value={formData.code}
               onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
               placeholder="e.g., ADD001"
@@ -269,41 +271,41 @@ const BranchList = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Branch Type
+              {t('branches.branchType')}
             </label>
             <select
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
             >
-              <option value="HEADQUARTERS">Headquarters</option>
-              <option value="WAREHOUSE">Warehouse</option>
-              <option value="BRANCH">Branch</option>
+              <option value="HEADQUARTERS">{t('branches.headquarters')}</option>
+              <option value="WAREHOUSE">{t('branches.warehouse')}</option>
+              <option value="BRANCH">{t('branches.branch')}</option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Address
+              {t('branches.address')}
             </label>
             <textarea
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               rows="2"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="Full address"
+              placeholder={t('branches.address')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Phone Number"
+              label={t('auth.phone')}
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               placeholder="+251-XXX-XXXX"
             />
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -319,16 +321,16 @@ const BranchList = () => {
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             />
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Active
+              {t('common.active')}
             </label>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
-              {isEditing ? 'Update Branch' : 'Create Branch'}
+              {isEditing ? t('branches.editBranch') : t('branches.createBranch')}
             </Button>
           </div>
         </div>

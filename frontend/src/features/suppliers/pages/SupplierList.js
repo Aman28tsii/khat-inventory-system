@@ -10,8 +10,10 @@ import LoadingSpinner from '../../../components/common/LoadingSpinner/LoadingSpi
 import EmptyState from '../../../components/common/EmptyState/EmptyState';
 import BulkImport from '../../../components/common/BulkImport/BulkImport';
 import { fetchSuppliers, deleteSupplier, toggleSupplierStatus, clearError } from '../slices/supplierSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SupplierList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { suppliers = [], isLoading = false, error = null } = useSelector((state) => state.suppliers || { suppliers: [], isLoading: false, error: null });
   const [showModal, setShowModal] = useState(false);
@@ -52,10 +54,10 @@ const SupplierList = () => {
   };
 
   const handleDelete = async (supplier) => {
-    if (window.confirm('Are you sure you want to delete "' + supplier.name + '"?')) {
+    if (window.confirm(${t('modals.areYouSure')} ""?)) {
       try {
         await dispatch(deleteSupplier(supplier.id)).unwrap();
-        toast.success('Supplier deleted successfully');
+        toast.success(t('common.delete') + ' ' + t('suppliers.title'));
         loadSuppliers();
       } catch (error) {
         toast.error(error);
@@ -66,7 +68,7 @@ const SupplierList = () => {
   const handleToggleStatus = async (supplier) => {
     try {
       await dispatch(toggleSupplierStatus(supplier.id)).unwrap();
-      toast.success('Supplier ' + (supplier.isActive ? 'deactivated' : 'activated') + ' successfully');
+      toast.success(supplier.isActive ? t('common.inactive') : t('common.active'));
       loadSuppliers();
     } catch (error) {
       toast.error(error);
@@ -81,7 +83,7 @@ const SupplierList = () => {
         await dispatch(createSupplier(formData)).unwrap();
       }
       setShowModal(false);
-      toast.success(isEditing ? 'Supplier updated successfully' : 'Supplier created successfully');
+      toast.success(isEditing ? t('suppliers.editSupplier') + ' ' + t('common.success') : t('suppliers.createSupplier') + ' ' + t('common.success'));
       loadSuppliers();
     } catch (error) {
       toast.error(error);
@@ -91,7 +93,7 @@ const SupplierList = () => {
   const columns = [
     {
       key: 'name',
-      label: 'Supplier',
+      label: t('suppliers.supplierName'),
       render: (row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
@@ -106,12 +108,12 @@ const SupplierList = () => {
     },
     {
       key: 'contactPerson',
-      label: 'Contact Person',
+      label: t('suppliers.contactPerson'),
       render: (row) => row.contactPerson || 'N/A'
     },
     {
       key: 'contact',
-      label: 'Contact',
+      label: t('common.contact'),
       render: (row) => (
         <div className="space-y-0.5 text-sm">
           {row.phone && (
@@ -131,7 +133,7 @@ const SupplierList = () => {
     },
     {
       key: 'address',
-      label: 'Address',
+      label: t('branches.address'),
       render: (row) => (
         <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <MapPin className="w-3 h-3" />
@@ -141,16 +143,16 @@ const SupplierList = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400')}>
-          {row.isActive ? 'Active' : 'Inactive'}
+          {row.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -196,12 +198,12 @@ const SupplierList = () => {
     <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Supplier Management</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage suppliers and vendors</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('suppliers.title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t('suppliers.title')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => setShowBulkImport(true)}>
-            <Upload className="w-4 h-4 mr-2" /> Import CSV
+            <Upload className="w-4 h-4 mr-2" /> {t('products.importCSV')}
           </Button>
           <Button
             variant="primary"
@@ -224,7 +226,7 @@ const SupplierList = () => {
             }}
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Supplier
+            {t('suppliers.createSupplier')}
           </Button>
         </div>
       </div>
@@ -234,7 +236,7 @@ const SupplierList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search suppliers by name, code, or contact..."
+            placeholder={t('common.search') + ' ' + t('suppliers.supplierName')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -245,9 +247,9 @@ const SupplierList = () => {
       {isLoading && <LoadingSpinner />}
       {suppliers.length === 0 && !isLoading && (
         <EmptyState
-          title="No Suppliers Found"
-          description="Start by adding your first supplier"
-          actionText="Add Supplier"
+          title={t('suppliers.noSuppliers')}
+          description={t('common.add') + ' ' + t('suppliers.title')}
+          actionText={t('suppliers.createSupplier')}
           onAction={() => {
             setSelectedSupplier(null);
             setFormData({
@@ -298,20 +300,20 @@ const SupplierList = () => {
           setShowModal(false);
           setSelectedSupplier(null);
         }}
-        title={isEditing ? 'Edit Supplier' : 'Add New Supplier'}
+        title={isEditing ? t('suppliers.editSupplier') : t('suppliers.createSupplier')}
         size="lg"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Supplier Name"
+              label={t('suppliers.supplierName')}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., ABC Trading"
               required
             />
             <Input
-              label="Supplier Code"
+              label={t('suppliers.supplierCode')}
               value={formData.code}
               onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
               placeholder="e.g., SUP-001"
@@ -320,7 +322,7 @@ const SupplierList = () => {
           </div>
 
           <Input
-            label="Contact Person"
+            label={t('suppliers.contactPerson')}
             value={formData.contactPerson}
             onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
             placeholder="e.g., John Doe"
@@ -328,13 +330,13 @@ const SupplierList = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Phone Number"
+              label={t('auth.phone')}
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               placeholder="+251-XXX-XXXX"
             />
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -344,26 +346,26 @@ const SupplierList = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Address
+              {t('branches.address')}
             </label>
             <textarea
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               rows="2"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="Full address"
+              placeholder={t('branches.address')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Tax ID (TIN)"
+              label={t('customers.taxId')}
               value={formData.taxId}
               onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
               placeholder="e.g., 123456789"
             />
             <Input
-              label="Payment Terms"
+              label={t('customers.paymentTerms')}
               value={formData.paymentTerms}
               onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
               placeholder="e.g., Net 30"
@@ -371,7 +373,7 @@ const SupplierList = () => {
           </div>
 
           <Input
-            label="Credit Limit"
+            label={t('customers.creditLimit')}
             type="number"
             value={formData.creditLimit}
             onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })}
@@ -386,16 +388,16 @@ const SupplierList = () => {
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             />
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Active
+              {t('common.active')}
             </label>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
-              {isEditing ? 'Update Supplier' : 'Create Supplier'}
+              {isEditing ? t('suppliers.editSupplier') : t('suppliers.createSupplier')}
             </Button>
           </div>
         </div>
@@ -407,7 +409,7 @@ const SupplierList = () => {
         type="suppliers"
         onSuccess={() => {
           dispatch(fetchSuppliers());
-          toast.success('Suppliers imported successfully');
+          toast.success(t('products.bulkImport') + ' ' + t('common.success'));
         }}
       />
     </div>

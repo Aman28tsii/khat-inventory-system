@@ -24,8 +24,10 @@ import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { fetchProducts, deleteProduct, clearError } from '../slices/productSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const ProductList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { products, isLoading, error, total } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,10 +63,10 @@ const ProductList = () => {
   }, [error, dispatch]);
 
   const handleDelete = async (product) => {
-    if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
+    if (window.confirm(${t('modals.areYouSure')} ""?)) {
       try {
         await dispatch(deleteProduct(product.id)).unwrap();
-        toast.success('Product deleted successfully');
+        toast.success(t('common.delete') + ' ' + t('products'));
       } catch (error) {
         toast.error(error);
       }
@@ -79,7 +81,7 @@ const ProductList = () => {
         await dispatch(createProduct(formData)).unwrap();
       }
       setShowModal(false);
-      toast.success(isEditing ? 'Product updated successfully' : 'Product created successfully');
+      toast.success(isEditing ? t('products.editProduct') + ' ' + t('common.success') : t('products.createProduct') + ' ' + t('common.success'));
     } catch (error) {
       toast.error(error);
     }
@@ -88,7 +90,7 @@ const ProductList = () => {
   const columns = [
     {
       key: 'name',
-      label: 'Product',
+      label: t('products.productName'),
       render: (row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
@@ -103,11 +105,11 @@ const ProductList = () => {
     },
     {
       key: 'category',
-      label: 'Category',
+      label: t('products.category'),
       render: (row) => (
         <div>
           <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-xs">
-            {row.category || 'Uncategorized'}
+            {row.category || t('common.none')}
           </span>
           {row.subCategory && (
             <span className="ml-1 px-2 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs text-gray-500">
@@ -119,23 +121,23 @@ const ProductList = () => {
     },
     {
       key: 'stock',
-      label: 'Stock Info',
+      label: t('inventory.stockMovements'),
       render: (row) => (
         <div className="space-y-0.5 text-sm">
           <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
             <Box className="w-3 h-3" />
-            <span>Min: {row.minStockQuantity || 0}</span>
+            <span>{t('products.minStock')}: {row.minStockQuantity || 0}</span>
           </div>
           <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
             <AlertCircle className="w-3 h-3" />
-            <span>Reorder: {row.reorderLevel || 0}</span>
+            <span>{t('products.reorderLevel')}: {row.reorderLevel || 0}</span>
           </div>
         </div>
       )
     },
     {
       key: 'unit',
-      label: 'Unit',
+      label: t('products.unit'),
       render: (row) => (
         <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
           {row.unit}
@@ -144,20 +146,16 @@ const ProductList = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          row.isActive
-            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-            : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-        }`}>
-          {row.isActive ? 'Active' : 'Inactive'}
+        <span className={px-2 py-1 rounded-full text-xs font-medium }>
+          {row.isActive ? t('common.active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -195,14 +193,13 @@ const ProductList = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Product Management
+            {t('products.title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage products and inventory items
+            {t('products.productManagement')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -211,7 +208,7 @@ const ProductList = () => {
             onClick={() => setShowBulkImport(true)}
           >
             <Upload className="w-4 h-4 mr-2" />
-            Import CSV
+            {t('products.importCSV')}
           </Button>
           <Button
             variant="primary"
@@ -234,30 +231,28 @@ const ProductList = () => {
             }}
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Product
+            {t('products.addProduct')}
           </Button>
         </div>
       </div>
 
-      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
         <input
           type="text"
-          placeholder="Search products by name or SKU..."
+          placeholder={t('common.search') + ' ' + t('products.productName') + ' ' + t('common.or') + ' ' + t('products.sku') + '...'}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
       </div>
 
-      {/* Products Table */}
       {isLoading && <LoadingSpinner />}
       {products.length === 0 && !isLoading && (
         <EmptyState 
-          title='No Products Found' 
-          description='Start by adding your first product' 
-          actionText='Add Product' 
+          title={t('products.noProducts')} 
+          description={t('common.add') + ' ' + t('products.products')} 
+          actionText={t('products.addProduct')} 
           onAction={() => {
             setSelectedProduct(null);
             setFormData({
@@ -283,26 +278,25 @@ const ProductList = () => {
         loading={isLoading}
       />
 
-      {/* Product Modal */}
       <Modal
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
           setSelectedProduct(null);
         }}
-        title={isEditing ? 'Edit Product' : 'Add New Product'}
+        title={isEditing ? t('products.editProduct') : t('products.createProduct')}
         size="lg"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Product Name"
+              label={t('products.productName')}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Green Khat"
             />
             <Input
-              label="SKU"
+              label={t('products.sku')}
               value={formData.sku}
               onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
               placeholder="e.g., KHAT-001"
@@ -311,13 +305,13 @@ const ProductList = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Category"
+              label={t('products.category')}
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               placeholder="e.g., Green, Yellow"
             />
             <Input
-              label="Sub Category"
+              label={t('products.subCategory')}
               value={formData.subCategory}
               onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
               placeholder="e.g., Premium, Standard"
@@ -326,40 +320,40 @@ const ProductList = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Description
+              {t('products.description')}
             </label>
             <textarea
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               rows="2"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Product description"
+              placeholder={t('products.description')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Input
-              label="Unit"
+              label={t('products.unit')}
               value={formData.unit}
               onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
               placeholder="KG"
             />
             <Input
-              label="Min Stock"
+              label={t('products.minStock')}
               type="number"
               value={formData.minStockQuantity}
               onChange={(e) => setFormData({ ...formData, minStockQuantity: e.target.value })}
               placeholder="0"
             />
             <Input
-              label="Max Stock"
+              label={t('products.maxStock')}
               type="number"
               value={formData.maxStockQuantity}
               onChange={(e) => setFormData({ ...formData, maxStockQuantity: e.target.value })}
               placeholder="0"
             />
             <Input
-              label="Reorder Level"
+              label={t('products.reorderLevel')}
               type="number"
               value={formData.reorderLevel}
               onChange={(e) => setFormData({ ...formData, reorderLevel: e.target.value })}
@@ -375,29 +369,28 @@ const ProductList = () => {
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             />
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Active
+              {t('common.active')}
             </label>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
-              {isEditing ? 'Update Product' : 'Create Product'}
+              {isEditing ? t('products.editProduct') : t('products.createProduct')}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Bulk Import Modal */}
       <BulkImport
         isOpen={showBulkImport}
         onClose={() => setShowBulkImport(false)}
         type="products"
         onSuccess={() => {
           dispatch(fetchProducts());
-          toast.success('Products imported successfully');
+          toast.success(t('products.bulkImport') + ' ' + t('common.success'));
         }}
       />
     </div>

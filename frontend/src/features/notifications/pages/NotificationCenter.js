@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -29,6 +29,7 @@ import {
   deleteAllNotifications,
   clearError 
 } from '../slices/notificationSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const iconMap = {
   inventory: Package,
@@ -53,6 +54,7 @@ const colorMap = {
 };
 
 const NotificationCenter = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { notifications, isLoading, error, total, unreadCount } = useSelector((state) => state.notifications);
   const [searchTerm, setSearchTerm] = useState('');
@@ -74,7 +76,7 @@ const NotificationCenter = () => {
   const handleMarkAsRead = async (id) => {
     try {
       await dispatch(markAsRead(id)).unwrap();
-      toast.success('Notification marked as read');
+      toast.success(t('notifications.markAsRead'));
     } catch (error) {
       toast.error(error);
     }
@@ -83,7 +85,7 @@ const NotificationCenter = () => {
   const handleMarkAllAsRead = async () => {
     try {
       await dispatch(markAllAsRead()).unwrap();
-      toast.success('All notifications marked as read');
+      toast.success(t('notifications.markAllRead'));
     } catch (error) {
       toast.error(error);
     }
@@ -93,7 +95,7 @@ const NotificationCenter = () => {
     if (!selectedNotification) return;
     try {
       await dispatch(deleteNotification(selectedNotification.id)).unwrap();
-      toast.success('Notification deleted');
+      toast.success(t('common.delete') + ' ' + t('notifications.title'));
       setShowDeleteModal(false);
       setSelectedNotification(null);
     } catch (error) {
@@ -102,10 +104,10 @@ const NotificationCenter = () => {
   };
 
   const handleDeleteAll = async () => {
-    if (window.confirm('Are you sure you want to delete all notifications?')) {
+    if (window.confirm(t('modals.areYouSure'))) {
       try {
         await dispatch(deleteAllNotifications()).unwrap();
-        toast.success('All notifications deleted');
+        toast.success(t('notifications.deleteAll'));
       } catch (error) {
         toast.error(error);
       }
@@ -115,17 +117,17 @@ const NotificationCenter = () => {
   const columns = [
     {
       key: 'notification',
-      label: 'Notification',
+      label: t('notifications.title'),
       render: (row) => {
         const Icon = iconMap[row.type] || iconMap.default;
         const color = colorMap[row.type] || colorMap.default;
         return (
           <div className="flex items-start gap-3">
-            <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+            <div className={'w-10 h-10 ' + color + ' rounded-lg flex items-center justify-center flex-shrink-0'}>
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <p className={`text-sm ${!row.isRead ? 'font-semibold' : ''} text-gray-900 dark:text-white`}>
+              <p className={'text-sm ' + (!row.isRead ? 'font-semibold' : '') + ' text-gray-900 dark:text-white'}>
                 {row.title}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{row.message}</p>
@@ -135,7 +137,7 @@ const NotificationCenter = () => {
                 </span>
                 {!row.isRead && (
                   <span className="px-2 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-xs">
-                    New
+                    {t('notifications.newNotification')}
                   </span>
                 )}
               </div>
@@ -146,14 +148,14 @@ const NotificationCenter = () => {
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           {!row.isRead && (
             <button
               onClick={() => handleMarkAsRead(row.id)}
               className="p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-              title="Mark as read"
+              title={t('notifications.markAsRead')}
             >
               <Check className="w-4 h-4" />
             </button>
@@ -164,7 +166,7 @@ const NotificationCenter = () => {
               setShowDeleteModal(true);
             }}
             className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-            title="Delete"
+            title={t('common.delete')}
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -175,14 +177,13 @@ const NotificationCenter = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Notification Center
+            {t('notifications.notificationCenter')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            {unreadCount} unread notifications out of {total}
+            {unreadCount} {t('notifications.unread')} {t('notifications.title')} {t('common.of')} {total}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -193,7 +194,7 @@ const NotificationCenter = () => {
               onClick={handleMarkAllAsRead}
             >
               <CheckCheck className="w-4 h-4 mr-1" />
-              Mark All Read
+              {t('notifications.markAllRead')}
             </Button>
           )}
           {total > 0 && (
@@ -203,19 +204,18 @@ const NotificationCenter = () => {
               onClick={handleDeleteAll}
             >
               <Trash2 className="w-4 h-4 mr-1" />
-              Delete All
+              {t('notifications.deleteAll')}
             </Button>
           )}
         </div>
       </div>
 
-      {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search notifications..."
+            placeholder={t('common.search') + ' ' + t('notifications.title') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -227,28 +227,27 @@ const NotificationCenter = () => {
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
-            <option value="">All Types</option>
-            <option value="inventory">Inventory</option>
-            <option value="sales">Sales</option>
-            <option value="purchases">Purchases</option>
-            <option value="transfers">Transfers</option>
-            <option value="users">Users</option>
-            <option value="payment">Payment</option>
-            <option value="warning">Warning</option>
+            <option value="">{t('common.all')}</option>
+            <option value="inventory">{t('inventory.title')}</option>
+            <option value="sales">{t('sales.title')}</option>
+            <option value="purchases">{t('purchases.title')}</option>
+            <option value="transfers">{t('transfers.title')}</option>
+            <option value="users">{t('users.title')}</option>
+            <option value="payment">{t('sales.payment')}</option>
+            <option value="warning">{t('common.warning')}</option>
           </select>
           <select
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             value={filters.isRead}
             onChange={(e) => setFilters({ ...filters, isRead: e.target.value })}
           >
-            <option value="">All Status</option>
-            <option value="false">Unread</option>
-            <option value="true">Read</option>
+            <option value="">{t('common.all')}</option>
+            <option value="false">{t('notifications.unread')}</option>
+            <option value="true">{t('notifications.read')}</option>
           </select>
         </div>
       </div>
 
-      {/* Notifications Table */}
       <Table
         columns={columns}
         data={notifications}
@@ -257,14 +256,13 @@ const NotificationCenter = () => {
         pageSize={20}
       />
 
-      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={showDeleteModal}
         onClose={() => {
           setShowDeleteModal(false);
           setSelectedNotification(null);
         }}
-        title="Delete Notification"
+        title={t('modals.confirmDelete')}
         size="sm"
       >
         <div className="space-y-4">
@@ -274,10 +272,10 @@ const NotificationCenter = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900 dark:text-white">
-                Delete this notification?
+                {t('modals.confirmDelete')}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                This action cannot be undone.
+                {t('modals.deleteWarning')}
               </p>
             </div>
           </div>
@@ -289,10 +287,10 @@ const NotificationCenter = () => {
                 setSelectedNotification(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="danger" onClick={handleDelete}>
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         </div>

@@ -20,8 +20,10 @@ import Table from '../../../components/common/Table/Table';
 import EmptyState from '../../../components/common/EmptyState/EmptyState';
 import Button from '../../../components/common/Button/Button';
 import { fetchSales, clearError } from '../slices/saleSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const SaleList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { sales = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.sales || { sales: [], isLoading: false, error: null, total: 0 });
@@ -79,7 +81,7 @@ const SaleList = () => {
   const columns = [
     {
       key: 'saleNumber',
-      label: 'Sale',
+      label: t('sales.saleNumber'),
       render: (row) => (
         <div>
           <p className="font-medium text-gray-900 dark:text-white">{row.saleNumber}</p>
@@ -92,41 +94,41 @@ const SaleList = () => {
     },
     {
       key: 'customer',
-      label: 'Customer',
+      label: t('sales.customer'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-gray-400" />
-          <span className="text-gray-900 dark:text-white">{row.customer?.name || 'Walk-in Customer'}</span>
+          <span className="text-gray-900 dark:text-white">{row.customer?.name || t('sales.walkInCustomer')}</span>
         </div>
       )
     },
     {
       key: 'amount',
-      label: 'Amount',
+      label: t('sales.totalAmount'),
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             {formatCurrency(row.totalAmount)}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Paid: {formatCurrency(row.paidAmount)}
+            {t('sales.paidAmount')}: {formatCurrency(row.paidAmount)}
           </div>
         </div>
       )
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => getStatusBadge(row.status)
     },
     {
       key: 'paymentStatus',
-      label: 'Payment',
+      label: t('sales.paymentStatus'),
       render: (row) => getPaymentStatusBadge(row.paymentStatus)
     },
     {
       key: 'actions',
-      label: 'Actions',
+      label: t('common.actions'),
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
@@ -152,13 +154,13 @@ const SaleList = () => {
     <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales Management</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage sales and payments</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('sales.title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t('sales.title')}</p>
         </div>
         <Link to="/sales/create">
           <Button variant="primary">
             <Plus className="w-4 h-4 mr-2" />
-            New Sale
+            {t('sales.newSale')}
           </Button>
         </Link>
       </div>
@@ -168,7 +170,7 @@ const SaleList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search sales by number, customer..."
+            placeholder={t('common.search') + ' ' + t('sales.saleNumber') + ' ' + t('common.or') + ' ' + t('sales.customer') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -180,21 +182,21 @@ const SaleList = () => {
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
-            <option value="">All Status</option>
-            <option value="PENDING">Pending</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELLED">Cancelled</option>
+            <option value="">{t('common.all')}</option>
+            <option value="PENDING">{t('sales.pending')}</option>
+            <option value="COMPLETED">{t('sales.completed')}</option>
+            <option value="CANCELLED">{t('sales.cancelled')}</option>
           </select>
           <select
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             value={filters.paymentStatus}
             onChange={(e) => setFilters({ ...filters, paymentStatus: e.target.value })}
           >
-            <option value="">All Payment</option>
-            <option value="PENDING">Pending</option>
-            <option value="PARTIAL">Partial</option>
-            <option value="PAID">Paid</option>
-            <option value="OVERDUE">Overdue</option>
+            <option value="">{t('common.all')}</option>
+            <option value="PENDING">{t('sales.pending')}</option>
+            <option value="PARTIAL">{t('sales.partial')}</option>
+            <option value="PAID">{t('sales.paid')}</option>
+            <option value="OVERDUE">{t('sales.overdue')}</option>
           </select>
         </div>
       </div>
@@ -202,9 +204,9 @@ const SaleList = () => {
       
       {sales.length === 0 && !isLoading && (
         <EmptyState 
-          title='No Sales Found' 
-          description='Start by creating your first sale' 
-          actionText='New Sale' 
+          title={t('sales.noSales')} 
+          description={t('common.add') + ' ' + t('sales.sales')} 
+          actionText={t('sales.newSale')} 
           onAction={() => navigate('/sales/create')} 
         />
       )}
@@ -219,4 +221,3 @@ const SaleList = () => {
 };
 
 export default SaleList;
-
