@@ -3,17 +3,14 @@
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-  // Read localStorage on initial load
   const getInitialLanguage = () => {
     const saved = localStorage.getItem('language');
-    console.log('Initial language from localStorage:', saved); // Debug
     return saved || 'en';
   };
 
   const [language, setLanguage] = useState(getInitialLanguage);
 
   useEffect(() => {
-    console.log('Language changed to:', language);
     localStorage.setItem('language', language);
   }, [language]);
 
@@ -39,17 +36,16 @@ export const LanguageProvider = ({ children }) => {
   };
 
   const t = (key) => {
-    const result = translations[language]?.[key] || key;
-    console.log(	('') = '' ()); // Debug
-    return result;
+    if (!translations[language]) {
+      return translations.en[key] || key;
+    }
+    return translations[language][key] || key;
   };
 
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'am' : 'en';
-    console.log('Toggling to:', newLang);
     setLanguage(newLang);
     localStorage.setItem('language', newLang);
-    // Force page reload to ensure all components update
     window.location.reload();
   };
 
