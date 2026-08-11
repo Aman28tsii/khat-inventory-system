@@ -9,6 +9,7 @@ import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { login, clearError } from '../slices/authSlice';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -16,6 +17,7 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, error, isAuthenticated } = useSelector((state) => state.auth);
@@ -66,10 +68,10 @@ const Login = () => {
               <span className="text-4xl">🌿</span>
             </div>
             <h1 className="text-2xl font-bold text-secondary-900 dark:text-white">
-              Khat Inventory System
+              {t('appName')}
             </h1>
             <p className="text-secondary-500 dark:text-secondary-400 mt-1">
-              Sign in to your account
+              {t('loginTitle')}
             </p>
           </div>
 
@@ -88,7 +90,7 @@ const Login = () => {
           {/* Login Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Input
-              label="Email Address"
+              label={t('email')}
               type="email"
               placeholder="admin@khattrading.com"
               icon={<Mail className="w-4 h-4 text-secondary-400" />}
@@ -98,9 +100,9 @@ const Login = () => {
             />
 
             <Input
-              label="Password"
+              label={t('password')}
               type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
+              placeholder={t('password')}
               icon={<Lock className="w-4 h-4 text-secondary-400" />}
               error={errors.password?.message}
               disabled={isLoading}
@@ -123,14 +125,14 @@ const Login = () => {
                   className="w-4 h-4 text-primary-600 border-secondary-300 rounded focus:ring-primary-500"
                 />
                 <span className="ml-2 text-sm text-secondary-600 dark:text-secondary-400">
-                  Remember me
+                  {t('rememberMe')}
                 </span>
               </label>
               <Link
                 to="/forgot-password"
                 className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300 font-medium"
               >
-                Forgot password?
+                {t('forgotPassword')}
               </Link>
             </div>
 
@@ -141,13 +143,13 @@ const Login = () => {
               isLoading={isLoading}
               className="w-full"
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? t('signingIn') : t('signIn')}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-secondary-600 dark:text-secondary-400">
-              Default admin: admin@khattrading.com / Admin@123
+              {t('defaultAdmin')}
             </p>
           </div>
         </div>
@@ -157,4 +159,3 @@ const Login = () => {
 };
 
 export default Login;
-
