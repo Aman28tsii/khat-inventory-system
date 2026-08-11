@@ -3,11 +3,17 @@
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'en';
-  });
+  // Read localStorage on initial load
+  const getInitialLanguage = () => {
+    const saved = localStorage.getItem('language');
+    console.log('Initial language from localStorage:', saved); // Debug
+    return saved || 'en';
+  };
+
+  const [language, setLanguage] = useState(getInitialLanguage);
 
   useEffect(() => {
+    console.log('Language changed to:', language);
     localStorage.setItem('language', language);
   }, [language]);
 
@@ -19,32 +25,7 @@ export const LanguageProvider = ({ children }) => {
       changePassword: "Change Password",
       notifications: "Notifications",
       logout: "Logout",
-      user: "User",
-      dashboard: "Dashboard",
-      inventory: "Inventory",
-      sales: "Sales",
-      purchases: "Purchases",
-      transfers: "Transfers",
-      reports: "Reports",
-      customers: "Customers",
-      suppliers: "Suppliers",
-      users: "Users",
-      roles: "Roles",
-      branches: "Branches",
-      settings: "Settings",
-      loading: "Loading...",
-      save: "Save",
-      cancel: "Cancel",
-      delete: "Delete",
-      edit: "Edit",
-      add: "Add",
-      create: "Create",
-      update: "Update",
-      close: "Close",
-      submit: "Submit",
-      confirm: "Confirm",
-      yes: "Yes",
-      no: "No"
+      user: "User"
     },
     am: {
       search: "ፈልግ...",
@@ -53,46 +34,23 @@ export const LanguageProvider = ({ children }) => {
       changePassword: "የይለፍ ቃል ቀይር",
       notifications: "ማሳወቂያዎች",
       logout: "ውጣ",
-      user: "ተጠቃሚ",
-      dashboard: "ዳሽቦርድ",
-      inventory: "ኢንቬንተሪ",
-      sales: "ሽያጭ",
-      purchases: "ግዢዎች",
-      transfers: "ዝውውሮች",
-      reports: "ሪፖርቶች",
-      customers: "ደንበኞች",
-      suppliers: "አቅራቢዎች",
-      users: "ተጠቃሚዎች",
-      roles: "ሚናዎች",
-      branches: "ቅርንጫፎች",
-      settings: "ቅንብሮች",
-      loading: "በመጫን ላይ...",
-      save: "አስቀምጥ",
-      cancel: "ሰርዝ",
-      delete: "ሰርዝ",
-      edit: "አስተካክል",
-      add: "ጨምር",
-      create: "ፍጠር",
-      update: "አዘምን",
-      close: "ዝጋ",
-      submit: "አስገባ",
-      confirm: "አረጋግጥ",
-      yes: "አዎ",
-      no: "አይ"
+      user: "ተጠቃሚ"
     }
   };
 
   const t = (key) => {
-    if (!translations[language]) {
-      return translations.en[key] || key;
-    }
-    return translations[language][key] || key;
+    const result = translations[language]?.[key] || key;
+    console.log(	('') = '' ()); // Debug
+    return result;
   };
 
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'am' : 'en';
+    console.log('Toggling to:', newLang);
     setLanguage(newLang);
     localStorage.setItem('language', newLang);
+    // Force page reload to ensure all components update
+    window.location.reload();
   };
 
   return (
