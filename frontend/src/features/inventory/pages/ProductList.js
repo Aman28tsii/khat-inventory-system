@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useDebounce } from '../../../hooks/useDebounce';
 import BulkImport from '../../../components/common/BulkImport/BulkImport';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
@@ -28,9 +29,9 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const { products, isLoading, error, total } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch = useDebounce(searchTerm, 500);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const debouncedSearch = useDebounce(searchTerm, 500);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -50,7 +51,7 @@ const ProductList = () => {
 
   useEffect(() => {
     dispatch(fetchProducts({ search: debouncedSearch, page, limit }));
-  }, [dispatch, searchTerm]);
+  }, [dispatch, debouncedSearch, page, limit]);
 
   useEffect(() => {
     if (error) {
@@ -404,4 +405,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
