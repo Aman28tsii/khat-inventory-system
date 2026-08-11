@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,12 +9,14 @@ import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
 import { forgotPassword, clearError } from '../slices/authSlice';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email address')
 });
 
 const ForgotPassword = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading, error } = useSelector((state) => state.auth);
@@ -52,13 +54,13 @@ const ForgotPassword = () => {
           <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Check Your Email</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('auth.passwordReset')}</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            We've sent a password reset link to your email address.
+            {t('auth.passwordReset')}
           </p>
           <Link to="/login">
             <Button variant="primary" className="w-full mt-6">
-              Back to Login
+              {t('auth.login')}
             </Button>
           </Link>
         </motion.div>
@@ -76,13 +78,13 @@ const ForgotPassword = () => {
         <div className="bg-white dark:bg-secondary-800 rounded-2xl shadow-xl p-8">
           <Link to="/login" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mb-6">
             <ArrowLeft className="w-4 h-4" />
-            Back to Login
+            {t('auth.login')}
           </Link>
 
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reset Password</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('auth.resetPassword')}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">
-              Enter your email to receive a reset link
+              {t('auth.forgotPassword')}
             </p>
           </div>
 
@@ -98,7 +100,7 @@ const ForgotPassword = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Input
-              label="Email Address"
+              label={t('auth.email')}
               type="email"
               placeholder="you@company.com"
               icon={<Mail className="w-4 h-4 text-secondary-400" />}
@@ -114,7 +116,7 @@ const ForgotPassword = () => {
               isLoading={isLoading}
               className="w-full"
             >
-              {isLoading ? 'Sending...' : 'Send Reset Link'}
+              {isLoading ? t('common.loading') : t('auth.resetPassword')}
             </Button>
           </form>
         </div>

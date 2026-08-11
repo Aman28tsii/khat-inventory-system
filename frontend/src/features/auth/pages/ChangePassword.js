@@ -6,8 +6,10 @@ import { toast } from 'react-hot-toast';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { changePassword } from '../slices/authSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const ChangePassword = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.auth);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -23,15 +25,15 @@ const ChangePassword = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
+      newErrors.currentPassword = t('validation.required');
     }
     if (!formData.newPassword) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = t('validation.required');
     } else if (formData.newPassword.length < 8) {
-      newErrors.newPassword = 'Password must be at least 8 characters';
+      newErrors.newPassword = t('auth.minPassword');
     }
     if (formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('auth.passwordMismatch');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -45,14 +47,14 @@ const ChangePassword = () => {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword
       })).unwrap();
-      toast.success('Password changed successfully!');
+      toast.success(t('auth.passwordChanged'));
       setFormData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
     } catch (error) {
-      toast.error(error || 'Failed to change password');
+      toast.error(error || t('errors.generic'));
     }
   };
 
@@ -64,19 +66,19 @@ const ChangePassword = () => {
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden"
       >
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8">
-          <h1 className="text-2xl font-bold text-white">Change Password</h1>
-          <p className="text-primary-100">Update your account password</p>
+          <h1 className="text-2xl font-bold text-white">{t('auth.changePassword')}</h1>
+          <p className="text-primary-100">{t('auth.changePassword')}</p>
         </div>
 
         <div className="p-6">
           <div className="space-y-6">
             <div>
               <Input
-                label="Current Password"
+                label={t('auth.currentPassword')}
                 type={showCurrentPassword ? 'text' : 'password'}
                 value={formData.currentPassword}
                 onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                placeholder="Enter current password"
+                placeholder={t('auth.currentPassword')}
                 error={errors.currentPassword}
                 icon={<Lock className="w-4 h-4 text-gray-400" />}
                 rightElement={
@@ -93,11 +95,11 @@ const ChangePassword = () => {
 
             <div>
               <Input
-                label="New Password"
+                label={t('auth.newPassword')}
                 type={showNewPassword ? 'text' : 'password'}
                 value={formData.newPassword}
                 onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                placeholder="Enter new password (min 8 characters)"
+                placeholder={t('auth.newPassword')}
                 error={errors.newPassword}
                 icon={<Lock className="w-4 h-4 text-gray-400" />}
                 rightElement={
@@ -114,11 +116,11 @@ const ChangePassword = () => {
 
             <div>
               <Input
-                label="Confirm New Password"
+                label={t('auth.confirmPassword')}
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                placeholder="Confirm new password"
+                placeholder={t('auth.confirmPassword')}
                 error={errors.confirmPassword}
                 icon={<Lock className="w-4 h-4 text-gray-400" />}
                 rightElement={
@@ -146,7 +148,7 @@ const ChangePassword = () => {
                 }}
               >
                 <X className="w-4 h-4 mr-2" />
-                Clear
+                {t('common.clear')}
               </Button>
               <Button
                 variant="primary"
@@ -154,7 +156,7 @@ const ChangePassword = () => {
                 isLoading={isLoading}
               >
                 <Save className="w-4 h-4 mr-2" />
-                Change Password
+                {t('auth.changePassword')}
               </Button>
             </div>
           </div>
