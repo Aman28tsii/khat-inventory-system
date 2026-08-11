@@ -1,8 +1,9 @@
+﻿
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Sidebar from '../Sidebar/Sidebar.js';
-import Header from '../Header/Header.js';
+import Sidebar from '../Sidebar/Sidebar';
+import Header from '../Header/Header';
 
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -21,14 +22,14 @@ const AppLayout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)}
         isMobile={isMobile}
       />
       
-      <div className={`transition-all duration-300 ${
+      <div className={`flex-1 transition-all duration-300 ${
         sidebarOpen && !isMobile ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
