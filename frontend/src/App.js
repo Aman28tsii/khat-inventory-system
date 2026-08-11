@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppRoutes from './routes/AppRoutes';
 import { getCurrentUser } from './features/auth/slices/authSlice';
 import { initializeSocket, disconnectSocket } from './services/socketService';
+import { LanguageProvider } from './context/LanguageContext';
 
 function App() {
   const dispatch = useDispatch();
@@ -17,7 +18,11 @@ function App() {
     }
   }, [dispatch, isAuthenticated, accessToken]);
 
-  return <AppRoutes />;
+  return (
+    <LanguageProvider>
+      <AppRoutes />
+    </LanguageProvider>
+  );
 }
 
 export default App;
