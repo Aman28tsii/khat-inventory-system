@@ -1,7 +1,6 @@
 ﻿import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Layout from '../components/layout/Layout';
 import Login from '../features/auth/pages/Login';
 import ExecutiveDashboard from '../features/dashboard/pages/ExecutiveDashboard';
 import BranchList from '../features/branches/pages/BranchList';
@@ -45,36 +44,33 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<AppLayout />}>
-        <Route index element={<Navigate to="/dashboard" />} />
-        <Route path="dashboard" element={<ExecutiveDashboard />} />
-        <Route path="branches" element={<BranchList />} />
-        <Route path="products" element={<ProductList />} />
-        <Route path="batches" element={<BatchList />} />
-        <Route path="customers" element={<CustomerList />} />
-        <Route path="suppliers" element={<SupplierList />} />
-        <Route path="purchases" element={<PurchaseList />} />
-        <Route path="purchases/create" element={<CreatePurchase />} />
-        <Route path="purchases/:id" element={<PurchaseDetail />} />
-        <Route path="sales" element={<SaleList />} />
-        <Route path="sales/create" element={<CreateSale />} />
-        <Route path="sales/:id" element={<SaleDetail />} />
-        <Route path="transfers" element={<TransferList />} />
-        <Route path="transfers/create" element={<CreateTransfer />} />
-        <Route path="transfers/:id" element={<TransferDetail />} />
-        <Route path="users" element={<UserList />} />
-        <Route path="profile" element={<UserProfile />} />
-        <Route path="change-password" element={<ChangePassword />} />
-        <Route path="roles" element={<RoleList />} />
-        <Route path="audit-logs" element={<AuditLogs />} />
-        <Route path="notifications" element={<NotificationCenter />} />
-        <Route path="reports/inventory" element={<InventoryReport />} />
-        <Route path="reports/sales" element={<SalesReport />} />
-        <Route path="reports/profit" element={<ProfitReport />} />
-        <Route path="inventory/stock-movements" element={<StockMovements />} />
-        <Route path="settings" element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
+      <Route path="/" element={<AppLayout><Navigate to="/dashboard" /></AppLayout>} />
+      <Route path="/dashboard" element={<AppLayout><ExecutiveDashboard /></AppLayout>} />
+      <Route path="/branches" element={<AppLayout><BranchList /></AppLayout>} />
+      <Route path="/products" element={<AppLayout><ProductList /></AppLayout>} />
+      <Route path="/batches" element={<AppLayout><BatchList /></AppLayout>} />
+      <Route path="/customers" element={<AppLayout><CustomerList /></AppLayout>} />
+      <Route path="/suppliers" element={<AppLayout><SupplierList /></AppLayout>} />
+      <Route path="/purchases" element={<AppLayout><PurchaseList /></AppLayout>} />
+      <Route path="/purchases/create" element={<AppLayout><CreatePurchase /></AppLayout>} />
+      <Route path="/purchases/:id" element={<AppLayout><PurchaseDetail /></AppLayout>} />
+      <Route path="/sales" element={<AppLayout><SaleList /></AppLayout>} />
+      <Route path="/sales/create" element={<AppLayout><CreateSale /></AppLayout>} />
+      <Route path="/sales/:id" element={<AppLayout><SaleDetail /></AppLayout>} />
+      <Route path="/transfers" element={<AppLayout><TransferList /></AppLayout>} />
+      <Route path="/transfers/create" element={<AppLayout><CreateTransfer /></AppLayout>} />
+      <Route path="/transfers/:id" element={<AppLayout><TransferDetail /></AppLayout>} />
+      <Route path="/users" element={<AppLayout><UserList /></AppLayout>} />
+      <Route path="/profile" element={<AppLayout><UserProfile /></AppLayout>} />
+      <Route path="/change-password" element={<AppLayout><ChangePassword /></AppLayout>} />
+      <Route path="/roles" element={<AppLayout><RoleList /></AppLayout>} />
+      <Route path="/audit-logs" element={<AppLayout><AuditLogs /></AppLayout>} />
+      <Route path="/notifications" element={<AppLayout><NotificationCenter /></AppLayout>} />
+      <Route path="/reports/inventory" element={<AppLayout><InventoryReport /></AppLayout>} />
+      <Route path="/reports/sales" element={<AppLayout><SalesReport /></AppLayout>} />
+      <Route path="/reports/profit" element={<AppLayout><ProfitReport /></AppLayout>} />
+      <Route path="/inventory/stock-movements" element={<AppLayout><StockMovements /></AppLayout>} />
+      <Route path="/settings" element={<AppLayout><SettingsPage /></AppLayout>} />
     </Routes>
   );
 };
