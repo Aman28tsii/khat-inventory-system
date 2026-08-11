@@ -17,8 +17,10 @@ import { toast } from 'react-hot-toast';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { getCurrentUser, updateUser } from '../../users/slices/usersSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const UserProfile = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
@@ -72,10 +74,10 @@ const UserProfile = () => {
     try {
       await dispatch(updateUser({ id: user.id, data: formData })).unwrap();
       await dispatch(getCurrentUser()).unwrap();
-      toast.success('Profile updated successfully!');
+      toast.success(t('users.editProfile') + ' ' + t('common.success'));
       setIsEditing(false);
     } catch (error) {
-      toast.error('Failed to update profile');
+      toast.error(t('errors.generic'));
     }
   };
 
@@ -93,7 +95,7 @@ const UserProfile = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Loading profile...</p>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -106,7 +108,6 @@ const UserProfile = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden"
       >
-        {/* Header */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -116,7 +117,7 @@ const UserProfile = () => {
                     {avatarPreview || formData.avatarUrl ? (
                       <img 
                         src={avatarPreview || formData.avatarUrl} 
-                        alt="Avatar" 
+                        alt={t('users.avatar')} 
                         className="w-24 h-24 rounded-full object-cover"
                       />
                     ) : (
@@ -151,18 +152,17 @@ const UserProfile = () => {
               <h1 className="text-2xl font-bold">
                 {user.firstName} {user.lastName}
               </h1>
-              <p className="text-primary-100">{user.role?.name || 'User'}</p>
+              <p className="text-primary-100">{user.role?.name || t('user')}</p>
               <p className="text-primary-200 text-sm">
-                Joined {formatDate(user.createdAt)}
+                {t('users.joined')} {formatDate(user.createdAt)}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Profile Information</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('users.profileInformation')}</h2>
             {!isEditing ? (
               <Button
                 variant="primary"
@@ -170,7 +170,7 @@ const UserProfile = () => {
                 onClick={() => setIsEditing(true)}
               >
                 <Edit2 className="w-4 h-4 mr-2" />
-                Edit Profile
+                {t('users.editProfile')}
               </Button>
             ) : (
               <div className="flex gap-2">
@@ -190,7 +190,7 @@ const UserProfile = () => {
                   }}
                 >
                   <X className="w-4 h-4 mr-2" />
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   variant="primary"
@@ -199,7 +199,7 @@ const UserProfile = () => {
                   isLoading={isLoading}
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Save Changes
+                  {t('users.saveChanges')}
                 </Button>
               </div>
             )}
@@ -210,26 +210,26 @@ const UserProfile = () => {
               {isEditing ? (
                 <>
                   <Input
-                    label="First Name"
+                    label={t('users.firstName')}
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    placeholder="First Name"
+                    placeholder={t('users.firstName')}
                   />
                   <Input
-                    label="Last Name"
+                    label={t('users.lastName')}
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    placeholder="Last Name"
+                    placeholder={t('users.lastName')}
                   />
                   <Input
-                    label="Email"
+                    label={t('auth.email')}
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="Email"
+                    placeholder={t('auth.email')}
                     disabled
                   />
                 </>
@@ -238,7 +238,7 @@ const UserProfile = () => {
                   <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <User className="w-5 h-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{t('users.fullName')}</p>
                       <p className="font-medium text-gray-900 dark:text-white">
                         {user.firstName} {user.lastName}
                       </p>
@@ -247,7 +247,7 @@ const UserProfile = () => {
                   <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <Mail className="w-5 h-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth.email')}</p>
                       <p className="font-medium text-gray-900 dark:text-white">{user.email}</p>
                     </div>
                   </div>
@@ -259,20 +259,20 @@ const UserProfile = () => {
               {isEditing ? (
                 <>
                   <Input
-                    label="Phone Number"
+                    label={t('users.phone')}
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="Phone Number"
+                    placeholder={t('users.phone')}
                   />
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Role
+                      {t('users.role')}
                     </label>
                     <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <Shield className="w-5 h-5 text-gray-400" />
                       <span className="font-medium text-gray-900 dark:text-white">
-                        {user.role?.name || 'User'}
+                        {user.role?.name || t('user')}
                       </span>
                     </div>
                   </div>
@@ -282,18 +282,18 @@ const UserProfile = () => {
                   <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <Phone className="w-5 h-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{t('users.phone')}</p>
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {user.phone || 'Not set'}
+                        {user.phone || t('common.none')}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <Building2 className="w-5 h-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Role</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{t('users.role')}</p>
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {user.role?.name || 'User'}
+                        {user.role?.name || t('user')}
                       </p>
                     </div>
                   </div>
@@ -302,13 +302,12 @@ const UserProfile = () => {
             </div>
           </div>
 
-          {/* Branch Info */}
           {user.branch && (
             <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center gap-3">
                 <Building2 className="w-5 h-5 text-gray-400" />
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Branch</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('branches.branch')}</p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {user.branch.name} ({user.branch.code})
                   </p>

@@ -16,8 +16,10 @@ import Table from '../../../components/common/Table/Table';
 import Button from '../../../components/common/Button/Button';
 import ReportFilters from '../components/ReportFilters';
 import { fetchInventoryReport, exportReportPDF, exportReportExcel, clearError } from '../slices/reportSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const InventoryReport = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { inventoryReport, isLoading, exporting, error } = useSelector((state) => state.reports);
@@ -58,9 +60,9 @@ const InventoryReport = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      toast.success('PDF exported successfully');
+      toast.success(t('reports.exportPDF') + ' ' + t('common.success'));
     } catch (error) {
-      toast.error('Failed to export PDF');
+      toast.error(t('errors.generic'));
     }
   };
 
@@ -80,9 +82,9 @@ const InventoryReport = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      toast.success('Excel exported successfully');
+      toast.success(t('reports.exportExcel') + ' ' + t('common.success'));
     } catch (error) {
-      toast.error('Failed to export Excel');
+      toast.error(t('errors.generic'));
     }
   };
 
@@ -95,7 +97,7 @@ const InventoryReport = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Please log in to view reports</p>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -104,7 +106,7 @@ const InventoryReport = () => {
   const columns = [
     {
       key: 'product',
-      label: 'Product',
+      label: t('inventory.productName'),
       render: (row) => (
         <div>
           <p className="font-medium text-gray-900 dark:text-white">{row.productName}</p>
@@ -114,25 +116,25 @@ const InventoryReport = () => {
     },
     {
       key: 'batch',
-      label: 'Batch',
+      label: t('inventory.batch'),
       render: (row) => (
         <div>
           <p className="text-sm text-gray-900 dark:text-white">{row.batchNumber}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">Exp: {new Date(row.expiryDate).toLocaleDateString()}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{t('inventory.expiryDate')}: {new Date(row.expiryDate).toLocaleDateString()}</p>
         </div>
       )
     },
     {
       key: 'quantity',
-      label: 'Quantity',
+      label: t('inventory.quantity'),
       render: (row) => (
         <div className="space-y-0.5">
           <div className="text-sm">
-            <span className="text-gray-500 dark:text-gray-400">Total:</span>
+            <span className="text-gray-500 dark:text-gray-400">{t('inventory.totalQuantity')}:</span>
             <span className="font-medium ml-1">{row.totalQuantity}</span>
           </div>
           <div className="text-sm">
-            <span className="text-gray-500 dark:text-gray-400">Available:</span>
+            <span className="text-gray-500 dark:text-gray-400">{t('inventory.availableQuantity')}:</span>
             <span className="font-medium ml-1">{row.availableQuantity}</span>
           </div>
         </div>
@@ -140,23 +142,23 @@ const InventoryReport = () => {
     },
     {
       key: 'location',
-      label: 'Location',
+      label: t('inventory.branch'),
       render: (row) => (
         <div>
           <p className="text-sm text-gray-900 dark:text-white">{row.branch}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{row.shelf || 'No shelf'}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{row.shelf || t('common.none')}</p>
         </div>
       )
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('common.status'),
       render: (row) => {
         if (row.isExpiring) {
           return (
             <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full text-xs font-medium">
               <AlertCircle className="w-3 h-3" />
-              Expiring Soon
+              {t('inventory.expiringSoon')}
             </span>
           );
         }
@@ -164,14 +166,14 @@ const InventoryReport = () => {
           return (
             <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-full text-xs font-medium">
               <AlertCircle className="w-3 h-3" />
-              Low Stock
+              {t('inventory.lowStock')}
             </span>
           );
         }
         return (
           <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full text-xs font-medium">
             <CheckCircle className="w-3 h-3" />
-            In Stock
+            {t('inventory.available')}
           </span>
         );
       }
@@ -179,22 +181,16 @@ const InventoryReport = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <img src="/src/assets/images/brand/logo-small.svg" alt="Khat Inventory" className="w-10 h-10" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Inventory Report</h1>
-            <p className="text-gray-500 dark:text-gray-400">Detailed inventory status and batch tracking</p>
-          </div>
-        </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Inventory Report
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Detailed inventory status and batch tracking
-          </p>
+          <div className="flex items-center gap-3">
+            <img src="/src/assets/images/brand/logo-small.svg" alt={t('appName')} className="w-10 h-10" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('reports.inventoryReport')}</h1>
+              <p className="text-gray-500 dark:text-gray-400">{t('reports.inventoryReport')}</p>
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button
@@ -204,7 +200,7 @@ const InventoryReport = () => {
             disabled={isLoading || !inventoryReport}
           >
             <Printer className="w-4 h-4 mr-1" />
-            Print
+            {t('common.print')}
           </Button>
           <Button
             variant="secondary"
@@ -214,7 +210,7 @@ const InventoryReport = () => {
             disabled={isLoading || !inventoryReport}
           >
             <FileText className="w-4 h-4 mr-1" />
-            PDF
+            {t('reports.exportPDF')}
           </Button>
           <Button
             variant="primary"
@@ -224,7 +220,7 @@ const InventoryReport = () => {
             disabled={isLoading || !inventoryReport}
           >
             <FileSpreadsheet className="w-4 h-4 mr-1" />
-            Excel
+            {t('reports.exportExcel')}
           </Button>
         </div>
       </div>
@@ -238,25 +234,25 @@ const InventoryReport = () => {
       {inventoryReport && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Products</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('inventory.totalProducts')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {inventoryReport.summary?.totalProducts || 0}
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Batches</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('inventory.totalQuantity')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {inventoryReport.summary?.totalBatches || 0}
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Quantity</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('inventory.availableQuantity')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {inventoryReport.summary?.totalQuantity || 0}
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Low Stock Alerts</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('inventory.lowStock')}</p>
             <p className="text-2xl font-bold text-red-600">
               {inventoryReport.summary?.lowStockCount || 0}
             </p>
@@ -276,4 +272,3 @@ const InventoryReport = () => {
 };
 
 export default InventoryReport;
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -18,8 +18,10 @@ import { toast } from 'react-hot-toast';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
 import { createPurchase } from '../slices/purchaseSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const CreatePurchase = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading } = useSelector((state) => state.purchases);
@@ -47,15 +49,15 @@ const CreatePurchase = () => {
 
   const addItem = () => {
     if (!currentItem.productId) {
-      toast.error('Please select a product');
+      toast.error(t('validation.required'));
       return;
     }
     if (!currentItem.quantity || parseFloat(currentItem.quantity) <= 0) {
-      toast.error('Please enter a valid quantity');
+      toast.error(t('validation.required'));
       return;
     }
     if (!currentItem.unitPrice || parseFloat(currentItem.unitPrice) <= 0) {
-      toast.error('Please enter a valid unit price');
+      toast.error(t('validation.required'));
       return;
     }
 
@@ -97,15 +99,15 @@ const CreatePurchase = () => {
 
   const handleSubmit = async () => {
     if (!formData.supplierId) {
-      toast.error('Please select a supplier');
+      toast.error(t('validation.required'));
       return;
     }
     if (!formData.branchId) {
-      toast.error('Please select a branch');
+      toast.error(t('validation.required'));
       return;
     }
     if (formData.items.length === 0) {
-      toast.error('Please add at least one item');
+      toast.error(t('validation.required'));
       return;
     }
 
@@ -119,7 +121,7 @@ const CreatePurchase = () => {
 
     try {
       await dispatch(createPurchase(purchaseData)).unwrap();
-      toast.success('Purchase order created successfully');
+      toast.success(t('purchases.createPurchase') + ' ' + t('common.success'));
       navigate('/purchases');
     } catch (error) {
       toast.error(error);
@@ -128,42 +130,39 @@ const CreatePurchase = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Create Purchase Order
+            {t('purchases.createPurchase')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Create a new purchase order for suppliers
+            {t('purchases.createPurchase')}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => navigate('/purchases')}>
             <X className="w-4 h-4 mr-2" />
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" isLoading={isLoading} onClick={handleSubmit}>
             <Save className="w-4 h-4 mr-2" />
-            Create Order
+            {t('purchases.createPurchase')}
           </Button>
         </div>
       </div>
 
-      {/* Purchase Form */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-6">
-        {/* Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Supplier <span className="text-red-500">*</span>
+              {t('purchases.supplier')} <span className="text-red-500">*</span>
             </label>
             <select
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={formData.supplierId}
               onChange={(e) => setFormData({ ...formData, supplierId: e.target.value })}
             >
-              <option value="">Select Supplier</option>
+              <option value="">{t('purchases.supplier')}</option>
               {suppliers.map((supplier) => (
                 <option key={supplier.id} value={supplier.id}>
                   {supplier.name} ({supplier.code})
@@ -174,14 +173,14 @@ const CreatePurchase = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Branch <span className="text-red-500">*</span>
+              {t('inventory.branch')} <span className="text-red-500">*</span>
             </label>
             <select
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={formData.branchId}
               onChange={(e) => setFormData({ ...formData, branchId: e.target.value })}
             >
-              <option value="">Select Branch</option>
+              <option value="">{t('inventory.branch')}</option>
               {branches.map((branch) => (
                 <option key={branch.id} value={branch.id}>
                   {branch.name}
@@ -193,13 +192,13 @@ const CreatePurchase = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Purchase Date"
+            label={t('purchases.purchaseDate')}
             type="date"
             value={formData.purchaseDate}
             onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
           />
           <Input
-            label="Expected Delivery"
+            label={t('purchases.expectedDelivery')}
             type="date"
             value={formData.expectedDelivery}
             onChange={(e) => setFormData({ ...formData, expectedDelivery: e.target.value })}
@@ -208,35 +207,33 @@ const CreatePurchase = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Notes
+            {t('common.notes')}
           </label>
           <textarea
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             rows="2"
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            placeholder="Any special notes or instructions"
+            placeholder={t('common.notes')}
           />
         </div>
 
-        {/* Items Section */}
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Purchase Items
+            {t('purchases.purchaseItems')}
           </h3>
 
-          {/* Add Item Form */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Product <span className="text-red-500">*</span>
+                {t('inventory.productName')} <span className="text-red-500">*</span>
               </label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 value={currentItem.productId}
                 onChange={(e) => setCurrentItem({ ...currentItem, productId: e.target.value })}
               >
-                <option value="">Select Product</option>
+                <option value="">{t('inventory.productName')}</option>
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
                     {product.name} ({product.sku})
@@ -246,7 +243,7 @@ const CreatePurchase = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Quantity <span className="text-red-500">*</span>
+                {t('inventory.quantity')} <span className="text-red-500">*</span>
               </label>
               <Input
                 type="number"
@@ -257,7 +254,7 @@ const CreatePurchase = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Unit Price <span className="text-red-500">*</span>
+                {t('inventory.purchasePrice')} <span className="text-red-500">*</span>
               </label>
               <Input
                 type="number"
@@ -269,22 +266,21 @@ const CreatePurchase = () => {
             <div className="flex items-end">
               <Button variant="primary" onClick={addItem} className="w-full">
                 <Plus className="w-4 h-4 mr-2" />
-                Add Item
+                {t('sales.addItem')}
               </Button>
             </div>
           </div>
 
-          {/* Items List */}
           {formData.items.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-900/50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Product</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Quantity</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Unit Price</th>
-                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Total</th>
-                    <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Action</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('inventory.productName')}</th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('inventory.quantity')}</th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('inventory.purchasePrice')}</th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('sales.totalAmount')}</th>
+                    <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -292,8 +288,8 @@ const CreatePurchase = () => {
                     <tr key={item.id}>
                       <td className="px-4 py-2 text-sm text-gray-900 dark:text-white">{item.productName}</td>
                       <td className="px-4 py-2 text-sm text-right text-gray-900 dark:text-white">{item.quantity}</td>
-                      <td className="px-4 py-2 text-sm text-right text-gray-900 dark:text-white">${item.unitPrice.toFixed(2)}</td>
-                      <td className="px-4 py-2 text-sm text-right font-medium text-gray-900 dark:text-white">${item.totalPrice.toFixed(2)}</td>
+                      <td className="px-4 py-2 text-sm text-right text-gray-900 dark:text-white"></td>
+                      <td className="px-4 py-2 text-sm text-right font-medium text-gray-900 dark:text-white"></td>
                       <td className="px-4 py-2 text-center">
                         <button
                           onClick={() => removeItem(item.id)}
@@ -306,10 +302,10 @@ const CreatePurchase = () => {
                   ))}
                   <tr className="bg-gray-50 dark:bg-gray-900/50 font-medium">
                     <td colSpan="3" className="px-4 py-2 text-right text-gray-900 dark:text-white">
-                      Total Amount:
+                      {t('sales.totalAmount')}
                     </td>
                     <td className="px-4 py-2 text-right text-lg text-primary-600 dark:text-primary-400">
-                      ${calculateTotal().toFixed(2)}
+                      
                     </td>
                     <td></td>
                   </tr>
@@ -319,8 +315,8 @@ const CreatePurchase = () => {
           ) : (
             <div className="text-center py-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">No items added yet</p>
-              <p className="text-sm text-gray-400 dark:text-gray-500">Add products above to create purchase items</p>
+              <p className="text-gray-500 dark:text-gray-400">{t('common.noData')}</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">{t('sales.addItem')}</p>
             </div>
           )}
         </div>

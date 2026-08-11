@@ -7,8 +7,10 @@ import Button from '../../../components/common/Button/Button';
 import ChartWidget from '../../dashboard/components/ChartWidget';
 import ReportFilters from '../components/ReportFilters';
 import { fetchProfitReport, exportReportPDF, exportReportExcel, clearError } from '../slices/reportSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const ProfitReport = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { profitReport, isLoading, exporting, error } = useSelector((state) => state.reports);
   const [filters, setFilters] = useState({});
@@ -41,9 +43,9 @@ const ProfitReport = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      toast.success('PDF exported successfully');
+      toast.success(t('reports.exportPDF') + ' ' + t('common.success'));
     } catch (error) {
-      toast.error('Failed to export PDF');
+      toast.error(t('errors.generic'));
     }
   };
 
@@ -58,9 +60,9 @@ const ProfitReport = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      toast.success('Excel exported successfully');
+      toast.success(t('reports.exportExcel') + ' ' + t('common.success'));
     } catch (error) {
-      toast.error('Failed to export Excel');
+      toast.error(t('errors.generic'));
     }
   };
 
@@ -79,7 +81,7 @@ const ProfitReport = () => {
   const columns = [
     {
       key: 'date',
-      label: 'Date',
+      label: t('reports.dateRange'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-gray-400" />
@@ -89,22 +91,22 @@ const ProfitReport = () => {
     },
     {
       key: 'revenue',
-      label: 'Revenue',
+      label: t('reports.revenue'),
       render: (row) => <span className="font-medium text-green-600">{formatCurrency(row.revenue)}</span>
     },
     {
       key: 'cost',
-      label: 'Cost',
+      label: t('reports.cost'),
       render: (row) => <span className="font-medium text-red-600">{formatCurrency(row.cost)}</span>
     },
     {
       key: 'profit',
-      label: 'Profit',
+      label: t('reports.profit'),
       render: (row) => <span className="font-bold text-blue-600">{formatCurrency(row.profit)}</span>
     },
     {
       key: 'margin',
-      label: 'Margin %',
+      label: t('reports.margin'),
       render: (row) => {
         const revenue = typeof row.revenue === 'string' ? parseFloat(row.revenue) : (row.revenue || 0);
         const profit = typeof row.profit === 'string' ? parseFloat(row.profit) : (row.profit || 0);
@@ -117,23 +119,21 @@ const ProfitReport = () => {
   return (
     <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <img src="/src/assets/images/brand/logo-small.svg" alt="Khat Inventory" className="w-10 h-10" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profit Report</h1>
-            <p className="text-gray-500 dark:text-gray-400">Analyze profit and loss across the business</p>
-          </div>
-        </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profit Report</h1>
-          <p className="text-gray-500 dark:text-gray-400">Analyze profit and loss across the business</p>
+          <div className="flex items-center gap-3">
+            <img src="/src/assets/images/brand/logo-small.svg" alt={t('appName')} className="w-10 h-10" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('reports.profitReport')}</h1>
+              <p className="text-gray-500 dark:text-gray-400">{t('reports.profitReport')}</p>
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" isLoading={exporting} onClick={handleExportPDF} disabled={isLoading || !profitReport}>
-            <FileText className="w-4 h-4 mr-1" /> PDF
+            <FileText className="w-4 h-4 mr-1" /> {t('reports.exportPDF')}
           </Button>
           <Button variant="primary" size="sm" isLoading={exporting} onClick={handleExportExcel} disabled={isLoading || !profitReport}>
-            <FileSpreadsheet className="w-4 h-4 mr-1" /> Excel
+            <FileSpreadsheet className="w-4 h-4 mr-1" /> {t('reports.exportExcel')}
           </Button>
         </div>
       </div>
@@ -143,32 +143,32 @@ const ProfitReport = () => {
       {profitReport && profitReport.summary && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Revenue</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('reports.revenue')}</p>
             <p className="text-2xl font-bold text-green-600">{formatCurrency(profitReport.summary.totalRevenue)}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Cost</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('reports.cost')}</p>
             <p className="text-2xl font-bold text-red-600">{formatCurrency(profitReport.summary.totalCost)}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Net Profit</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('reports.profit')}</p>
             <p className="text-2xl font-bold text-blue-600">{formatCurrency(profitReport.summary.totalProfit)}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Profit Margin</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('reports.margin')}</p>
             <p className="text-2xl font-bold text-purple-600">{formatPercentage(profitReport.summary.averageMargin)}</p>
           </div>
         </div>
       )}
 
       <ChartWidget
-        title="Profit Trend"
+        title={t('reports.profit')}
         data={profitReport?.dailyData || []}
         type="line"
         series={[
-          { key: 'revenue', name: 'Revenue' },
-          { key: 'cost', name: 'Cost' },
-          { key: 'profit', name: 'Profit' }
+          { key: 'revenue', name: t('reports.revenue') },
+          { key: 'cost', name: t('reports.cost') },
+          { key: 'profit', name: t('reports.profit') }
         ]}
         xAxisKey="date"
       />
@@ -179,4 +179,3 @@ const ProfitReport = () => {
 };
 
 export default ProfitReport;
-

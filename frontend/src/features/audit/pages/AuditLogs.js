@@ -6,8 +6,10 @@ import { toast } from 'react-hot-toast';
 import Table from '../../../components/common/Table/Table';
 import Button from '../../../components/common/Button/Button';
 import { fetchAuditLogs, clearError } from '../slices/auditSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const AuditLogs = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { logs = [], isLoading = false, error = null, total = 0 } = useSelector((state) => state.audit || { logs: [], isLoading: false, error: null, total: 0 });
 
@@ -25,7 +27,7 @@ const AuditLogs = () => {
   const columns = [
     {
       key: 'timestamp',
-      label: 'Time',
+      label: t('reports.dateRange'),
       render: (row) => (
         <div>
           <div className="flex items-center gap-1 text-sm text-gray-900 dark:text-white">
@@ -40,7 +42,7 @@ const AuditLogs = () => {
     },
     {
       key: 'user',
-      label: 'User',
+      label: t('users.user'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
@@ -57,7 +59,7 @@ const AuditLogs = () => {
     },
     {
       key: 'action',
-      label: 'Action',
+      label: t('common.actions'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.action === 'CREATE' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : row.action === 'UPDATE' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : row.action === 'DELETE' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300')}>
           {row.action}
@@ -66,7 +68,7 @@ const AuditLogs = () => {
     },
     {
       key: 'resource',
-      label: 'Resource',
+      label: t('products.resource'),
       render: (row) => (
         <div>
           <p className="text-sm text-gray-900 dark:text-white">{row.resourceType}</p>
@@ -93,17 +95,17 @@ const AuditLogs = () => {
     <div className="space-y-6 p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h1>
-          <p className="text-gray-500 dark:text-gray-400">Complete audit trail of all system activities</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('auditLogs')}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t('auditLogs')}</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => dispatch(fetchAuditLogs())} isLoading={isLoading}>
-          Refresh
+          {t('common.refresh')}
         </Button>
       </div>
 
       {error && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Failed to load audit logs: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errors.generic')}: {error}</p>
         </div>
       )}
 
