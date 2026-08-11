@@ -42,10 +42,10 @@ const BranchList = () => {
       toast.error(t('errors.forbidden'));
       return;
     }
-    if (window.confirm(${t('modals.areYouSure')} ""?)) {
+    if (window.confirm(t('modals.areYouSure') + ' "' + branch.name + '"?')) {
       try {
         await dispatch(deleteBranch(branch.id)).unwrap();
-        toast.success(t('common.delete') + ' ' + t('branches.title'));
+        toast.success(t('common.delete') + ' ' + t('branches.branchName'));
       } catch (error) {
         toast.error(error);
       }

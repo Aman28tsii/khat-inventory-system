@@ -63,10 +63,10 @@ const ProductList = () => {
   }, [error, dispatch]);
 
   const handleDelete = async (product) => {
-    if (window.confirm(${t('modals.areYouSure')} ""?)) {
+    if (window.confirm(t('modals.areYouSure') + ' "' + product.name + '"?')) {
       try {
         await dispatch(deleteProduct(product.id)).unwrap();
-        toast.success(t('common.delete') + ' ' + t('products'));
+        toast.success(t('common.delete') + ' ' + t('products.productName'));
       } catch (error) {
         toast.error(error);
       }
@@ -251,7 +251,7 @@ const ProductList = () => {
       {products.length === 0 && !isLoading && (
         <EmptyState 
           title={t('products.noProducts')} 
-          description={t('common.add') + ' ' + t('products.products')} 
+          description={t('common.add') + ' ' + t('products.productName')} 
           actionText={t('products.addProduct')} 
           onAction={() => {
             setSelectedProduct(null);

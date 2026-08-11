@@ -54,10 +54,10 @@ const SupplierList = () => {
   };
 
   const handleDelete = async (supplier) => {
-    if (window.confirm(${t('modals.areYouSure')} ""?)) {
+    if (window.confirm(t('modals.areYouSure') + ' "' + supplier.name + '"?')) {
       try {
         await dispatch(deleteSupplier(supplier.id)).unwrap();
-        toast.success(t('common.delete') + ' ' + t('suppliers.title'));
+        toast.success(t('common.delete') + ' ' + t('suppliers.supplierName'));
         loadSuppliers();
       } catch (error) {
         toast.error(error);

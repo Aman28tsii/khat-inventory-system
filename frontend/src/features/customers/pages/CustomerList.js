@@ -62,10 +62,10 @@ const CustomerList = () => {
   }, [error, dispatch]);
 
   const handleDelete = async (customer) => {
-    if (window.confirm(${t('modals.areYouSure')} ""?)) {
+    if (window.confirm(t('modals.areYouSure') + ' "' + customer.name + '"?')) {
       try {
         await dispatch(deleteCustomer(customer.id)).unwrap();
-        toast.success(t('common.delete') + ' ' + t('customers.title'));
+        toast.success(t('common.delete') + ' ' + t('customers.customerName'));
       } catch (error) {
         toast.error(error);
       }
