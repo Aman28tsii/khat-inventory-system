@@ -18,8 +18,10 @@ import RecentActivity from '../components/RecentActivity';
 import AlertsList from '../components/AlertsList';
 import Button from '../../../components/common/Button/Button';
 import { fetchExecutiveDashboard, fetchRecentActivities, fetchAlerts, clearError } from '../slices/dashboardSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const ExecutiveDashboard = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const executive = useSelector((state) => state.dashboard?.executive);
@@ -82,40 +84,40 @@ const ExecutiveDashboard = () => {
 
   const stats = [
     { 
-      title: 'Total Revenue', 
+      title: t('totalRevenue'), 
       value: ',500', 
       icon: DollarSign, 
       color: 'green',
       trend: 'up',
       trendValue: '12.5%',
-      subtitle: 'This month'
+      subtitle: t('thisMonth')
     },
     { 
-      title: 'Total Sales', 
+      title: t('totalSales'), 
       value: '2,345', 
       icon: ShoppingCart, 
       color: 'blue',
       trend: 'up',
       trendValue: '8.3%',
-      subtitle: 'This month'
+      subtitle: t('thisMonth')
     },
     { 
-      title: 'Total Products', 
+      title: t('totalProducts'), 
       value: '1,234', 
       icon: Package, 
       color: 'purple',
       trend: 'up',
       trendValue: '5.2%',
-      subtitle: 'In stock'
+      subtitle: t('inStock')
     },
     { 
-      title: 'Active Users', 
+      title: t('activeUsers'), 
       value: '56', 
       icon: Users, 
       color: 'orange',
       trend: 'down',
       trendValue: '2.1%',
-      subtitle: 'Online now: 12'
+      subtitle: ${t('onlineNow')}: 12
     }
   ];
 
@@ -124,7 +126,7 @@ const ExecutiveDashboard = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Please log in to view dashboard</p>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t('loading')}</p>
         </div>
       </div>
     );
@@ -135,15 +137,15 @@ const ExecutiveDashboard = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            🌿 Executive Dashboard
+            🌿 {t('executive')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Overview of company performance and metrics
+            {t('overview')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            Last updated: {new Date().toLocaleTimeString()}
+            {t('lastUpdated')}: {new Date().toLocaleTimeString()}
           </span>
           <Button 
             variant="secondary" 
@@ -152,7 +154,7 @@ const ExecutiveDashboard = () => {
             onClick={loadDashboardData}
           >
             <RefreshCw className={'w-4 h-4 mr-2 ' + (isRefreshing ? 'animate-spin' : '')} />
-            Refresh
+            {t('refresh')}
           </Button>
         </div>
       </div>
@@ -172,22 +174,22 @@ const ExecutiveDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartWidget
-          title="Sales & Revenue Trend"
+          title={t('salesTrend')}
           data={salesData}
           type="line"
           series={[
-            { key: 'sales', name: 'Sales' },
-            { key: 'revenue', name: 'Revenue' }
+            { key: 'sales', name: t('sales') },
+            { key: 'revenue', name: t('revenue') }
           ]}
           xAxisKey="month"
         />
         <ChartWidget
-          title="Branch Performance"
+          title={t('branchPerformance')}
           data={branchPerformance}
           type="bar"
           series={[
-            { key: 'sales', name: 'Sales' },
-            { key: 'profit', name: 'Profit' }
+            { key: 'sales', name: t('sales') },
+            { key: 'profit', name: t('profit') }
           ]}
           xAxisKey="branch"
         />
@@ -196,7 +198,7 @@ const ExecutiveDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <ChartWidget
-            title="Inventory Distribution"
+            title={t('inventoryDistribution')}
             data={inventoryData}
             type="pie"
             dataKey="value"
@@ -206,12 +208,12 @@ const ExecutiveDashboard = () => {
         </div>
         <div className="lg:col-span-2">
           <ChartWidget
-            title="Monthly Performance"
+            title={t('monthlyPerformance')}
             data={salesData}
             type="area"
             series={[
-              { key: 'sales', name: 'Sales' },
-              { key: 'revenue', name: 'Revenue' }
+              { key: 'sales', name: t('sales') },
+              { key: 'revenue', name: t('revenue') }
             ]}
             xAxisKey="month"
           />
@@ -227,4 +229,3 @@ const ExecutiveDashboard = () => {
 };
 
 export default ExecutiveDashboard;
-
