@@ -1,4 +1,7 @@
 ﻿import React, { createContext, useState, useContext, useEffect } from 'react';
+// Import the full translation files
+import enTranslations from '../locales/en/common.json';
+import amTranslations from '../locales/am/common.json';
 
 const LanguageContext = createContext();
 
@@ -14,25 +17,10 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('language', language);
   }, [language]);
 
+  // Use the full translation files
   const translations = {
-    en: {
-      search: "Search...",
-      welcome: "Welcome",
-      profile: "My Profile",
-      changePassword: "Change Password",
-      notifications: "Notifications",
-      logout: "Logout",
-      user: "User"
-    },
-    am: {
-      search: "ፈልግ...",
-      welcome: "እንኳን ደህና መጡ",
-      profile: "መገለጫ",
-      changePassword: "የይለፍ ቃል ቀይር",
-      notifications: "ማሳወቂያዎች",
-      logout: "ውጣ",
-      user: "ተጠቃሚ"
-    }
+    en: enTranslations,
+    am: amTranslations
   };
 
   const t = (key) => {
