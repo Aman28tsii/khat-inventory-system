@@ -10,7 +10,7 @@
     "axios": "^1.6.0",
     "date-fns": "^4.4.0",
     "framer-motion": "^10.16.4",
-    "i18next": "^26.3.6",
+    "i18next": "^23.7.11",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,12 +25,12 @@
     "socket.io-client": "^4.5.4",
     "zod": "^3.22.4"
   },
-"scripts": {
-  "start": "react-scripts --legacy-peer-deps start",
-  "build": "react-scripts --legacy-peer-deps build",
-  "test": "react-scripts --legacy-peer-deps test",
-  "eject": "react-scripts eject"
-},
+  "scripts": {
+    "start": "react-scripts --legacy-peer-deps start",
+    "build": "react-scripts --legacy-peer-deps build",
+    "test": "react-scripts --legacy-peer-deps test",
+    "eject": "react-scripts eject"
+  },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "autoprefixer": "^10.4.16",
