@@ -680,12 +680,19 @@ export const LanguageProvider = ({ children }) => {
   }, [language]);
 
   const t = (key) => {
+    // Direct lookup first
+    if (translations[language] && translations[language][key] !== undefined) {
+      return translations[language][key];
+    }
+    
+    // If not found, try nested lookup (for keys like 'navigation.main')
     const keys = key.split('.');
     let result = translations[language];
     for (const k of keys) {
       if (result && result[k] !== undefined) {
         result = result[k];
       } else {
+        // Fallback to English
         let fallback = translations.en;
         for (const fk of keys) {
           if (fallback && fallback[fk] !== undefined) {
