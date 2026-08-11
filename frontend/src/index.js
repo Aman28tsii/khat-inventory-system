@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import App from './App';
 import store from './app/store';
 import './index.css';
-import './i18n'; // ← ADD THIS LINE
+import './i18n'; 
 
 const queryClient = new QueryClient({
   defaultOptions: {
