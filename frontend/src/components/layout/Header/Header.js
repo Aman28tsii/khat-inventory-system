@@ -19,7 +19,7 @@ import {
 import { logout } from '../../../features/auth/slices/authSlice';
 import NotificationBell from './NotificationBell.js';
 import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
-import { useLanguage } from '../../../context/LanguageContext'; // Add this
+import { useLanguage } from '../../context/LanguageContext';
 
 const Header = ({ toggleSidebar }) => {
   const { t } = useLanguage(); // Add this
