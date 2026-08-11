@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import Sidebar from '../Sidebar/Sidebar';
 import Header from '../Header/Header';
 
-const AppLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+const AppLayout = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   useEffect(() => {
@@ -25,9 +25,6 @@ const AppLayout = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Debug: Verify toggleSidebar is defined
-  console.log('AppLayout: toggleSidebar is defined');
-
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar 
@@ -45,7 +42,7 @@ const AppLayout = () => {
             transition={{ duration: 0.3 }}
             className="p-4 md:p-6"
           >
-            <Outlet />
+            {children || <Outlet />}
           </motion.div>
         </main>
       </div>
