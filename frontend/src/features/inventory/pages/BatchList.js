@@ -22,6 +22,8 @@ import Table from '../../../components/common/Table/Table';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import Input from '../../../components/common/Input/Input';
+import BatchForm from '../components/BatchForm';
+import QualityInspectionModal from '../components/QualityInspectionModal';
 import { fetchBatches, deleteBatch, clearError } from '../slices/inventorySlice';
 
 const BatchList = () => {
@@ -244,6 +246,57 @@ const BatchList = () => {
           setShowModal(true);
         }}
       />
+
+      {/* Batch Form Modal */}
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setSelectedBatch(null);
+        }}
+        title={isEditing ? 'Edit Batch' : 'Create New Batch'}
+        size="lg"
+      >
+        <BatchForm
+          batch={selectedBatch}
+          isEditing={isEditing}
+          onSuccess={() => {
+            setShowModal(false);
+            setSelectedBatch(null);
+            loadBatches();
+            toast.success(isEditing ? 'Batch updated successfully' : 'Batch created successfully');
+          }}
+          onCancel={() => {
+            setShowModal(false);
+            setSelectedBatch(null);
+          }}
+        />
+      </Modal>
+
+      {/* Quality Inspection Modal */}
+      <Modal
+        isOpen={showQualityModal}
+        onClose={() => {
+          setShowQualityModal(false);
+          setSelectedBatch(null);
+        }}
+        title={`Quality Inspection: ${selectedBatch?.batchNumber}`}
+        size="lg"
+      >
+        <QualityInspectionModal
+          batch={selectedBatch}
+          onSuccess={() => {
+            setShowQualityModal(false);
+            setSelectedBatch(null);
+            loadBatches();
+            toast.success('Quality inspection completed successfully');
+          }}
+          onCancel={() => {
+            setShowQualityModal(false);
+            setSelectedBatch(null);
+          }}
+        />
+      </Modal>
     </div>
   );
 };
