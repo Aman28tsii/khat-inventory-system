@@ -3,122 +3,88 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Truck, 
-  FileText, 
-  Settings, 
-  LogOut,
-  X,
-  Warehouse,
-  TrendingUp,
-  CreditCard,
-  Bell,
-  Shield,
-  Building2,
-  ClipboardList,
-  BarChart3,
-  UserCog,
-  Store,
-  Calculator,
-  AlertCircle
+  LayoutDashboard, Package, ShoppingCart, Users, Truck, FileText, Settings, 
+  LogOut, X, Warehouse, TrendingUp, CreditCard, Bell, Shield, Building2,
+  ClipboardList, BarChart3, UserCog, Store, Calculator, AlertCircle
 } from 'lucide-react';
 import { logout } from '../../../features/auth/slices/authSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const [expandedMenus, setExpandedMenus] = useState({});
-
-  const toggleMenu = (menuName) => {
-    setExpandedMenus(prev => ({
-      ...prev,
-      [menuName]: !prev[menuName]
-    }));
-  };
 
   const handleLogout = async () => {
     await dispatch(logout());
     navigate('/login');
   };
 
-  // Menu structure based on user role
   const menuItems = [
     {
-      section: 'Main',
+      section: t('navigation.main') || 'Main',
       items: [
-        { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+        { path: '/dashboard', icon: LayoutDashboard, label: t('dashboard') || 'Dashboard' },
       ]
     },
     {
-      section: 'Inventory',
+      section: t('inventory.title') || 'Inventory',
       items: [
-        { path: '/products', icon: Package, label: 'Products' },
-        { path: '/batches', icon: ClipboardList, label: 'Batches' },
-        { path: '/inventory/stock-movements', icon: TrendingUp, label: 'Stock Movements' },
+        { path: '/products', icon: Package, label: t('products') || 'Products' },
+        { path: '/batches', icon: ClipboardList, label: t('batches') || 'Batches' },
+        { path: '/inventory/stock-movements', icon: TrendingUp, label: t('stockMovements') || 'Stock Movements' },
       ]
     },
     {
-      section: 'Operations',
+      section: t('navigation.operations') || 'Operations',
       items: [
-        { path: '/purchases', icon: Truck, label: 'Purchases' },
-        { path: '/sales', icon: ShoppingCart, label: 'Sales' },
-        { path: '/transfers', icon: Store, label: 'Transfers' },
+        { path: '/purchases', icon: Truck, label: t('purchases') || 'Purchases' },
+        { path: '/sales', icon: ShoppingCart, label: t('sales') || 'Sales' },
+        { path: '/transfers', icon: Store, label: t('transfers') || 'Transfers' },
       ]
     },
     {
-      section: 'Management',
+      section: t('navigation.management') || 'Management',
       items: [
-        { path: '/users', icon: Users, label: 'Users' },
-        { path: '/roles', icon: Shield, label: 'Roles & Permissions' },
-        { path: '/branches', icon: Building2, label: 'Branches' },
-        { path: '/suppliers', icon: Truck, label: 'Suppliers' },
-        { path: '/customers', icon: Users, label: 'Customers' },
+        { path: '/users', icon: Users, label: t('users') || 'Users' },
+        { path: '/roles', icon: Shield, label: t('roles') || 'Roles & Permissions' },
+        { path: '/branches', icon: Building2, label: t('branches') || 'Branches' },
+        { path: '/suppliers', icon: Truck, label: t('suppliers') || 'Suppliers' },
+        { path: '/customers', icon: Users, label: t('customers') || 'Customers' },
       ]
     },
     {
-      section: 'Reports',
+      section: t('reports.title') || 'Reports',
       items: [
-        { path: '/reports/inventory', icon: BarChart3, label: 'Inventory Reports' },
-        { path: '/reports/sales', icon: Calculator, label: 'Sales Reports' },
-        { path: '/reports/profit', icon: TrendingUp, label: 'Profit Reports' },
+        { path: '/reports/inventory', icon: BarChart3, label: t('reports.inventoryReport') || 'Inventory Reports' },
+        { path: '/reports/sales', icon: Calculator, label: t('reports.salesReport') || 'Sales Reports' },
+        { path: '/reports/profit', icon: TrendingUp, label: t('reports.profitReport') || 'Profit Reports' },
       ]
     },
     {
-      section: 'System',
+      section: t('navigation.system') || 'System',
       items: [
-        { path: '/notifications', icon: Bell, label: 'Notifications' },
-        { path: '/audit-logs', icon: ClipboardList, label: 'Audit Logs' },
-        { path: '/settings', icon: Settings, label: 'Settings' },
+        { path: '/notifications', icon: Bell, label: t('notifications') || 'Notifications' },
+        { path: '/audit-logs', icon: ClipboardList, label: t('auditLogs') || 'Audit Logs' },
+        { path: '/settings', icon: Settings, label: t('settings') || 'Settings' },
       ]
     }
   ];
-
-  // Filter menu items based on user permissions
-  // For now, show all to admin
 
   return (
     <AnimatePresence>
       {(isOpen || !isMobile) && (
         <>
-          {/* Mobile Overlay */}
           {isMobile && isOpen && (
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
-              onClick={onClose}
-            />
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />
           )}
-
           <motion.aside
             initial={isMobile ? { x: -300 } : false}
             animate={isMobile ? { x: isOpen ? 0 : -300 } : { x: 0 }}
             transition={{ type: 'spring', damping: 20 }}
-            className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto`}
+            className="fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto"
           >
-            {/* Logo */}
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-800">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
@@ -126,7 +92,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                 </div>
                 <div>
                   <span className="text-lg font-bold text-gray-900 dark:text-white block">
-                    🌿 Khat Inventory
+                    🌿 {t('common.appName') || 'Khat Inventory'}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     v1.0.0
@@ -134,16 +100,12 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                 </div>
               </div>
               {isMobile && (
-                <button
-                  onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
+                <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
               )}
             </div>
 
-            {/* User Info */}
             <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-800">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
@@ -156,13 +118,12 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                     {user?.firstName} {user?.lastName}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {user?.role?.name || 'User'}
+                    {user?.role?.name || t('user') || 'User'}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Navigation */}
             <nav className="p-4 space-y-6">
               {menuItems.map((section) => (
                 <div key={section.section}>
@@ -175,11 +136,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                         key={item.path}
                         to={item.path}
                         className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
-                            isActive
-                              ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                          }`
+                          lex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 
                         }
                       >
                         <item.icon className="w-5 h-5" />
@@ -191,14 +148,13 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
               ))}
             </nav>
 
-            {/* Logout Button */}
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-3 w-full px-3 py-2.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
               >
                 <LogOut className="w-5 h-5" />
-                <span className="text-sm font-medium">Logout</span>
+                <span className="text-sm font-medium">{t('logout') || 'Logout'}</span>
               </button>
             </div>
           </motion.aside>
@@ -209,5 +165,3 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
-
-
