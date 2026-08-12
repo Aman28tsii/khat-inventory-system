@@ -33,6 +33,18 @@ print: "Print",
 refresh: "Refresh",
 email: "Email",
     appName: "Khat Inventory",
+    rolesTitle: "Roles & Permissions",
+    rolesDescription: "Manage system roles and their permissions",
+    createRole: "Create Role",
+    roleName: "Role Name",
+    roleLevel: "Level",
+    roleSystem: "System",
+    roleFullAccess: "Full system access",
+    roleAdminAccess: "Administrative access",
+    roleBranchManager: "Branch manager",
+    roleInventoryManagement: "Inventory management",
+    rolePosOperations: "Point of sale operations",
+    roleReadOnly: "Read-only access",
     inventoryReport: "Inventory Report",
     salesReport: "Sales Report",
     profitReport: "Profit Report",
@@ -517,6 +529,18 @@ email: "Email",
     email: "ኢሜይል",
     // ========== COMMON ==========
     appName: "ጫት ኢንቬንተሪ",
+    rolesTitle: "ሚናዎች እና ፍቃዶች",
+    rolesDescription: "የስርዓት ሚናዎችን እና ፍቃዶቻቸውን ያስተዳድሩ",
+    createRole: "ሚና ፍጠር",
+    roleName: "የሚና ስም",
+    roleLevel: "ደረጃ",
+    roleSystem: "ስርዓት",
+    roleFullAccess: "ሙሉ የስርዓት መዳረሻ",
+    roleAdminAccess: "የአስተዳደር መዳረሻ",
+    roleBranchManager: "የቅርንጫፍ አስተዳዳሪ",
+    roleInventoryManagement: "የእቃ ክምችት አስተዳደር",
+    rolePosOperations: "የሽያጭ ነጥብ ሥራዎች",
+    roleReadOnly: "ለማንበብ ብቻ መዳረሻ",
     inventoryReport: "የኢንቬንተሪ ሪፖርት",
     salesReport: "የሽያጭ ሪፖርት",
     profitReport: "የትርፍ ሪፖርት",
@@ -1045,6 +1069,7 @@ export const useLanguage = () => {
   }
   return context;
 };
+
 
 
 
