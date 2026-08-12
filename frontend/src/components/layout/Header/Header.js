@@ -56,6 +56,7 @@ const Header = ({ toggleSidebar }) => {
   return (
     <header className="fixed top-0 right-0 left-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
+        {/* Left Section - Menu Button */}
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
@@ -67,20 +68,29 @@ const Header = ({ toggleSidebar }) => {
           >
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
-          
-          {/* Search bar - always visible */}
+        </div>
+
+        {/* Center - Logo/Brand (optional) */}
+        <div className="flex-1 flex justify-center md:justify-start">
+          <span className="text-lg font-bold text-gray-900 dark:text-white md:hidden">
+            🌿 {t('appName') || 'Khat Inventory'}
+          </span>
+        </div>
+
+        {/* Right Section - Search, Language, Theme, Notifications, User */}
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Search Bar - moved to right */}
           <div className="flex items-center relative">
             <Search className="absolute left-3 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder={t('search')}
-              className="pl-10 pr-4 py-2 w-32 sm:w-48 md:w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="pl-10 pr-4 py-2 w-28 sm:w-40 md:w-48 lg:w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
             />
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
           <LanguageSwitcher />
+          
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -91,7 +101,9 @@ const Header = ({ toggleSidebar }) => {
               <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             )}
           </button>
+          
           <NotificationBell />
+          
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -102,7 +114,7 @@ const Header = ({ toggleSidebar }) => {
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </span>
               </div>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
+              <ChevronDown className="w-4 h-4 text-gray-400 hidden sm:block" />
             </button>
 
             <AnimatePresence>
