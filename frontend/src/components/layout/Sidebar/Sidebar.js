@@ -57,9 +57,9 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     {
       section: t('reports.title') || '?????',
       items: [
-        { path: '/reports/inventory', icon: BarChart3, label: t('inventoryReport') || '??????? ????' },
-        { path: '/reports/sales', icon: Calculator, label: t('salesReport') || '???? ????' },
-        { path: '/reports/profit', icon: TrendingUp, label: t('profitReport') || '???? ????' },
+        { path: '/reports/inventory', icon: BarChart3, label: t('reports.inventoryReport') || '??????? ????' },
+        { path: '/reports/sales', icon: Calculator, label: t('reports.salesReport') || '???? ????' },
+        { path: '/reports/profit', icon: TrendingUp, label: t('reports.profitReport') || '???? ????' },
       ]
     },
     {
@@ -170,6 +170,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
+
 
 
 

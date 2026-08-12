@@ -29,6 +29,9 @@ print: "Print",
 refresh: "Refresh",
 email: "Email",
     appName: "Khat Inventory",
+    inventoryReport: "Inventory Report",
+    salesReport: "Sales Report",
+    profitReport: "Profit Report",
     search: "Search...",
     welcome: "Welcome",
     profile: "My Profile",
@@ -491,6 +494,9 @@ email: "Email",
     email: "ኢሜይል",
     // ========== COMMON ==========
     appName: "ጫት ኢንቬንተሪ",
+    inventoryReport: "የኢንቬንተሪ ሪፖርት",
+    salesReport: "የሽያጭ ሪፖርት",
+    profitReport: "የትርፍ ሪፖርት",
     search: "ፈልግ...",
     welcome: "እንኳን ደህና መጡ",
     profile: "መገለጫ",
@@ -999,6 +1005,7 @@ export const useLanguage = () => {
   }
   return context;
 };
+
 
 
 
