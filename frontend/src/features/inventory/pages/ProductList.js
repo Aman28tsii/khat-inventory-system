@@ -57,7 +57,7 @@ const ProductList = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error?.message || t('errors.generic'));
       dispatch(clearError());
     }
   }, [error, dispatch]);
@@ -68,7 +68,7 @@ const ProductList = () => {
         await dispatch(deleteProduct(product.id)).unwrap();
         toast.success(t('common.delete') + ' ' + t('products.productName'));
       } catch (error) {
-        toast.error(error);
+        toast.error(error?.message || t('errors.generic'));
       }
     }
   };
@@ -83,7 +83,7 @@ const ProductList = () => {
       setShowModal(false);
       toast.success(isEditing ? t('products.editProduct') + ' ' + t('common.success') : t('products.createProduct') + ' ' + t('common.success'));
     } catch (error) {
-      toast.error(error);
+      toast.error(error?.message || t('errors.generic'));
     }
   };
 
@@ -398,6 +398,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
-
-
