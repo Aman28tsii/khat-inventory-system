@@ -1,4 +1,4 @@
-import apiClient from '../../../api/client';
+﻿import apiClient from '../../../api/client';
 
 export const customerService = {
   getAll: (params) => apiClient.get('/customers', { params }),

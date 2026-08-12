@@ -142,3 +142,4 @@ const customerSlice = createSlice({
 
 export const { setSelectedCustomer, clearError, clearCreditHistory } = customerSlice.actions;
 export default customerSlice.reducer;
+

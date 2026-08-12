@@ -1,4 +1,4 @@
-export const typography = {
+﻿export const typography = {
   fontFamily: {
     sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
     mono: ['SF Mono', 'monospace']

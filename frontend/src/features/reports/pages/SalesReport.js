@@ -180,7 +180,7 @@ const SalesReport = () => {
         title={t('salesTrend')}
         data={salesReport?.trendData || []}
         type="line"
-        series={[{ key: 'sales', name: t('sales') }, { key: 'revenue', name: t('reports.revenue') }]}
+        series={[{ key: 'sales', name: t('sales.title') }, { key: 'revenue', name: t('reports.revenue') }]}
         xAxisKey="day"
       />
 
@@ -190,3 +190,4 @@ const SalesReport = () => {
 };
 
 export default SalesReport;
+

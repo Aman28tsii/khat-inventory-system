@@ -178,7 +178,7 @@ const ExecutiveDashboard = () => {
           data={salesData}
           type="line"
           series={[
-            { key: 'sales', name: t('sales') },
+            { key: 'sales', name: t('sales.title') },
             { key: 'revenue', name: t('revenue') }
           ]}
           xAxisKey="month"
@@ -188,7 +188,7 @@ const ExecutiveDashboard = () => {
           data={branchPerformance}
           type="bar"
           series={[
-            { key: 'sales', name: t('sales') },
+            { key: 'sales', name: t('sales.title') },
             { key: 'profit', name: t('profit') }
           ]}
           xAxisKey="branch"
@@ -212,7 +212,7 @@ const ExecutiveDashboard = () => {
             data={salesData}
             type="area"
             series={[
-              { key: 'sales', name: t('sales') },
+              { key: 'sales', name: t('sales.title') },
               { key: 'revenue', name: t('revenue') }
             ]}
             xAxisKey="month"
@@ -229,3 +229,4 @@ const ExecutiveDashboard = () => {
 };
 
 export default ExecutiveDashboard;
+

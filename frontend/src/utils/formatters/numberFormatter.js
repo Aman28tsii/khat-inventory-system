@@ -1,4 +1,4 @@
-export const formatNumber = (num, decimals = 0) => {
+﻿export const formatNumber = (num, decimals = 0) => {
   if (num === undefined || num === null) return 'N/A';
   try {
     return new Intl.NumberFormat('en-US', {

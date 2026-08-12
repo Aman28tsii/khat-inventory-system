@@ -1,4 +1,4 @@
-export const formatCurrency = (amount, currency = 'USD', locale = 'en-US') => {
+﻿export const formatCurrency = (amount, currency = 'USD', locale = 'en-US') => {
   if (amount === undefined || amount === null) return 'N/A';
   try {
     return new Intl.NumberFormat(locale, {

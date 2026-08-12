@@ -128,3 +128,4 @@ const StockMovements = () => {
 };
 
 export default StockMovements;
+

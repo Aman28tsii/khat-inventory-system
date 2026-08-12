@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Shield, Plus, Edit, Trash2, Key } from 'lucide-react';
@@ -41,7 +41,7 @@ const RoleList = () => {
     {
       key: 'description',
       label: 'Description',
-      render: (row) => row.description || '—'
+      render: (row) => row.description || 'â€”'
     },
     {
       key: 'level',

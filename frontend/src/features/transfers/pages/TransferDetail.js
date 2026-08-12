@@ -182,3 +182,4 @@ const TransferDetail = () => {
 };
 
 export default TransferDetail;
+

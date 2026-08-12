@@ -17,3 +17,4 @@ const ErrorPage = ({ status = 404, message = 'Page not found' }) => {
 };
 
 export default ErrorPage;
+

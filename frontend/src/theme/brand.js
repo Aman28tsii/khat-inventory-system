@@ -14,3 +14,4 @@ export const brand = {
     family: "'Inter', 'Arial', sans-serif",
   },
 };
+

@@ -260,3 +260,4 @@ const PurchaseDetail = () => {
 };
 
 export default PurchaseDetail;
+

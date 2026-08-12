@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
@@ -31,7 +31,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     {
       section: t('inventory.title') || '??????',
       items: [
-        { path: '/products', icon: Package, label: t('products') || '????' },
+        { path: '/products', icon: Package, label: t('products.title') || '????' },
         { path: '/batches', icon: ClipboardList, label: t('batches') || '????' },
         { path: '/inventory/stock-movements', icon: TrendingUp, label: t('stockMovements') || '??? ??????' },
       ]
@@ -39,23 +39,23 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     {
       section: t('navigation.operations') || '????',
       items: [
-        { path: '/purchases', icon: Truck, label: t('purchases') || '??' },
-        { path: '/sales', icon: ShoppingCart, label: t('sales') || '???' },
-        { path: '/transfers', icon: Store, label: t('transfers') || '????' },
+        { path: '/purchases', icon: Truck, label: t('purchases.title') || '??' },
+        { path: '/sales', icon: ShoppingCart, label: t('sales.title') || '???' },
+        { path: '/transfers', icon: Store, label: t('transfers.title') || '????' },
       ]
     },
     {
       section: t('navigation.management') || '??????',
       items: [
-        { path: '/users', icon: Users, label: t('users') || '??????' },
+        { path: '/users', icon: Users, label: t('users.title') || '??????' },
         { path: '/roles', icon: Shield, label: t('roles') || '???? ?? ????' },
-        { path: '/branches', icon: Building2, label: t('branches') || '??????' },
-        { path: '/suppliers', icon: Truck, label: t('suppliers') || '??????' },
-        { path: '/customers', icon: Users, label: t('customers') || '?????' },
+        { path: '/branches', icon: Building2, label: t('branches.title') || '??????' },
+        { path: '/suppliers', icon: Truck, label: t('suppliers.title') || '??????' },
+        { path: '/customers', icon: Users, label: t('customers.title') || '?????' },
       ]
     },
     {
-      section: t('reports') || '?????',
+      section: t('reports.title') || '?????',
       items: [
         { path: '/reports/inventory', icon: BarChart3, label: t('inventoryReport') || '??????? ????' },
         { path: '/reports/sales', icon: Calculator, label: t('salesReport') || '???? ????' },
@@ -65,9 +65,9 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
     {
       section: t('navigation.system') || '????',
       items: [
-        { path: '/notifications', icon: Bell, label: t('notifications') || '???????' },
+        { path: '/notifications', icon: Bell, label: t('notifications.title') || '???????' },
         { path: '/audit-logs', icon: ClipboardList, label: t('auditLogs') || '???? ?????' },
-        { path: '/settings', icon: Settings, label: t('settings') || '?????' },
+        { path: '/settings', icon: Settings, label: t('settings.title') || '?????' },
       ]
     }
   ];
@@ -170,3 +170,4 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
+

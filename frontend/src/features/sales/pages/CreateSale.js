@@ -455,3 +455,4 @@ const CreateSale = () => {
 };
 
 export default CreateSale;
+
