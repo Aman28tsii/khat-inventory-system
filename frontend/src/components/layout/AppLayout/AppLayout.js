@@ -39,16 +39,17 @@ const AppLayout = ({ children }) => {
         !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={toggleSidebar} />
-        {/* Only change here - added pt-16 */}
-        <main className="flex-1 overflow-y-auto pt-16 p-4 md:p-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="w-full"
-          >
-            {children || <Outlet />}
-          </motion.div>
+        <main className="flex-1 overflow-y-auto">
+          <div className="pt-20 p-4 md:p-6 w-full">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="w-full"
+            >
+              {children || <Outlet />}
+            </motion.div>
+          </div>
         </main>
       </div>
     </div>
