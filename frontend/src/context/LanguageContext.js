@@ -5,6 +5,8 @@ const LanguageContext = createContext();
 const translations = {
   en: {
     search: "Search",
+    noData: "No Data Available",
+    noItems: "No records found in the system",
     resource: "Resource",
     or: "or",
     all: "All",
@@ -18,6 +20,8 @@ const translations = {
     // ========== COMMON ==========
     
 search: "Search",
+    noData: "No Data Available",
+    noItems: "No records found in the system",
     resource: "Resource",
 or: "or",
 all: "All",
@@ -499,6 +503,8 @@ email: "Email",
 
   am: {
     search: "ፈልግ",
+    noData: "ምንም መረጃ የለም",
+    noItems: "በስርዓቱ ውስጥ ምንም መዝገቦች አልተገኙም",
     resource: "ምንጭ",
     or: "ወይም",
     all: "ሁሉም",
@@ -1039,6 +1045,7 @@ export const useLanguage = () => {
   }
   return context;
 };
+
 
 
 

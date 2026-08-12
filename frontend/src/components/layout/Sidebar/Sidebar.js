@@ -95,7 +95,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             </div>
             <div>
               <span className="text-lg font-bold text-gray-900 dark:text-white block">
-                ?? {t('appName') || 'Khat Inventory'}
+                ?? {"ጫት ኢንቬንተሪ" || 'Khat Inventory'}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 v1.0.0
@@ -170,6 +170,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
+
 
 
 
