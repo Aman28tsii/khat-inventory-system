@@ -280,7 +280,7 @@ const BatchList = () => {
           setShowQualityModal(false);
           setSelectedBatch(null);
         }}
-        title={${t('inventory.qualityInspection')}: }
+        title={`${t('inventory.qualityInspection')}: ${selectedBatch?.batchNumber}`}
         size="lg"
       >
         <QualityInspectionModal
