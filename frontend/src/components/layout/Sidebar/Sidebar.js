@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
@@ -23,51 +23,51 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 
   const menuItems = [
     {
-      section: t('navigation.main') || 'ዋና',
+      section: t('navigation.main') || '??',
       items: [
-        { path: '/dashboard', icon: LayoutDashboard, label: t('dashboard') || 'ዳሽቦርድ' },
+        { path: '/dashboard', icon: LayoutDashboard, label: t('dashboard') || '?????' },
       ]
     },
     {
-      section: t('inventory') || 'ኢንቬንተሪ',
+      section: t('inventory.title') || '??????',
       items: [
-        { path: '/products', icon: Package, label: t('products') || 'ምርቶች' },
-        { path: '/batches', icon: ClipboardList, label: t('batches') || 'ባችዎች' },
-        { path: '/inventory/stock-movements', icon: TrendingUp, label: t('stockMovements') || 'የእቃ እንቅስቃሴ' },
+        { path: '/products', icon: Package, label: t('products') || '????' },
+        { path: '/batches', icon: ClipboardList, label: t('batches') || '????' },
+        { path: '/inventory/stock-movements', icon: TrendingUp, label: t('stockMovements') || '??? ??????' },
       ]
     },
     {
-      section: t('navigation.operations') || 'ሥራዎች',
+      section: t('navigation.operations') || '????',
       items: [
-        { path: '/purchases', icon: Truck, label: t('purchases') || 'ግዢ' },
-        { path: '/sales', icon: ShoppingCart, label: t('sales') || 'ሽያጭ' },
-        { path: '/transfers', icon: Store, label: t('transfers') || 'ዝውውር' },
+        { path: '/purchases', icon: Truck, label: t('purchases') || '??' },
+        { path: '/sales', icon: ShoppingCart, label: t('sales') || '???' },
+        { path: '/transfers', icon: Store, label: t('transfers') || '????' },
       ]
     },
     {
-      section: t('navigation.management') || 'አስተዳደር',
+      section: t('navigation.management') || '??????',
       items: [
-        { path: '/users', icon: Users, label: t('users') || 'ተጠቃሚዎች' },
-        { path: '/roles', icon: Shield, label: t('roles') || 'ሚናዎች እና ፍቃዶች' },
-        { path: '/branches', icon: Building2, label: t('branches') || 'ቅርንጫፎች' },
-        { path: '/suppliers', icon: Truck, label: t('suppliers') || 'አቅራቢዎች' },
-        { path: '/customers', icon: Users, label: t('customers') || 'ደንበኞች' },
+        { path: '/users', icon: Users, label: t('users') || '??????' },
+        { path: '/roles', icon: Shield, label: t('roles') || '???? ?? ????' },
+        { path: '/branches', icon: Building2, label: t('branches') || '??????' },
+        { path: '/suppliers', icon: Truck, label: t('suppliers') || '??????' },
+        { path: '/customers', icon: Users, label: t('customers') || '?????' },
       ]
     },
     {
-      section: t('reports') || 'ሪፖርቶች',
+      section: t('reports') || '?????',
       items: [
-        { path: '/reports/inventory', icon: BarChart3, label: t('inventoryReport') || 'የኢንቬንተሪ ሪፖርት' },
-        { path: '/reports/sales', icon: Calculator, label: t('salesReport') || 'የሽያጭ ሪፖርት' },
-        { path: '/reports/profit', icon: TrendingUp, label: t('profitReport') || 'የትርፍ ሪፖርት' },
+        { path: '/reports/inventory', icon: BarChart3, label: t('inventoryReport') || '??????? ????' },
+        { path: '/reports/sales', icon: Calculator, label: t('salesReport') || '???? ????' },
+        { path: '/reports/profit', icon: TrendingUp, label: t('profitReport') || '???? ????' },
       ]
     },
     {
-      section: t('navigation.system') || 'ሲስተም',
+      section: t('navigation.system') || '????',
       items: [
-        { path: '/notifications', icon: Bell, label: t('notifications') || 'ማሳወቂያዎች' },
-        { path: '/audit-logs', icon: ClipboardList, label: t('auditLogs') || 'የኦዲት መዝገቦች' },
-        { path: '/settings', icon: Settings, label: t('settings') || 'ቅንብሮች' },
+        { path: '/notifications', icon: Bell, label: t('notifications') || '???????' },
+        { path: '/audit-logs', icon: ClipboardList, label: t('auditLogs') || '???? ?????' },
+        { path: '/settings', icon: Settings, label: t('settings') || '?????' },
       ]
     }
   ];
@@ -95,7 +95,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             </div>
             <div>
               <span className="text-lg font-bold text-gray-900 dark:text-white block">
-                🌿 {t('appName') || 'Khat Inventory'}
+                ?? {t('appName') || 'Khat Inventory'}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 v1.0.0
@@ -121,7 +121,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                 {user?.firstName} {user?.lastName}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                {user?.role?.name || t('user') || 'ተጠቃሚ'}
+                {user?.role?.name || t('user') || '????'}
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             className="flex items-center gap-3 w-full px-3 py-2.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
           >
             <LogOut className="w-5 h-5" />
-            <span className="text-sm font-medium">{t('logout') || 'ውጣ'}</span>
+            <span className="text-sm font-medium">{t('logout') || '??'}</span>
           </button>
         </div>
       </motion.aside>
