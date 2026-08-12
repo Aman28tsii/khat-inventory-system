@@ -52,6 +52,8 @@ const translations = {
     active: "Active",
     inactive: "Inactive",
     view: "View",
+    used: "Used",
+    resource: "Resource",
 
     // ========== NAVIGATION ==========
     dashboard: "Dashboard",
@@ -160,6 +162,7 @@ const translations = {
 
     // ========== SALES ==========
     sales: {
+      title: "Sales",
       totalAmount: "Total Amount",
       items: "Items",
       partial: "Partial",
@@ -247,7 +250,8 @@ const translations = {
       noBatches: "No batches found",
       addBatch: "Add Batch",
       completeInspection: "Complete Inspection",
-      freshnessScore: "Freshness Score"
+      freshnessScore: "Freshness Score",
+      totalProducts: "Total Products"
     },
 
     // ========== USERS ==========
@@ -308,6 +312,7 @@ const translations = {
 
     // ========== REPORTS ==========
     reports: {
+      title: "Reports",
       inventoryReport: "Inventory Report",
       salesReport: "Sales Report",
       profitReport: "Profit Report",
@@ -481,6 +486,8 @@ const translations = {
     active: "ንቁ",
     inactive: "የቆመ",
     view: "ይመልከቱ",
+    used: "ጥቅም ላይ የዋለ",
+    resource: "ምንጭ",
 
     // ========== NAVIGATION ==========
     dashboard: "ዳሽቦርድ",
@@ -589,6 +596,7 @@ const translations = {
 
     // ========== SALES ==========
     sales: {
+      title: "ሽያጭ",
       totalAmount: "ጠቅላላ ድምር",
       items: "እቃዎች",
       partial: "ከፊል",
@@ -676,7 +684,8 @@ const translations = {
       noBatches: "ምንም ባችዎች አልተገኙም",
       addBatch: "ባች ጨምር",
       completeInspection: "ምርመራ አጠናቅቅ",
-      freshnessScore: "የትኩስነት ውጤት"
+      freshnessScore: "የትኩስነት ውጤት",
+      totalProducts: "ጠቅላላ ምርቶች"
     },
 
     // ========== USERS ==========
@@ -737,6 +746,7 @@ const translations = {
 
     // ========== REPORTS ==========
     reports: {
+      title: "ሪፖርቶች",
       inventoryReport: "የኢንቬንተሪ ሪፖርት",
       salesReport: "የሽያጭ ሪፖርት",
       profitReport: "የትርፍ ሪፖርት",
@@ -921,4 +931,3 @@ export const useLanguage = () => {
   }
   return context;
 };
-
