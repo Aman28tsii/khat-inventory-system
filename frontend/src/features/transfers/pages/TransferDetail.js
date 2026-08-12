@@ -83,7 +83,7 @@ const TransferDetail = () => {
           {selectedTransfer.status === 'RECEIVED' && <CheckCircle className="w-5 h-5" />}
           {selectedTransfer.status === 'IN_TRANSIT' && <Truck className="w-5 h-5" />}
           {selectedTransfer.status === 'PENDING' && <Clock className="w-5 h-5" />}
-          <span className="font-medium">{t('common.status')}: {selectedTransfer.status}</span>
+          <span className="font-medium">{t('status')}: {selectedTransfer.status}</span>
         </div>
       </div>
 
@@ -182,4 +182,5 @@ const TransferDetail = () => {
 };
 
 export default TransferDetail;
+
 

@@ -27,3 +27,4 @@ const PrivateRoute = ({ requiredPermissions = [] }) => {
 };
 
 export default PrivateRoute;
+

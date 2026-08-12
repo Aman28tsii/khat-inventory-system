@@ -7,3 +7,4 @@ export const auditService = {
   getResources: () => apiClient.get('/audit-logs/resources'),
   getActions: () => apiClient.get('/audit-logs/actions')
 };
+

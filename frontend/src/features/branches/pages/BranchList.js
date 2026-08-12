@@ -55,7 +55,7 @@ const BranchList = () => {
   const handleToggleStatus = async (branch) => {
     try {
       await dispatch(toggleBranchStatus(branch.id)).unwrap();
-      toast.success(branch.isActive ? t('common.inactive') : t('common.active'));
+      toast.success(branch.isActive ? t('common.inactive') : t('active'));
     } catch (error) {
       toast.error(error);
     }
@@ -112,7 +112,7 @@ const BranchList = () => {
     },
     {
       key: 'contact',
-      label: t('common.contact'),
+      label: t('contact'),
       render: (row) => (
         <div className="space-y-0.5 text-sm">
           {row.phone && (
@@ -132,16 +132,16 @@ const BranchList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400')}>
-          {row.isActive ? t('common.active') : t('common.inactive')}
+          {row.isActive ? t('active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -305,7 +305,7 @@ const BranchList = () => {
               placeholder="+251-XXX-XXXX"
             />
             <Input
-              label={t('auth.email')}
+              label={t('email')}
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -321,7 +321,7 @@ const BranchList = () => {
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             />
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t('common.active')}
+              {t('active')}
             </label>
           </div>
 
@@ -340,4 +340,5 @@ const BranchList = () => {
 };
 
 export default BranchList;
+
 

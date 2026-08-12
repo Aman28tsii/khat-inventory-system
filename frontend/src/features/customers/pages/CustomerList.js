@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   Users, 
@@ -75,7 +75,7 @@ const CustomerList = () => {
   const handleToggleStatus = async (customer) => {
     try {
       await dispatch(toggleCustomerStatus(customer.id)).unwrap();
-      toast.success(customer.isActive ? t('common.inactive') : t('common.active'));
+      toast.success(customer.isActive ? t('common.inactive') : t('active'));
     } catch (error) {
       toast.error(error);
     }
@@ -137,7 +137,7 @@ const CustomerList = () => {
     },
     {
       key: 'contact',
-      label: t('common.contact'),
+      label: t('contact'),
       render: (row) => (
         <div className="space-y-0.5 text-sm">
           {row.phone && (
@@ -177,16 +177,16 @@ const CustomerList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400')}>
-          {row.isActive ? t('common.active') : t('common.inactive')}
+          {row.isActive ? t('active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -270,7 +270,7 @@ const CustomerList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('customers.customerName') + ' ' + t('common.or') + ' ' + t('customers.customerCode')}
+            placeholder={t('search') + ' ' + t('customers.customerName') + ' ' + t('or') + ' ' + t('customers.customerCode')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -278,15 +278,15 @@ const CustomerList = () => {
         </div>
         <div className="flex gap-2">
           <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="INDIVIDUAL">{t('customers.individual')}</option>
             <option value="BUSINESS">{t('customers.business')}</option>
             <option value="WHOLESALE">{t('customers.wholesale')}</option>
             <option value="RETAIL">{t('customers.retail')}</option>
           </select>
           <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
-            <option value="">{t('common.all')}</option>
-            <option value="active">{t('common.active')}</option>
+            <option value="">{t('all')}</option>
+            <option value="active">{t('active')}</option>
             <option value="inactive">{t('common.inactive')}</option>
           </select>
         </div>
@@ -336,7 +336,7 @@ const CustomerList = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label={t('auth.phone')} value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="+251-XXX-XXXX" />
-            <Input label={t('auth.email')} type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="customer@email.com" />
+            <Input label={t('email')} type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="customer@email.com" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('branches.address')}</label>
@@ -350,7 +350,7 @@ const CustomerList = () => {
             <Input label={t('customers.creditLimit')} type="number" value={formData.creditLimit} onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })} placeholder="0.00" />
             <div className="flex items-center gap-2 pt-6">
               <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" />
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.active')}</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('active')}</label>
             </div>
           </div>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -374,4 +374,5 @@ const CustomerList = () => {
 };
 
 export default CustomerList;
+
 

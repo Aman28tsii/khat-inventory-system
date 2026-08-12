@@ -13,3 +13,4 @@ export const purchaseService = {
   addItem: (id, data) => apiClient.post(`/purchases/${id}/items`, data),
   removeItem: (id, itemId) => apiClient.delete(`/purchases/${id}/items/${itemId}`)
 };
+

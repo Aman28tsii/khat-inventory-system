@@ -20,3 +20,4 @@ const SkeletonCard = () => {
 };
 
 export default SkeletonCard;
+

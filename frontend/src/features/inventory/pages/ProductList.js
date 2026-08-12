@@ -146,16 +146,16 @@ const ProductList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400')}>
-          {row.isActive ? t('common.active') : t('common.inactive')}
+          {row.isActive ? t('active') : t('common.inactive')}
         </span>
       )
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -240,7 +240,7 @@ const ProductList = () => {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
         <input
           type="text"
-          placeholder={t('common.search') + ' ' + t('products.productName') + ' ' + t('common.or') + ' ' + t('products.sku') + '...'}
+          placeholder={t('search') + ' ' + t('products.productName') + ' ' + t('or') + ' ' + t('products.sku') + '...'}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -369,7 +369,7 @@ const ProductList = () => {
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             />
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t('common.active')}
+              {t('active')}
             </label>
           </div>
 
@@ -398,4 +398,5 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
 

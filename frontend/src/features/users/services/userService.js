@@ -10,3 +10,4 @@ export const userService = {
   updateRole: (id, roleId) => apiClient.put(`/users/${id}/role`, { roleId }),
   resetPassword: (id) => apiClient.post(`/users/${id}/reset-password`)
 };
+

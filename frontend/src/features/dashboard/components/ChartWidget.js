@@ -226,3 +226,4 @@ const ChartWidget = ({
 };
 
 export default ChartWidget;
+

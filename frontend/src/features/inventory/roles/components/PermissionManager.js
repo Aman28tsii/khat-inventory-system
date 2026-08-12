@@ -114,3 +114,4 @@ const PermissionManager = ({ role, onSuccess }) => {
 };
 
 export default PermissionManager;
+

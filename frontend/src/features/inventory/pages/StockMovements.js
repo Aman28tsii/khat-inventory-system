@@ -85,7 +85,7 @@ const StockMovements = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('inventory.stockMovements') + '...'}
+            placeholder={t('search') + ' ' + t('inventory.stockMovements') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -97,7 +97,7 @@ const StockMovements = () => {
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="IN">{t('inventory.available')}</option>
             <option value="OUT">{t('inventory.disposed')}</option>
             <option value="TRANSFER">{t('transfers.title')}</option>
@@ -108,7 +108,7 @@ const StockMovements = () => {
             value={filters.dateRange}
             onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="today">{t('reports.today')}</option>
             <option value="week">{t('reports.thisWeek')}</option>
             <option value="month">{t('reports.thisMonth')}</option>
@@ -128,4 +128,5 @@ const StockMovements = () => {
 };
 
 export default StockMovements;
+
 

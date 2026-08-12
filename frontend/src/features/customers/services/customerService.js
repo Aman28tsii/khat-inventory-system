@@ -9,3 +9,4 @@ export const customerService = {
   toggleStatus: (id) => apiClient.put(`/customers/${id}/status`),
   getCreditHistory: (id) => apiClient.get(`/customers/${id}/credit-history`)
 };
+

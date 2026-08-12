@@ -12,3 +12,4 @@ export const transferService = {
   getItems: (id) => apiClient.get(`/transfers/${id}/items`),
   getAvailableBatches: (branchId) => apiClient.get(`/transfers/available-batches/${branchId}`)
 };
+

@@ -100,7 +100,7 @@ const ForgotPassword = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Input
-              label={t('auth.email')}
+              label={t('email')}
               type="email"
               placeholder="you@company.com"
               icon={<Mail className="w-4 h-4 text-secondary-400" />}
@@ -126,4 +126,5 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
 

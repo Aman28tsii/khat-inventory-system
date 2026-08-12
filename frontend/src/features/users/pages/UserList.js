@@ -58,7 +58,7 @@ const UserList = () => {
   const handleToggleStatus = async (user) => {
     try {
       await dispatch(toggleUserStatus(user.id)).unwrap();
-      toast.success(user.isActive ? t('common.inactive') : t('common.active'));
+      toast.success(user.isActive ? t('common.inactive') : t('active'));
     } catch (error) {
       toast.error(error);
     }
@@ -84,7 +84,7 @@ const UserList = () => {
     },
     {
       key: 'email',
-      label: t('auth.email'),
+      label: t('email'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Mail className="w-4 h-4 text-gray-400" />
@@ -108,10 +108,10 @@ const UserList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => {
         const statusClass = row.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-        const statusText = row.isActive ? t('common.active') : t('common.inactive');
+        const statusText = row.isActive ? t('active') : t('common.inactive');
         return <span className={"px-2 py-1 rounded-full text-xs font-medium " + statusClass}>{statusText}</span>;
       }
     },
@@ -122,7 +122,7 @@ const UserList = () => {
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
@@ -181,7 +181,7 @@ const UserList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('users.title')}
+            placeholder={t('search') + ' ' + t('users.title')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -193,7 +193,7 @@ const UserList = () => {
             value={filters.role}
             onChange={(e) => setFilters({ ...filters, role: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="ADMIN">Admin</option>
             <option value="MANAGER">{t('users.role')}</option>
             <option value="CASHIER">Cashier</option>
@@ -203,8 +203,8 @@ const UserList = () => {
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
-            <option value="active">{t('common.active')}</option>
+            <option value="">{t('all')}</option>
+            <option value="active">{t('active')}</option>
             <option value="inactive">{t('common.inactive')}</option>
           </select>
         </div>
@@ -250,4 +250,5 @@ const UserList = () => {
 };
 
 export default UserList;
+
 

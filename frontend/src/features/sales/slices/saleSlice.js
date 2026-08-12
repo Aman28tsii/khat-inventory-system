@@ -206,3 +206,4 @@ export const {
 } = saleSlice.actions;
 
 export default saleSlice.reducer;
+

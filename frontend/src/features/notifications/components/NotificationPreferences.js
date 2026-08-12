@@ -160,3 +160,4 @@ const NotificationPreferences = () => {
 };
 
 export default NotificationPreferences;
+

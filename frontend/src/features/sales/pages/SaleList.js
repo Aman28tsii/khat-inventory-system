@@ -118,7 +118,7 @@ const SaleList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => getStatusBadge(row.status)
     },
     {
@@ -128,7 +128,7 @@ const SaleList = () => {
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
@@ -170,7 +170,7 @@ const SaleList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('sales.saleNumber') + ' ' + t('common.or') + ' ' + t('sales.customer') + '...'}
+            placeholder={t('search') + ' ' + t('sales.saleNumber') + ' ' + t('or') + ' ' + t('sales.customer') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -182,7 +182,7 @@ const SaleList = () => {
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="PENDING">{t('sales.pending')}</option>
             <option value="COMPLETED">{t('sales.completed')}</option>
             <option value="CANCELLED">{t('sales.cancelled')}</option>
@@ -192,7 +192,7 @@ const SaleList = () => {
             value={filters.paymentStatus}
             onChange={(e) => setFilters({ ...filters, paymentStatus: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="PENDING">{t('sales.pending')}</option>
             <option value="PARTIAL">{t('sales.partial')}</option>
             <option value="PAID">{t('sales.paid')}</option>
@@ -221,4 +221,5 @@ const SaleList = () => {
 };
 
 export default SaleList;
+
 

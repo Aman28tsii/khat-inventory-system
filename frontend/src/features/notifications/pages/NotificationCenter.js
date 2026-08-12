@@ -148,7 +148,7 @@ const NotificationCenter = () => {
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
           {!row.isRead && (
@@ -215,7 +215,7 @@ const NotificationCenter = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('notifications.title') + '...'}
+            placeholder={t('search') + ' ' + t('notifications.title') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -227,7 +227,7 @@ const NotificationCenter = () => {
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="inventory">{t('inventory.title')}</option>
             <option value="sales">{t('sales.title')}</option>
             <option value="purchases">{t('purchases.title')}</option>
@@ -241,7 +241,7 @@ const NotificationCenter = () => {
             value={filters.isRead}
             onChange={(e) => setFilters({ ...filters, isRead: e.target.value })}
           >
-            <option value="">{t('common.all')}</option>
+            <option value="">{t('all')}</option>
             <option value="false">{t('notifications.unread')}</option>
             <option value="true">{t('notifications.read')}</option>
           </select>
@@ -300,4 +300,5 @@ const NotificationCenter = () => {
 };
 
 export default NotificationCenter;
+
 

@@ -49,3 +49,4 @@
     cashier: '/dashboard/cashier',
   },
 };
+

@@ -21,3 +21,4 @@ export const inventoryService = {
   updateQuality: (id, data) => apiClient.put(`/inventory/batches/${id}/quality`, data),
   inspectBatch: (id, data) => apiClient.post(`/inventory/batches/${id}/inspect`, data)
 };
+

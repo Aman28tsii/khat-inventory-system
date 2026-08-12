@@ -102,3 +102,4 @@ const productSlice = createSlice({
 
 export const { setSelectedProduct, clearError } = productSlice.actions;
 export default productSlice.reducer;
+

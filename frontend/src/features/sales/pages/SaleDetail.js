@@ -94,7 +94,7 @@ const SaleDetail = () => {
         <div className="flex gap-2">
           <Button variant="secondary" size="sm">
             <Printer className="w-4 h-4 mr-2" />
-            {t('common.print')}
+            {t('print')}
           </Button>
           <Button variant="secondary" size="sm">
             <Download className="w-4 h-4 mr-2" />
@@ -121,7 +121,7 @@ const SaleDetail = () => {
             {selectedSale.status === 'COMPLETED' && <CheckCircle className="w-5 h-5" />}
             {selectedSale.status === 'PENDING' && <Clock className="w-5 h-5" />}
             {selectedSale.status === 'CANCELLED' && <XCircle className="w-5 h-5" />}
-            <span className="font-medium">{t('common.status')}: {selectedSale.status}</span>
+            <span className="font-medium">{t('status')}: {selectedSale.status}</span>
           </div>
         </div>
         <div className={'p-4 rounded-lg ' + getPaymentStatusColor(selectedSale.paymentStatus)}>
@@ -279,4 +279,5 @@ const SaleDetail = () => {
 };
 
 export default SaleDetail;
+
 

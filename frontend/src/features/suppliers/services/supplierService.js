@@ -7,3 +7,4 @@ export const supplierService = {
   update: (id, data) => apiClient.put(`/suppliers/${id}`, data),
   delete: (id) => apiClient.delete(`/suppliers/${id}`)
 };
+

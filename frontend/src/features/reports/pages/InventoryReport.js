@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
@@ -152,7 +152,7 @@ const InventoryReport = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => {
         if (row.isExpiring) {
           return (
@@ -200,7 +200,7 @@ const InventoryReport = () => {
             disabled={isLoading || !inventoryReport}
           >
             <Printer className="w-4 h-4 mr-1" />
-            {t('common.print')}
+            {t('print')}
           </Button>
           <Button
             variant="secondary"
@@ -272,4 +272,5 @@ const InventoryReport = () => {
 };
 
 export default InventoryReport;
+
 

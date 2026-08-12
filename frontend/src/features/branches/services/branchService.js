@@ -8,3 +8,4 @@ export const branchService = {
   delete: (id) => apiClient.delete(`/branches/${id}`),
   toggleStatus: (id) => apiClient.put(`/branches/${id}/status`)
 };
+

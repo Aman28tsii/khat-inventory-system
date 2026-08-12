@@ -293,3 +293,4 @@ const BatchForm = ({ batch, isEditing, onSuccess, onCancel }) => {
 };
 
 export default BatchForm;
+

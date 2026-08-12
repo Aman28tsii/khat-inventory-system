@@ -113,7 +113,7 @@ const Register = () => {
             </div>
 
             <Input
-              label={t('auth.email')}
+              label={t('email')}
               type="email"
               placeholder="you@company.com"
               icon={<Mail className="w-4 h-4 text-secondary-400" />}
@@ -186,4 +186,5 @@ const Register = () => {
 };
 
 export default Register;
+
 

@@ -127,7 +127,7 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
                 {t('common.clickToUpload')}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                CSV {t('common.or')} Excel {t('common.files')}
+                CSV {t('or')} Excel {t('common.files')}
               </p>
             </div>
           )}
@@ -163,4 +163,5 @@ const BulkImport = ({ isOpen, onClose, type, onSuccess }) => {
 };
 
 export default BulkImport;
+
 

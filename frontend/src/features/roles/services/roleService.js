@@ -11,3 +11,4 @@ export const roleService = {
   removePermission: (id, permissionId) => 
     apiClient.delete(`/roles/${id}/permissions/${permissionId}`)
 };
+

@@ -94,12 +94,12 @@ const TransferList = () => {
     },
     {
       key: 'status',
-      label: t('common.status'),
+      label: t('status'),
       render: (row) => getStatusBadge(row.status)
     },
     {
       key: 'actions',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
@@ -149,7 +149,7 @@ const TransferList = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('common.search') + ' ' + t('transfers.transferNumber') + '...'}
+            placeholder={t('search') + ' ' + t('transfers.transferNumber') + '...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -160,7 +160,7 @@ const TransferList = () => {
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >
-          <option value="">{t('common.all')}</option>
+          <option value="">{t('all')}</option>
           <option value="PENDING">{t('sales.pending')}</option>
           <option value="APPROVED">{t('transfers.approved')}</option>
           <option value="IN_TRANSIT">{t('transfers.inTransit')}</option>
@@ -180,4 +180,5 @@ const TransferList = () => {
 };
 
 export default TransferList;
+
 

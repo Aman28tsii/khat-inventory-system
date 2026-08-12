@@ -11,3 +11,4 @@ export const saleService = {
   returnSale: (id, data) => apiClient.post(`/sales/${id}/return`, data),
   getAvailableBatches: (productId) => apiClient.get(`/sales/available-batches/${productId}`)
 };
+

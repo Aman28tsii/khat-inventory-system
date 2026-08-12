@@ -85,7 +85,7 @@ const PurchaseDetail = () => {
         <div className="flex gap-2">
           <Button variant="secondary" size="sm">
             <Printer className="w-4 h-4 mr-2" />
-            {t('common.print')}
+            {t('print')}
           </Button>
           <Button variant="secondary" size="sm">
             <Download className="w-4 h-4 mr-2" />
@@ -111,7 +111,7 @@ const PurchaseDetail = () => {
           {selectedPurchase.status === 'RECEIVED' && <CheckCircle className="w-5 h-5" />}
           {selectedPurchase.status === 'ORDERED' && <Truck className="w-5 h-5" />}
           {selectedPurchase.status === 'DRAFT' && <Edit className="w-5 h-5" />}
-          <span className="font-medium">{t('common.status')}: {selectedPurchase.status}</span>
+          <span className="font-medium">{t('status')}: {selectedPurchase.status}</span>
         </div>
       </div>
 
@@ -260,4 +260,5 @@ const PurchaseDetail = () => {
 };
 
 export default PurchaseDetail;
+
 

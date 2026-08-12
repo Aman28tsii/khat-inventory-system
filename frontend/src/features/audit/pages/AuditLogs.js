@@ -59,7 +59,7 @@ const AuditLogs = () => {
     },
     {
       key: 'action',
-      label: t('common.actions'),
+      label: t('actions'),
       render: (row) => (
         <span className={'px-2 py-1 rounded-full text-xs font-medium ' + (row.action === 'CREATE' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : row.action === 'UPDATE' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : row.action === 'DELETE' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300')}>
           {row.action}
@@ -99,7 +99,7 @@ const AuditLogs = () => {
           <p className="text-gray-500 dark:text-gray-400">{t('auditLogs')}</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => dispatch(fetchAuditLogs())} isLoading={isLoading}>
-          {t('common.refresh')}
+          {t('refresh')}
         </Button>
       </div>
 
@@ -121,4 +121,5 @@ const AuditLogs = () => {
 };
 
 export default AuditLogs;
+
 

@@ -4,7 +4,28 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
+    search: "Search",
+    or: "or",
+    all: "All",
+    status: "Status",
+    actions: "Actions",
+    active: "Active",
+    contact: "Contact",
+    print: "Print",
+    refresh: "Refresh",
+    email: "Email",
     // ========== COMMON ==========
+    
+search: "Search",
+or: "or",
+all: "All",
+status: "Status",
+actions: "Actions",
+active: "Active",
+contact: "Contact",
+print: "Print",
+refresh: "Refresh",
+email: "Email",
     appName: "Khat Inventory",
     search: "Search...",
     welcome: "Welcome",
@@ -438,6 +459,16 @@ const translations = {
   },
 
   am: {
+    search: "ፈልግ",
+    or: "ወይም",
+    all: "ሁሉም",
+    status: "ሁኔታ",
+    actions: "ድርጊቶች",
+    active: "ንቁ",
+    contact: "የመገናኛ",
+    print: "አትም",
+    refresh: "አድስ",
+    email: "ኢሜይል",
     // ========== COMMON ==========
     appName: "ጫት ኢንቬንተሪ",
     search: "ፈልግ...",
@@ -931,3 +962,5 @@ export const useLanguage = () => {
   }
   return context;
 };
+
+

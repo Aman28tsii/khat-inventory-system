@@ -163,3 +163,4 @@ const inventorySlice = createSlice({
 export const { clearError, setSelectedProduct, setSelectedBatch } = inventorySlice.actions;
 export default inventorySlice.reducer;
 
+

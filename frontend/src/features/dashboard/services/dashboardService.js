@@ -10,3 +10,4 @@ export const dashboardService = {
   getRecentActivities: () => apiClient.get('/dashboard/recent-activities'),
   getAlerts: () => apiClient.get('/dashboard/alerts')
 };
+

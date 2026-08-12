@@ -8,3 +8,4 @@ export const productService = {
   delete: (id) => apiClient.delete(`/products/${id}`),
   toggleStatus: (id) => apiClient.put(`/products/${id}/status`)
 };
+

@@ -106,3 +106,4 @@ const QualityInspectionModal = ({ batch, onSuccess, onCancel }) => {
 };
 
 export default QualityInspectionModal;
+

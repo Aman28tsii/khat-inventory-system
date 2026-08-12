@@ -71,3 +71,4 @@ const StatsCard = ({ title, value, icon: Icon, color, trend, trendValue, subtitl
 };
 
 export default StatsCard;
+
