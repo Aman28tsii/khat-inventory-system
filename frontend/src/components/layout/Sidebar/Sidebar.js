@@ -95,7 +95,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
             </div>
             <div>
               <span className="text-lg font-bold text-gray-900 dark:text-white block">
-                ?? {"khat inventory" || 'ጫት ኢንቬንተሪ'}
+              🌿 {t('appName') ?? 'ጫት ኢንቬንተሪ'}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 v1.0.0
