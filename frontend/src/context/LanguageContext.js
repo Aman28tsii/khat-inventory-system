@@ -353,6 +353,23 @@ email: "Email",
       posOperations: "Point of sale operations",
       readOnly: "Read-only access"
     },
+    
+    // ========== ROLES ==========
+    roles: {
+      title: "Roles & Permissions",
+      description: "Manage system roles and their permissions",
+      createRole: "Create Role",
+      roleName: "Role Name",
+      description: "Description",
+      level: "Level",
+      system: "System",
+      fullAccess: "Full system access",
+      adminAccess: "Administrative access",
+      branchManager: "Branch manager",
+      inventoryManagement: "Inventory management",
+      posOperations: "Point of sale operations",
+      readOnly: "Read-only access"
+    },
     // ========== REPORTS ==========
     reports: {
       title: "Reports",
@@ -818,6 +835,23 @@ email: "Email",
       posOperations: "Point of sale operations",
       readOnly: "Read-only access"
     },
+    
+    // ========== ROLES ==========
+    roles: {
+      title: "Roles & Permissions",
+      description: "Manage system roles and their permissions",
+      createRole: "Create Role",
+      roleName: "Role Name",
+      description: "Description",
+      level: "Level",
+      system: "System",
+      fullAccess: "Full system access",
+      adminAccess: "Administrative access",
+      branchManager: "Branch manager",
+      inventoryManagement: "Inventory management",
+      posOperations: "Point of sale operations",
+      readOnly: "Read-only access"
+    },
     // ========== REPORTS ==========
     reports: {
       title: "ሪፖርቶች",
@@ -1005,6 +1039,7 @@ export const useLanguage = () => {
   }
   return context;
 };
+
 
 
 
