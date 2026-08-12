@@ -39,17 +39,17 @@ const AppLayout = ({ children }) => {
         !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={toggleSidebar} />
-        <main className="flex-1 overflow-y-auto">
-          <div className="pt-20 p-4 md:p-6 w-full">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="w-full"
-            >
-              {children || <Outlet />}
-            </motion.div>
-          </div>
+        {/* Spacer - pushes content below fixed header */}
+        <div className="h-16 flex-shrink-0" />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="w-full"
+          >
+            {children || <Outlet />}
+          </motion.div>
         </main>
       </div>
     </div>
