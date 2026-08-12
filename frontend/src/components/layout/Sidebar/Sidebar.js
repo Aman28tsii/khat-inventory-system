@@ -8,7 +8,7 @@ import {
   ClipboardList, BarChart3, UserCog, Store, Calculator, AlertCircle
 } from 'lucide-react';
 import { logout } from '../../../features/auth/slices/authSlice';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/LanguageContext';s
 
 const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const { t } = useLanguage();
