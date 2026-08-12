@@ -1,6 +1,7 @@
-{
-  "short_name": "Khat Inventory",
-  "name": "Khat Inventory Management System",
+﻿{
+  "short_name": "Khat Inv",
+  "name": "Khat Inventory System",
+  "description": "Complete Khat Inventory Management System",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#4F46E5",
-  "background_color": "#ffffff"
+  "theme_color": "#4CAF50",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary"
 }
