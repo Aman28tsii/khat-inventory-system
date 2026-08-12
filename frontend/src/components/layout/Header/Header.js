@@ -53,20 +53,14 @@ const Header = ({ toggleSidebar }) => {
     navigate('/login');
   };
 
-  // Check if toggleSidebar prop exists
-  console.log('Header received toggleSidebar:', typeof toggleSidebar);
-
   return (
     <header className="fixed top-0 right-0 left-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
-              console.log('Hamburger clicked - calling toggleSidebar');
               if (typeof toggleSidebar === 'function') {
                 toggleSidebar();
-              } else {
-                console.log('toggleSidebar is not a function! Type:', typeof toggleSidebar);
               }
             }}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -74,12 +68,13 @@ const Header = ({ toggleSidebar }) => {
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
           
-          <div className="hidden md:flex items-center relative">
+          {/* Search bar - always visible */}
+          <div className="flex items-center relative">
             <Search className="absolute left-3 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder={t('search')}
-              className="pl-10 pr-4 py-2 w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="pl-10 pr-4 py-2 w-32 sm:w-48 md:w-64 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
         </div>
