@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from '../Sidebar/Sidebar';
@@ -40,7 +40,7 @@ const AppLayout = ({ children }) => {
       }`}>
         <Header toggleSidebar={toggleSidebar} />
         {/* FIX: Added pt-20 to push content below header */}
-        <main className="flex-1 overflow-y-auto pt-20 p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto pt-20 pt-20 p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
