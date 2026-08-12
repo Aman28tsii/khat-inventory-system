@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
       section: t('navigation.management') || '??????',
       items: [
         { path: '/users', icon: Users, label: t('users.title') || '??????' },
-        { path: '/roles', icon: Shield, label: t('roles') || '???? ?? ????' },
+        { path: '/roles', icon: Shield, label: t('roles.title') || '???? ?? ????' },
         { path: '/branches', icon: Building2, label: t('branches.title') || '??????' },
         { path: '/suppliers', icon: Truck, label: t('suppliers.title') || '??????' },
         { path: '/customers', icon: Users, label: t('customers.title') || '?????' },
@@ -170,6 +170,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 };
 
 export default Sidebar;
+
 
 
 
