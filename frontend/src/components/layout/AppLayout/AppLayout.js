@@ -12,8 +12,12 @@ const AppLayout = ({ children }) => {
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      if (!mobile) setSidebarOpen(true);
-      else setSidebarOpen(false);
+      // On desktop, keep sidebar open. On mobile, close it.
+      if (!mobile) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -32,7 +36,8 @@ const AppLayout = ({ children }) => {
         isMobile={isMobile}
       />
       
-      <div className={`flex-1 flex flex-col h-full w-full transition-all duration-300 ${
+      {/* Main content - shifts right when sidebar is open on desktop */}
+      <div className={`flex-1 flex flex-col h-full w-full transition-all duration-300 ease-in-out ${
         !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={toggleSidebar} />

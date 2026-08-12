@@ -74,16 +74,19 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
 
   return (
     <>
+      {/* Mobile overlay */}
       {isMobile && isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose} />
       )}
+      
+      {/* Sidebar */}
       <motion.aside
-        initial={{ x: isMobile ? -300 : (isOpen ? 0 : -300) }}
-        animate={{ x: isOpen ? 0 : -300 }}
+        initial={false}
+        animate={{ 
+          x: isOpen ? 0 : (isMobile ? -300 : -300)
+        }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto shadow-xl ${
-          !isMobile ? 'transition-transform duration-300 ease-in-out' : ''
-        }`}
+        className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 overflow-y-auto shadow-xl"
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-3">
