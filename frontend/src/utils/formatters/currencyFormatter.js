@@ -23,3 +23,4 @@ export const formatCurrencyCompact = (amount, currency = 'USD') => {
   return formatCurrency(amount, currency);
 };
 
+

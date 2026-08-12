@@ -281,3 +281,4 @@ const SaleDetail = () => {
 export default SaleDetail;
 
 
+

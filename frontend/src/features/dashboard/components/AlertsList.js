@@ -84,3 +84,4 @@ const AlertsList = ({ alerts = [] }) => {
 
 export default AlertsList;
 
+

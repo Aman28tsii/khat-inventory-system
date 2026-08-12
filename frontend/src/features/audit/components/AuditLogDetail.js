@@ -156,3 +156,4 @@ const AuditLogDetail = ({ log, onClose }) => {
 
 export default AuditLogDetail;
 
+

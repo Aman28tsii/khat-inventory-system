@@ -8,3 +8,4 @@ export const supplierService = {
   delete: (id) => apiClient.delete(`/suppliers/${id}`)
 };
 
+

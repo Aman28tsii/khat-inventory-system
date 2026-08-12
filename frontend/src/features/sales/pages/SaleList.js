@@ -223,3 +223,4 @@ const SaleList = () => {
 export default SaleList;
 
 
+

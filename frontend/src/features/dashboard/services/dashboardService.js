@@ -11,3 +11,4 @@ export const dashboardService = {
   getAlerts: () => apiClient.get('/dashboard/alerts')
 };
 
+

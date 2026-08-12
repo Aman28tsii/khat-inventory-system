@@ -9,3 +9,4 @@ export const productService = {
   toggleStatus: (id) => apiClient.put(`/products/${id}/status`)
 };
 
+

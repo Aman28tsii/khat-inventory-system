@@ -33,3 +33,4 @@ const SkeletonTable = ({ rows = 5, columns = 5 }) => {
 
 export default SkeletonTable;
 
+

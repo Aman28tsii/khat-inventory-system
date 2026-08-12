@@ -5,6 +5,7 @@ const LanguageContext = createContext();
 const translations = {
   en: {
     search: "Search",
+    resource: "Resource",
     or: "or",
     all: "All",
     status: "Status",
@@ -17,6 +18,7 @@ const translations = {
     // ========== COMMON ==========
     
 search: "Search",
+    resource: "Resource",
 or: "or",
 all: "All",
 status: "Status",
@@ -331,6 +333,23 @@ email: "Email",
       currentBalance: "Current Balance"
     },
 
+    
+    // ========== ROLES ==========
+    roles: {
+      title: "Roles & Permissions",
+      description: "Manage system roles and their permissions",
+      createRole: "Create Role",
+      roleName: "Role Name",
+      description: "Description",
+      level: "Level",
+      system: "System",
+      fullAccess: "Full system access",
+      adminAccess: "Administrative access",
+      branchManager: "Branch manager",
+      inventoryManagement: "Inventory management",
+      posOperations: "Point of sale operations",
+      readOnly: "Read-only access"
+    },
     // ========== REPORTS ==========
     reports: {
       title: "Reports",
@@ -460,6 +479,7 @@ email: "Email",
 
   am: {
     search: "ፈልግ",
+    resource: "ምንጭ",
     or: "ወይም",
     all: "ሁሉም",
     status: "ሁኔታ",
@@ -775,6 +795,23 @@ email: "Email",
       currentBalance: "አሁን ያለው ቀሪ"
     },
 
+    
+    // ========== ROLES ==========
+    roles: {
+      title: "Roles & Permissions",
+      description: "Manage system roles and their permissions",
+      createRole: "Create Role",
+      roleName: "Role Name",
+      description: "Description",
+      level: "Level",
+      system: "System",
+      fullAccess: "Full system access",
+      adminAccess: "Administrative access",
+      branchManager: "Branch manager",
+      inventoryManagement: "Inventory management",
+      posOperations: "Point of sale operations",
+      readOnly: "Read-only access"
+    },
     // ========== REPORTS ==========
     reports: {
       title: "ሪፖርቶች",
@@ -962,5 +999,8 @@ export const useLanguage = () => {
   }
   return context;
 };
+
+
+
 
 

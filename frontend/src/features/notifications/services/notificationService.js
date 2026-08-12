@@ -11,3 +11,4 @@ export const notificationService = {
   updatePreferences: (data) => apiClient.put('/notifications/preferences', data)
 };
 
+

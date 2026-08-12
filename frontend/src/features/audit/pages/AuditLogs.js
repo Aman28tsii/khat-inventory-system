@@ -68,7 +68,7 @@ const AuditLogs = () => {
     },
     {
       key: 'resource',
-      label: t('products.resource'),
+      label: t('resource'),
       render: (row) => (
         <div>
           <p className="text-sm text-gray-900 dark:text-white">{row.resourceType}</p>
@@ -121,5 +121,6 @@ const AuditLogs = () => {
 };
 
 export default AuditLogs;
+
 
 

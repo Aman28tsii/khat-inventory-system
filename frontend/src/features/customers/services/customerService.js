@@ -10,3 +10,4 @@ export const customerService = {
   getCreditHistory: (id) => apiClient.get(`/customers/${id}/credit-history`)
 };
 
+

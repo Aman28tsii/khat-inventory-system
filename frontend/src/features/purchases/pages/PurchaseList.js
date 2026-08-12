@@ -292,3 +292,4 @@ const PurchaseList = () => {
 export default PurchaseList;
 
 
+

@@ -22,3 +22,4 @@ export const inventoryService = {
   inspectBatch: (id, data) => apiClient.post(`/inventory/batches/${id}/inspect`, data)
 };
 
+

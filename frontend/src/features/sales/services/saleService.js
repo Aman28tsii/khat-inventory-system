@@ -12,3 +12,4 @@ export const saleService = {
   getAvailableBatches: (productId) => apiClient.get(`/sales/available-batches/${productId}`)
 };
 
+
