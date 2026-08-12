@@ -7,8 +7,10 @@ import Table from '../../../components/common/Table/Table';
 import Modal from '../../../components/common/Modal/Modal';
 import Button from '../../../components/common/Button/Button';
 import { fetchRoles } from '../slices/rolesSlice';
+import { useLanguage } from '../../../context/LanguageContext';
 
 const RoleList = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   const { roles, isLoading, error } = useSelector((state) => state.roles || { roles: [], isLoading: false, error: null });
   const [showModal, setShowModal] = useState(false);
@@ -27,25 +29,25 @@ const RoleList = () => {
   const columns = [
     {
       key: 'name',
-      label: 'Role Name',
+      label: t('roles.roleName'),
       render: (row) => (
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-primary-600" />
           <span className="font-medium">{row.name}</span>
           {row.isSystem && (
-            <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded-full">System</span>
+            <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded-full">{t('roles.system')}</span>
           )}
         </div>
       )
     },
     {
       key: 'description',
-      label: 'Description',
-      render: (row) => row.description || 'â€”'
+      label: t('roles.description'),
+      render: (row) => row.description || 'ΓÇö'
     },
     {
       key: 'level',
-      label: 'Level',
+      label: t('roles.level'),
       render: (row) => (
         <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
           {row.level}
@@ -59,15 +61,15 @@ const RoleList = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Roles & Permissions
+            {t('roles.title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Manage system roles and their permissions
+            {t('roles.description')}
           </p>
         </div>
         <Button variant="primary">
           <Plus className="w-4 h-4 mr-2" />
-          Create Role
+          {t('roles.createRole')}
         </Button>
       </div>
 
@@ -77,6 +79,3 @@ const RoleList = () => {
 };
 
 export default RoleList;
-
-
-
