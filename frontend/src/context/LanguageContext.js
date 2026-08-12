@@ -4,7 +4,9 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
-    search: "Search",
+    // ========== COMMON ==========
+    appName: "Khat Inventory",
+    search: "Search...",
     noData: "No Data Available",
     noItems: "No records found in the system",
     resource: "Resource",
@@ -17,38 +19,6 @@ const translations = {
     print: "Print",
     refresh: "Refresh",
     email: "Email",
-    // ========== COMMON ==========
-    
-search: "Search",
-    noData: "No Data Available",
-    noItems: "No records found in the system",
-    resource: "Resource",
-or: "or",
-all: "All",
-status: "Status",
-actions: "Actions",
-active: "Active",
-contact: "Contact",
-print: "Print",
-refresh: "Refresh",
-email: "Email",
-    appName: "Khat Inventory",
-    rolesTitle: "Roles & Permissions",
-    rolesDescription: "Manage system roles and their permissions",
-    createRole: "Create Role",
-    roleName: "Role Name",
-    roleLevel: "Level",
-    roleSystem: "System",
-    roleFullAccess: "Full system access",
-    roleAdminAccess: "Administrative access",
-    roleBranchManager: "Branch manager",
-    roleInventoryManagement: "Inventory management",
-    rolePosOperations: "Point of sale operations",
-    roleReadOnly: "Read-only access",
-    inventoryReport: "Inventory Report",
-    salesReport: "Sales Report",
-    profitReport: "Profit Report",
-    search: "Search...",
     welcome: "Welcome",
     profile: "My Profile",
     changePassword: "Change Password",
@@ -68,22 +38,15 @@ email: "Email",
     confirm: "Confirm",
     yes: "Yes",
     no: "No",
-    print: "Print",
     export: "Export",
-    refresh: "Refresh",
     clear: "Clear",
     upload: "Upload",
-    all: "All",
     none: "None",
-    or: "or",
     notes: "Notes",
-    contact: "Contact",
     warning: "Warning",
     success: "Success",
-    status: "Status",
     amount: "Amount",
     total: "Total",
-    actions: "Actions",
     created: "Created",
     updated: "Updated",
     items: "Items",
@@ -91,11 +54,9 @@ email: "Email",
     page: "Page",
     previous: "Previous",
     next: "Next",
-    active: "Active",
     inactive: "Inactive",
     view: "View",
     used: "Used",
-    resource: "Resource",
 
     // ========== NAVIGATION ==========
     dashboard: "Dashboard",
@@ -126,7 +87,6 @@ email: "Email",
     login: "Login",
     loginTitle: "Sign in to your account",
     register: "Register",
-    email: "Email Address",
     password: "Password",
     confirmPassword: "Confirm Password",
     forgotPassword: "Forgot Password?",
@@ -352,14 +312,12 @@ email: "Email",
       currentBalance: "Current Balance"
     },
 
-    
     // ========== ROLES ==========
     roles: {
       title: "Roles & Permissions",
       description: "Manage system roles and their permissions",
       createRole: "Create Role",
       roleName: "Role Name",
-      description: "Description",
       level: "Level",
       system: "System",
       fullAccess: "Full system access",
@@ -369,23 +327,7 @@ email: "Email",
       posOperations: "Point of sale operations",
       readOnly: "Read-only access"
     },
-    
-    // ========== ROLES ==========
-    roles: {
-      title: "Roles & Permissions",
-      description: "Manage system roles and their permissions",
-      createRole: "Create Role",
-      roleName: "Role Name",
-      description: "Description",
-      level: "Level",
-      system: "System",
-      fullAccess: "Full system access",
-      adminAccess: "Administrative access",
-      branchManager: "Branch manager",
-      inventoryManagement: "Inventory management",
-      posOperations: "Point of sale operations",
-      readOnly: "Read-only access"
-    },
+
     // ========== REPORTS ==========
     reports: {
       title: "Reports",
@@ -514,7 +456,9 @@ email: "Email",
   },
 
   am: {
-    search: "ፈልግ",
+    // ========== COMMON ==========
+    appName: "ጫት ኢንቬንተሪ",
+    search: "ፈልግ...",
     noData: "ምንም መረጃ የለም",
     noItems: "በስርዓቱ ውስጥ ምንም መዝገቦች አልተገኙም",
     resource: "ምንጭ",
@@ -527,24 +471,6 @@ email: "Email",
     print: "አትም",
     refresh: "አድስ",
     email: "ኢሜይል",
-    // ========== COMMON ==========
-    appName: "ጫት ኢንቬንተሪ",
-    rolesTitle: "ሚናዎች እና ፍቃዶች",
-    rolesDescription: "የስርዓት ሚናዎችን እና ፍቃዶቻቸውን ያስተዳድሩ",
-    createRole: "ሚና ፍጠር",
-    roleName: "የሚና ስም",
-    roleLevel: "ደረጃ",
-    roleSystem: "ስርዓት",
-    roleFullAccess: "ሙሉ የስርዓት መዳረሻ",
-    roleAdminAccess: "የአስተዳደር መዳረሻ",
-    roleBranchManager: "የቅርንጫፍ አስተዳዳሪ",
-    roleInventoryManagement: "የእቃ ክምችት አስተዳደር",
-    rolePosOperations: "የሽያጭ ነጥብ ሥራዎች",
-    roleReadOnly: "ለማንበብ ብቻ መዳረሻ",
-    inventoryReport: "የኢንቬንተሪ ሪፖርት",
-    salesReport: "የሽያጭ ሪፖርት",
-    profitReport: "የትርፍ ሪፖርት",
-    search: "ፈልግ...",
     welcome: "እንኳን ደህና መጡ",
     profile: "መገለጫ",
     changePassword: "የይለፍ ቃል ቀይር",
@@ -564,22 +490,15 @@ email: "Email",
     confirm: "አረጋግጥ",
     yes: "አዎ",
     no: "አይ",
-    print: "አትም",
     export: "ላክ",
-    refresh: "አድስ",
     clear: "አጽዳ",
     upload: "ጫን",
-    all: "ሁሉም",
     none: "ምንም",
-    or: "ወይም",
     notes: "ማስታወሻዎች",
-    contact: "የመገናኛ",
     warning: "ማንቂያ",
     success: "ተሳካ",
-    status: "ሁኔታ",
     amount: "መጠን",
     total: "ድምር",
-    actions: "ድርጊቶች",
     created: "ተፈጠረ",
     updated: "ተዘመነ",
     items: "እቃዎች",
@@ -587,11 +506,9 @@ email: "Email",
     page: "ገጽ",
     previous: "ቀዳሚ",
     next: "ቀጣይ",
-    active: "ንቁ",
     inactive: "የቆመ",
     view: "ይመልከቱ",
     used: "ጥቅም ላይ የዋለ",
-    resource: "ምንጭ",
 
     // ========== NAVIGATION ==========
     dashboard: "ዳሽቦርድ",
@@ -622,7 +539,6 @@ email: "Email",
     login: "ግባ",
     loginTitle: "ወደ መለያዎ ይግቡ",
     register: "ተመዝገብ",
-    email: "ኢሜይል አድራሻ",
     password: "የይለፍ ቃል",
     confirmPassword: "የይለፍ ቃል አረጋግጥ",
     forgotPassword: "የይለፍ ቃል ረሱ?",
@@ -848,40 +764,22 @@ email: "Email",
       currentBalance: "አሁን ያለው ቀሪ"
     },
 
-    
     // ========== ROLES ==========
     roles: {
-      title: "Roles & Permissions",
-      description: "Manage system roles and their permissions",
-      createRole: "Create Role",
-      roleName: "Role Name",
-      description: "Description",
-      level: "Level",
-      system: "System",
-      fullAccess: "Full system access",
-      adminAccess: "Administrative access",
-      branchManager: "Branch manager",
-      inventoryManagement: "Inventory management",
-      posOperations: "Point of sale operations",
-      readOnly: "Read-only access"
+      title: "ሚናዎች እና ፍቃዶች",
+      description: "የስርዓት ሚናዎችን እና ፍቃዶቻቸውን ያስተዳድሩ",
+      createRole: "ሚና ፍጠር",
+      roleName: "የሚና ስም",
+      level: "ደረጃ",
+      system: "ስርዓት",
+      fullAccess: "ሙሉ የስርዓት መዳረሻ",
+      adminAccess: "የአስተዳደር መዳረሻ",
+      branchManager: "የቅርንጫፍ አስተዳዳሪ",
+      inventoryManagement: "የእቃ ክምችት አስተዳደር",
+      posOperations: "የሽያጭ ነጥብ ሥራዎች",
+      readOnly: "ለማንበብ ብቻ መዳረሻ"
     },
-    
-    // ========== ROLES ==========
-    roles: {
-      title: "Roles & Permissions",
-      description: "Manage system roles and their permissions",
-      createRole: "Create Role",
-      roleName: "Role Name",
-      description: "Description",
-      level: "Level",
-      system: "System",
-      fullAccess: "Full system access",
-      adminAccess: "Administrative access",
-      branchManager: "Branch manager",
-      inventoryManagement: "Inventory management",
-      posOperations: "Point of sale operations",
-      readOnly: "Read-only access"
-    },
+
     // ========== REPORTS ==========
     reports: {
       title: "ሪፖርቶች",
@@ -1069,14 +967,3 @@ export const useLanguage = () => {
   }
   return context;
 };
-
-
-
-
-
-
-
-
-
-
-
