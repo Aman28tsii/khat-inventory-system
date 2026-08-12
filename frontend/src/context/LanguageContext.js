@@ -4,7 +4,8 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
-    // Common
+    // ==================== COMMON ====================
+    appName: "Khat Inventory",
     search: "Search...",
     welcome: "Welcome",
     profile: "My Profile",
@@ -25,7 +26,6 @@ const translations = {
     confirm: "Confirm",
     yes: "Yes",
     no: "No",
-    appName: "Khat Inventory",
     print: "Print",
     export: "Export",
     refresh: "Refresh",
@@ -53,8 +53,11 @@ const translations = {
     files: "files",
     used: "Used",
     resource: "Resource",
-    
-    // Navigation
+    active: "Active",
+    inactive: "Inactive",
+    view: "View",
+
+    // ==================== NAVIGATION ====================
     dashboard: "Dashboard",
     inventory: "Inventory",
     products: "Products",
@@ -71,16 +74,15 @@ const translations = {
     branches: "Branches",
     settings: "Settings",
     auditLogs: "Audit Logs",
-    
-    // Navigation sections
+
     navigation: {
       main: "Main",
       operations: "Operations",
       management: "Management",
       system: "System"
     },
-    
-    // Auth
+
+    // ==================== AUTH ====================
     login: "Login",
     loginTitle: "Sign in to your account",
     register: "Register",
@@ -103,8 +105,8 @@ const translations = {
     logoutSuccess: "Logged out successfully",
     welcomeBack: "Welcome back",
     defaultAdmin: "Default admin: admin@khattrading.com / Admin@123",
-    
-    // Dashboard
+
+    // ==================== DASHBOARD ====================
     totalRevenue: "Total Revenue",
     totalSales: "Total Sales",
     totalProducts: "Total Products",
@@ -124,8 +126,9 @@ const translations = {
     inStock: "In Stock",
     executive: "Executive Dashboard",
     overview: "Overview of company performance",
-    
-    // Inventory
+    refresh: "Refresh",
+
+    // ==================== INVENTORY / PRODUCTS ====================
     title: "Inventory Management",
     productManagement: "Product Management",
     batchManagement: "Batch Management",
@@ -177,8 +180,11 @@ const translations = {
     addProduct: "Add Product",
     addBatch: "Add Batch",
     completeInspection: "Complete Inspection",
-    
-    // Sales
+    addItem: "Add Item",
+    itemPrice: "Unit Price",
+    itemTotal: "Item Total",
+
+    // ==================== SALES ====================
     newSale: "New Sale",
     saleNumber: "Sale Number",
     saleDate: "Sale Date",
@@ -206,11 +212,9 @@ const translations = {
     completeSale: "Complete Sale",
     quickAddCustomer: "Quick Add Customer",
     noSales: "No sales found",
-    addItem: "Add Item",
-    itemPrice: "Unit Price",
-    itemTotal: "Item Total",
-    
-    // Purchases
+    view: "View",
+
+    // ==================== PURCHASES ====================
     newPurchase: "New Purchase",
     purchaseNumber: "Purchase Number",
     purchaseDate: "Purchase Date",
@@ -224,8 +228,8 @@ const translations = {
     receiveItems: "Receive Items",
     noPurchases: "No purchases found",
     purchaseItems: "Purchase Items",
-    
-    // Transfers
+
+    // ==================== TRANSFERS ====================
     newTransfer: "New Transfer",
     transferNumber: "Transfer Number",
     transferDate: "Transfer Date",
@@ -242,8 +246,8 @@ const translations = {
     noTransfers: "No transfers found",
     itemsToTransfer: "Items to Transfer",
     transferSummary: "Transfer Summary",
-    
-    // Users
+
+    // ==================== USERS ====================
     firstName: "First Name",
     lastName: "Last Name",
     fullName: "Full Name",
@@ -261,8 +265,8 @@ const translations = {
     saveChanges: "Save Changes",
     avatar: "Profile Picture",
     resetPassword: "Reset Password",
-    
-    // Branches
+
+    // ==================== BRANCHES ====================
     branchName: "Branch Name",
     branchCode: "Branch Code",
     branchType: "Branch Type",
@@ -273,8 +277,35 @@ const translations = {
     noBranches: "No branches found",
     addBranch: "Add Branch",
     address: "Address",
-    
-    // Reports
+
+    // ==================== SUPPLIERS ====================
+    supplierName: "Supplier Name",
+    supplierCode: "Supplier Code",
+    contactPerson: "Contact Person",
+    createSupplier: "Create Supplier",
+    editSupplier: "Edit Supplier",
+    noSuppliers: "No suppliers found",
+
+    // ==================== CUSTOMERS ====================
+    customerName: "Customer Name",
+    customerCode: "Customer Code",
+    customerType: "Customer Type",
+    individual: "Individual",
+    business: "Business",
+    wholesale: "Wholesale",
+    retail: "Retail",
+    creditLimit: "Credit Limit",
+    paymentTerms: "Payment Terms",
+    taxId: "Tax ID",
+    createCustomer: "Create Customer",
+    editCustomer: "Edit Customer",
+    noCustomers: "No customers found",
+    creditHistory: "Credit History",
+    totalCredit: "Total Credit Given",
+    totalPayments: "Total Payments",
+    currentBalance: "Current Balance",
+
+    // ==================== REPORTS ====================
     inventoryReport: "Inventory Report",
     salesReport: "Sales Report",
     profitReport: "Profit Report",
@@ -301,10 +332,11 @@ const translations = {
     applyFilters: "Apply Filters",
     clearFilters: "Clear Filters",
     noData: "No data available for the selected period",
-    
-    // Notifications
+
+    // ==================== NOTIFICATIONS ====================
     notificationCenter: "Notification Center",
     unread: "unread",
+    read: "Read",
     markAllRead: "Mark All Read",
     deleteAll: "Delete All",
     noNotifications: "No notifications",
@@ -312,13 +344,29 @@ const translations = {
     markAsRead: "Mark as read",
     newNotification: "New",
     viewAll: "View All Notifications",
-    
-    // Modals
+
+    // ==================== SETTINGS ====================
+    general: "General Settings",
+    security: "Security",
+    companyName: "Company Name",
+    companyEmail: "Company Email",
+    companyPhone: "Company Phone",
+    companyAddress: "Company Address",
+    currency: "Currency",
+    timezone: "Timezone",
+    dateFormat: "Date Format",
+    saveSettings: "Save Settings",
+    settingsSaved: "Settings saved successfully",
+    sessionTimeout: "Session Timeout (minutes)",
+    maxLoginAttempts: "Max Login Attempts",
+    preferences: "Preferences",
+
+    // ==================== MODALS ====================
     confirmDelete: "Confirm Delete",
     areYouSure: "Are you sure?",
     deleteWarning: "This action cannot be undone.",
-    
-    // Errors
+
+    // ==================== ERRORS ====================
     error: "Something went wrong",
     notFound: "Page not found",
     unauthorized: "Unauthorized access",
@@ -327,8 +375,8 @@ const translations = {
     networkError: "Network error",
     tryAgain: "Please try again",
     retry: "Retry",
-    
-    // POS
+
+    // ==================== POS ====================
     cart: "Cart",
     addToCart: "Add to Cart",
     removeFromCart: "Remove from Cart",
@@ -344,26 +392,12 @@ const translations = {
     paymentSuccess: "Payment successful",
     paymentFailed: "Payment failed",
     scanProduct: "Scan or search product",
-    price: "Price",
-    
-    // Settings
-    general: "General Settings",
-    companyName: "Company Name",
-    companyEmail: "Company Email",
-    companyPhone: "Company Phone",
-    companyAddress: "Company Address",
-    currency: "Currency",
-    timezone: "Timezone",
-    dateFormat: "Date Format",
-    saveSettings: "Save Settings",
-    settingsSaved: "Settings saved successfully",
-    security: "Security",
-    sessionTimeout: "Session Timeout (minutes)",
-    maxLoginAttempts: "Max Login Attempts",
-    preferences: "Preferences"
+    price: "Price"
   },
+
   am: {
-    // Common
+    // ==================== COMMON ====================
+    appName: "ካት ኢንቬንተሪ",
     search: "ፈልግ...",
     welcome: "እንኳን ደህና መጡ",
     profile: "መገለጫ",
@@ -384,7 +418,6 @@ const translations = {
     confirm: "አረጋግጥ",
     yes: "አዎ",
     no: "አይ",
-    appName: "ካት ኢንቬንተሪ",
     print: "አትም",
     export: "ላክ",
     refresh: "አድስ",
@@ -412,8 +445,11 @@ const translations = {
     files: "ፋይሎች",
     used: "ጥቅም ላይ የዋለ",
     resource: "ምንጭ",
-    
-    // Navigation
+    active: "ንቁ",
+    inactive: "የቆመ",
+    view: "ይመልከቱ",
+
+    // ==================== NAVIGATION ====================
     dashboard: "ዳሽቦርድ",
     inventory: "ኢንቬንተሪ",
     products: "ምርቶች",
@@ -430,16 +466,15 @@ const translations = {
     branches: "ቅርንጫፎች",
     settings: "ቅንብሮች",
     auditLogs: "የኦዲት መዝገቦች",
-    
-    // Navigation sections
+
     navigation: {
       main: "ዋና",
       operations: "ሥራዎች",
       management: "አስተዳደር",
       system: "ሲስተም"
     },
-    
-    // Auth
+
+    // ==================== AUTH ====================
     login: "ግባ",
     loginTitle: "ወደ መለያዎ ይግቡ",
     register: "ተመዝገብ",
@@ -462,8 +497,8 @@ const translations = {
     logoutSuccess: "በተሳካ ሁኔታ ወጥተዋል",
     welcomeBack: "እንኳን በደህና መጡ",
     defaultAdmin: "ነባሪ አስተዳዳሪ: admin@khattrading.com / Admin@123",
-    
-    // Dashboard
+
+    // ==================== DASHBOARD ====================
     totalRevenue: "ጠቅላላ ገቢ",
     totalSales: "ጠቅላላ ሽያጭ",
     totalProducts: "ጠቅላላ ምርቶች",
@@ -483,8 +518,9 @@ const translations = {
     inStock: "በክምችት ውስጥ",
     executive: "የሥራ አስፈፃሚ ዳሽቦርድ",
     overview: "የኩባንያው አፈፃፀም አጠቃላይ እይታ",
-    
-    // Inventory
+    refresh: "አድስ",
+
+    // ==================== INVENTORY / PRODUCTS ====================
     title: "የኢንቬንተሪ አስተዳደር",
     productManagement: "የምርት አስተዳደር",
     batchManagement: "የባች አስተዳደር",
@@ -536,8 +572,11 @@ const translations = {
     addProduct: "ምርት ጨምር",
     addBatch: "ባች ጨምር",
     completeInspection: "ምርመራ አጠናቅቅ",
-    
-    // Sales
+    addItem: "እቃ ጨምር",
+    itemPrice: "የእቃ ዋጋ",
+    itemTotal: "የእቃ ድምር",
+
+    // ==================== SALES ====================
     newSale: "አዲስ ሽያጭ",
     saleNumber: "የሽያጭ ቁጥር",
     saleDate: "የሽያጭ ቀን",
@@ -565,11 +604,9 @@ const translations = {
     completeSale: "ሽያጭ አጠናቅቅ",
     quickAddCustomer: "ደንበኛ በፍጥነት ጨምር",
     noSales: "ምንም ሽያጮች አልተገኙም",
-    addItem: "እቃ ጨምር",
-    itemPrice: "የእቃ ዋጋ",
-    itemTotal: "የእቃ ድምር",
-    
-    // Purchases
+    view: "ይመልከቱ",
+
+    // ==================== PURCHASES ====================
     newPurchase: "አዲስ ግዢ",
     purchaseNumber: "የግዢ ቁጥር",
     purchaseDate: "የግዢ ቀን",
@@ -583,8 +620,8 @@ const translations = {
     receiveItems: "እቃዎች ተቀበል",
     noPurchases: "ምንም ግዢዎች አልተገኙም",
     purchaseItems: "የግዢ እቃዎች",
-    
-    // Transfers
+
+    // ==================== TRANSFERS ====================
     newTransfer: "አዲስ ዝውውር",
     transferNumber: "የዝውውር ቁጥር",
     transferDate: "የዝውውር ቀን",
@@ -601,8 +638,8 @@ const translations = {
     noTransfers: "ምንም ዝውውሮች አልተገኙም",
     itemsToTransfer: "ለማዛወር የሚቻሉ እቃዎች",
     transferSummary: "የዝውውር ማጠቃለያ",
-    
-    // Users
+
+    // ==================== USERS ====================
     firstName: "ስም",
     lastName: "የአባት ስም",
     fullName: "ሙሉ ስም",
@@ -620,8 +657,8 @@ const translations = {
     saveChanges: "ለውጦች አስቀምጥ",
     avatar: "የመገለጫ ምስል",
     resetPassword: "የይለፍ ቃል ዳግም አስጀምር",
-    
-    // Branches
+
+    // ==================== BRANCHES ====================
     branchName: "የቅርንጫፍ ስም",
     branchCode: "የቅርንጫፍ ኮድ",
     branchType: "የቅርንጫፍ አይነት",
@@ -632,8 +669,35 @@ const translations = {
     noBranches: "ምንም ቅርንጫፎች አልተገኙም",
     addBranch: "ቅርንጫፍ ጨምር",
     address: "አድራሻ",
-    
-    // Reports
+
+    // ==================== SUPPLIERS ====================
+    supplierName: "የአቅራቢ ስም",
+    supplierCode: "የአቅራቢ ኮድ",
+    contactPerson: "የሚገናኝ ሰው",
+    createSupplier: "አቅራቢ ፍጠር",
+    editSupplier: "አቅራቢ አስተካክል",
+    noSuppliers: "ምንም አቅራቢዎች አልተገኙም",
+
+    // ==================== CUSTOMERS ====================
+    customerName: "የደንበኛ ስም",
+    customerCode: "የደንበኛ ኮድ",
+    customerType: "የደንበኛ አይነት",
+    individual: "ግለሰብ",
+    business: "ንግድ",
+    wholesale: "በጅምላ",
+    retail: "በችርቻሮ",
+    creditLimit: "የብድር ገደብ",
+    paymentTerms: "የክፍያ ውሎች",
+    taxId: "የግብር መለያ",
+    createCustomer: "ደንበኛ ፍጠር",
+    editCustomer: "ደንበኛ አስተካክል",
+    noCustomers: "ምንም ደንበኞች አልተገኙም",
+    creditHistory: "የብድር ታሪክ",
+    totalCredit: "ጠቅላላ የተሰጠ ብድር",
+    totalPayments: "ጠቅላላ ክፍያዎች",
+    currentBalance: "አሁን ያለው ቀሪ",
+
+    // ==================== REPORTS ====================
     inventoryReport: "የኢንቬንተሪ ሪፖርት",
     salesReport: "የሽያጭ ሪፖርት",
     profitReport: "የትርፍ ሪፖርት",
@@ -660,10 +724,11 @@ const translations = {
     applyFilters: "ማጣሪያዎችን ተግብር",
     clearFilters: "ማጣሪያዎችን አጽዳ",
     noData: "ለተመረጠው ጊዜ ምንም መረጃ የለም",
-    
-    // Notifications
+
+    // ==================== NOTIFICATIONS ====================
     notificationCenter: "የማሳወቂያ ማዕከል",
     unread: "ያልተነበበ",
+    read: "ተነብቧል",
     markAllRead: "ሁሉም እንደተነበበ ምልክት አድርግ",
     deleteAll: "ሁሉም ሰርዝ",
     noNotifications: "ምንም ማሳወቂያዎች የሉም",
@@ -671,13 +736,29 @@ const translations = {
     markAsRead: "እንደተነበበ ምልክት አድርግ",
     newNotification: "አዲስ",
     viewAll: "ሁሉንም ማሳወቂያዎች ይመልከቱ",
-    
-    // Modals
+
+    // ==================== SETTINGS ====================
+    general: "አጠቃላይ ቅንብሮች",
+    security: "ደህንነት",
+    companyName: "የኩባንያ ስም",
+    companyEmail: "የኩባንያ ኢሜይል",
+    companyPhone: "የኩባንያ ስልክ",
+    companyAddress: "የኩባንያ አድራሻ",
+    currency: "ገንዘብ",
+    timezone: "የሰዓት ሰቅ",
+    dateFormat: "የቀን ቅርጸት",
+    saveSettings: "ቅንብሮችን አስቀምጥ",
+    settingsSaved: "ቅንብሮች በተሳካ ሁኔታ ተቀምጠዋል",
+    sessionTimeout: "የክፍለ ጊዜ ጊዜ ማብቂያ (ደቂቃዎች)",
+    maxLoginAttempts: "ከፍተኛ የመግቢያ ሙከራዎች",
+    preferences: "ምርጫዎች",
+
+    // ==================== MODALS ====================
     confirmDelete: "መሰረዝ አረጋግጥ",
     areYouSure: "እርግጠኛ ነዎት?",
     deleteWarning: "ይህ ድርጊት ሊቀለበስ አይችልም።",
-    
-    // Errors
+
+    // ==================== ERRORS ====================
     error: "ስህተት ተከስቷል",
     notFound: "ገጽ አልተገኘም",
     unauthorized: "ያልተፈቀደ መዳረሻ",
@@ -686,8 +767,8 @@ const translations = {
     networkError: "የአውታረ መረብ ስህተት",
     tryAgain: "እባክዎ እንደገና ይሞክሩ",
     retry: "ደግመህ ሞክር",
-    
-    // POS
+
+    // ==================== POS ====================
     cart: "የግዢ ቅርጫት",
     addToCart: "ወደ ግዢ ቅርጫት ጨምር",
     removeFromCart: "ከግዢ ቅርጫት አስወግድ",
@@ -703,23 +784,7 @@ const translations = {
     paymentSuccess: "ክፍያ ተሳክቷል",
     paymentFailed: "ክፍያ አልተሳካም",
     scanProduct: "ምርት ይቃኙ ወይም ይፈልጉ",
-    price: "ዋጋ",
-    
-    // Settings
-    general: "አጠቃላይ ቅንብሮች",
-    companyName: "የኩባንያ ስም",
-    companyEmail: "የኩባንያ ኢሜይል",
-    companyPhone: "የኩባንያ ስልክ",
-    companyAddress: "የኩባንያ አድራሻ",
-    currency: "ገንዘብ",
-    timezone: "የሰዓት ሰቅ",
-    dateFormat: "የቀን ቅርጸት",
-    saveSettings: "ቅንብሮችን አስቀምጥ",
-    settingsSaved: "ቅንብሮች በተሳካ ሁኔታ ተቀምጠዋል",
-    security: "ደህንነት",
-    sessionTimeout: "የክፍለ ጊዜ ጊዜ ማብቂያ (ደቂቃዎች)",
-    maxLoginAttempts: "ከፍተኛ የመግቢያ ሙከራዎች",
-    preferences: "ምርጫዎች"
+    price: "ዋጋ"
   }
 };
 
