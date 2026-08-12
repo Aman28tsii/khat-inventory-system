@@ -43,7 +43,7 @@ const RoleList = () => {
     {
       key: 'description',
       label: t('roles.description'),
-      render: (row) => row.description || 'ΓÇö'
+      render: (row) => row.description || '—'
     },
     {
       key: 'level',
