@@ -31,6 +31,18 @@ const ExecutiveDashboard = () => {
   const error = useSelector((state) => state.dashboard?.error || null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Format currency
+  const formatCurrency = (amount) => {
+    if (!amount && amount !== 0) return '.00';
+    return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  };
+
+  // Format number
+  const formatNumber = (num) => {
+    if (!num && num !== 0) return '0';
+    return Number(num).toLocaleString('en-US');
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       loadDashboardData();
@@ -39,7 +51,7 @@ const ExecutiveDashboard = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error?.message || t('errors.generic'));
       dispatch(clearError());
     }
   }, [error, dispatch]);
@@ -59,66 +71,74 @@ const ExecutiveDashboard = () => {
     }
   };
 
-  const salesData = [
-    { month: 'Jan', sales: 4000, revenue: 2400 },
-    { month: 'Feb', sales: 3000, revenue: 1398 },
-    { month: 'Mar', sales: 2000, revenue: 9800 },
-    { month: 'Apr', sales: 2780, revenue: 3908 },
-    { month: 'May', sales: 1890, revenue: 4800 },
-    { month: 'Jun', sales: 2390, revenue: 3800 },
-  ];
+  // Use executive data from API - match the actual response structure
+  const data = executive?.data || executive || {};
 
-  const inventoryData = [
-    { name: 'Green Khat', value: 400 },
-    { name: 'Yellow Khat', value: 300 },
-    { name: 'Premium Khat', value: 200 },
-    { name: 'Standard Khat', value: 150 },
-  ];
+  // Extract stats from the response
+  const statsData = data.stats || {};
 
-  const branchPerformance = [
-    { branch: 'HQ', sales: 12000, profit: 5000 },
-    { branch: 'Branch A', sales: 8000, profit: 3000 },
-    { branch: 'Branch B', sales: 6000, profit: 2000 },
-    { branch: 'Warehouse', sales: 4000, profit: 1500 },
-  ];
-
+  // Stats cards with data from API
   const stats = [
     { 
       title: t('totalRevenue'), 
-      value: ',500', 
+      value: formatCurrency(statsData.totalRevenue || statsData.revenue || 0), 
       icon: DollarSign, 
       color: 'green',
-      trend: 'up',
-      trendValue: '12.5%',
+      trend: statsData.revenueTrend || 'up',
+      trendValue: statsData.revenueTrendValue || '0%',
       subtitle: t('thisMonth')
     },
     { 
       title: t('totalSales'), 
-      value: '2,345', 
+      value: formatNumber(statsData.totalSales || statsData.sales || 0), 
       icon: ShoppingCart, 
       color: 'blue',
-      trend: 'up',
-      trendValue: '8.3%',
+      trend: statsData.salesTrend || 'up',
+      trendValue: statsData.salesTrendValue || '0%',
       subtitle: t('thisMonth')
     },
     { 
       title: t('totalProducts'), 
-      value: '1,234', 
+      value: formatNumber(statsData.totalProducts || statsData.products || 0), 
       icon: Package, 
       color: 'purple',
-      trend: 'up',
-      trendValue: '5.2%',
+      trend: statsData.productsTrend || 'up',
+      trendValue: statsData.productsTrendValue || '0%',
       subtitle: t('inStock')
     },
     { 
       title: t('activeUsers'), 
-      value: '56', 
+      value: formatNumber(statsData.activeUsers || statsData.users || 0), 
       icon: Users, 
       color: 'orange',
-      trend: 'down',
-      trendValue: '2.1%',
-      subtitle: t('onlineNow') + ': 12'
+      trend: statsData.usersTrend || 'down',
+      trendValue: statsData.usersTrendValue || '0%',
+      subtitle: t('onlineNow') + ': ' + (statsData.onlineUsers || 0)
     }
+  ];
+
+  // Chart data from API or fallback to empty
+  const salesData = data.salesChart || [
+    { month: 'Jan', sales: 0, revenue: 0 },
+    { month: 'Feb', sales: 0, revenue: 0 },
+    { month: 'Mar', sales: 0, revenue: 0 },
+    { month: 'Apr', sales: 0, revenue: 0 },
+    { month: 'May', sales: 0, revenue: 0 },
+    { month: 'Jun', sales: 0, revenue: 0 },
+  ];
+
+  const branchPerformance = data.branchPerformance || [
+    { branch: 'HQ', sales: 0, profit: 0 },
+    { branch: 'Branch A', sales: 0, profit: 0 },
+    { branch: 'Branch B', sales: 0, profit: 0 },
+    { branch: 'Warehouse', sales: 0, profit: 0 },
+  ];
+
+  const inventoryData = data.inventoryDistribution || [
+    { name: 'Green Khat', value: 0 },
+    { name: 'Yellow Khat', value: 0 },
+    { name: 'Premium Khat', value: 0 },
+    { name: 'Standard Khat', value: 0 },
   ];
 
   if (!isAuthenticated) {
@@ -178,7 +198,7 @@ const ExecutiveDashboard = () => {
           data={salesData}
           type="line"
           series={[
-            { key: 'sales', name: t('sales.title') },
+            { key: 'sales', name: t('sales') },
             { key: 'revenue', name: t('revenue') }
           ]}
           xAxisKey="month"
@@ -188,7 +208,7 @@ const ExecutiveDashboard = () => {
           data={branchPerformance}
           type="bar"
           series={[
-            { key: 'sales', name: t('sales.title') },
+            { key: 'sales', name: t('sales') },
             { key: 'profit', name: t('profit') }
           ]}
           xAxisKey="branch"
@@ -212,7 +232,7 @@ const ExecutiveDashboard = () => {
             data={salesData}
             type="area"
             series={[
-              { key: 'sales', name: t('sales.title') },
+              { key: 'sales', name: t('sales') },
               { key: 'revenue', name: t('revenue') }
             ]}
             xAxisKey="month"
@@ -229,6 +249,3 @@ const ExecutiveDashboard = () => {
 };
 
 export default ExecutiveDashboard;
-
-
-
