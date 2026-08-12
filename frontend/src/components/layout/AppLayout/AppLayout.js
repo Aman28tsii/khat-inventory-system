@@ -35,13 +35,12 @@ const AppLayout = ({ children }) => {
         isMobile={isMobile}
       />
       
-      {/* Main content */}
       <div className={`flex-1 flex flex-col h-full w-full transition-all duration-300 ease-in-out ${
         !isMobile && sidebarOpen ? 'ml-72' : 'ml-0'
       }`}>
         <Header toggleSidebar={toggleSidebar} />
-        {/* Add pt-16 to push content below header */}
-        <main className="flex-1 overflow-y-auto pt-16 p-4 md:p-6">
+        {/* FIX: Added pt-20 to push content below header */}
+        <main className="flex-1 overflow-y-auto pt-20 p-4 md:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
