@@ -80,7 +80,7 @@ const UserList = () => {
     {
       key: 'name',
       label: t('users.fullName'),
-      render: (row) => `${row.firstName} ${row.lastName}`
+      render: (row) => ${row.firstName} 
     },
     {
       key: 'email',

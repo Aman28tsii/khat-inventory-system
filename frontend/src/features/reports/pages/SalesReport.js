@@ -142,8 +142,6 @@ const SalesReport = () => {
               <p className="text-gray-500 dark:text-gray-400">{t('reports.salesReport')}</p>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('reports.salesReport')}</h1>
-          <p className="text-gray-500 dark:text-gray-400">{t('reports.salesReport')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" isLoading={exporting} onClick={handleExportPDF} disabled={isLoading || !salesReport}>
