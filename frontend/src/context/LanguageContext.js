@@ -397,7 +397,7 @@ const translations = {
 
   am: {
     // ==================== COMMON ====================
-    appName: "ካት ኢንቬንተሪ",
+    appName: "ጫት ኢንቬንተሪ",
     search: "ፈልግ...",
     welcome: "እንኳን ደህና መጡ",
     profile: "መገለጫ",
